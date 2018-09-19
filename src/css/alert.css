@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css?family=Quicksand");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+#hiddenButton {
+  display: none;
+}
+
+h2 {
+  font-family: "Quicksand", sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color: #000000;
+  margin-bottom: 0;
+  text-align: center;
+}
+a:link {
+  color: #6d91c7;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #3157a7;
+}
+p {
+  margin-top: 3vh;
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
+  font-size: 16px;
+  color: #6f6f6f;
+}
+
+html,
+body,
+* {
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 1.4em;
+  text-align: center;
+}
+
+.dialog-ovelay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999999;
+}
+.dialog-ovelay .dialog {
+  max-width: 90%;
+  width: 527px;
+  margin: 21vh auto 0;
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+.dialog-ovelay .dialog header {
+  padding: 10px 8px;
+}
+
+.dialog-ovelay .dialog header .fa-close {
+  float: right;
+  color: #c4c5c7;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  padding: 0 2px;
+  border-radius: 1px;
+}
+.dialog-ovelay .dialog header .fa-close:hover {
+  color: #b9b9b9;
+}
+.dialog-ovelay .dialog header .fa-close:active {
+  box-shadow: 0 0 5px #673ab7;
+  color: #a2a2a2;
+}
+.dialog-ovelay .dialog .dialog-msg {
+  padding: 0px 4vw;
+}
+
+.dialog-ovelay .dialog footer {
+  padding-bottom: 4vh;
+  padding-top: 2vh;
+}
+.dialog-ovelay .dialog footer .controls {
+  direction: rtl;
+}
+.dialog-ovelay .dialog footer .controls .button {
+  padding: 5px 15px;
+  border-radius: 3px;
+}
+.button {
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+.button-default {
+  border-radius: 0.3rem;
+  background-color: rgb(248, 248, 248);
+  height: 2.5rem;
+  width: 6rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border: 0px;
+  color: #5d5d5d;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.button-danger {
+  border-radius: 0.3rem;
+  background-color: #db3e4d;
+  height: 2.5rem;
+  width: 6rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border: 0px;
+  color: #f5f5f5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.link {
+  padding: 5px 10px;
+  cursor: pointer;
+}

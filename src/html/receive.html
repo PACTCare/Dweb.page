@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Receive | Pact</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
+  <meta name="author" content="PACT Care BV">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
+</head>
+
+<body>
+
+  <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" class="logo" id="logo">
+  <span class="betaTag">Beta</span>
+  <div class="textBox">
+    <h2 class="receiveHeadline">Receive File</h2>
+    <form id="inputForm">
+      <input type="text" name="EmailFrom" id="firstField" placeholder="Enter your File Id" class="boxInput">
+      <br id="hideSpace1">
+      <input type="text" name="EmailTo" id="passwordField" placeholder="Enter your Password" class="boxInput">
+      <br id="hideSpace2">
+      <div id="messages"></div>
+      <div id="response" class="hidden">
+        <div id="loadProgress">
+          <div id="loadBar"></div>
+        </div>
+      </div>
+      <input type="button" class="boxButton" value="Download" id="load">
+    </form>
+  </div>
+  <span id="hiddenGateway">empty</span>
+
+  <div class="footer">
+    <a href="index.html">Transfer</a>
+    <a href="aboutv2.html">About</a>
+  </div>
+
+  <!-- No external resources: XSS! -->
+  <script src='https://pact.online/dist/js/jquery.min.js'></script>
+  <script src="js/load.bundle.js"></script>
+
+</body>
+
+</html>
