@@ -5,6 +5,7 @@ const PROTOCOL = window.location.protocol;
 require("./fileupload");
 require("./copy");
 require("./steps");
+import { Log } from "./log/Log";
 import "../css/style.css";
 import "../css/toggle.css";
 import "../css/steps.css";
@@ -14,9 +15,7 @@ const SIZELIMIT = 1000; // In MB
 var subtle = null;
 if (window.msCrypto) {
   subtle = window.msCrypto.subtle;
-}
-// If other browsers then...
-else if (window.crypto) {
+} else if (window.crypto) {
   subtle = window.crypto.subtle || window.crypto.webkitSubtle;
 }
 
@@ -82,21 +81,6 @@ var appendBuffer3 = function(buffer1, buffer2, buffer3) {
   return tmp.buffer;
 };
 
-function iotaApiPost(fileHash, gateway) {
-  const http = new XMLHttpRequest();
-  const url =
-    "https://pksuxqpp7d.execute-api.eu-central-1.amazonaws.com/latest/api/iota";
-  const params = { hash: fileHash, upload: true, gateway: gateway };
-  http.open("POST", url, true);
-  http.setRequestHeader("Content-type", "application/json");
-  http.onreadystatechange = function() {
-    if (http.readyState == 4 && http.status == 200) {
-      console.log(http.responseText);
-    }
-  };
-  http.send(JSON.stringify(params));
-}
-
 function uploadToIPFS(buf, withEncryption) {
   let gateway = "http://localhost:8080/ipfs/";
   if (HOST.includes("pact")) {
@@ -125,18 +109,20 @@ function uploadToIPFS(buf, withEncryption) {
         document.getElementById("ipfsHash").innerHTML =
           "The Gateway of the IPFS node isn’t writable!";
       } else {
+        const log = new Log(fingerPrint);
+        //log.localLogStorage();
         if (withEncryption) {
-          iotaApiPost(fingerPrint, gateway);
+          log.iotaApiPost(true, gateway, true);
           const link =
             "https://pact.online/receive.html?id=" +
             fingerPrint +
             "&gate=" +
             gateway;
-          const fileNameTryte = TRYTES.encodeTextAsTryteString(fingerPrint);
+          const loggingAddress = TRYTES.encodeTextAsTryteString(fingerPrint);
           document.getElementById("ipfsHash").href = link;
           document.getElementById("ipfsHash").innerText = link;
           document.getElementById("logLink").href =
-            "https://thetangle.org/address/" + fileNameTryte.slice(0, 81);
+            "https://thetangle.org/address/" + loggingAddress.slice(0, 81);
           document.getElementById("emailSharer").href =
             "mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A" +
             "1.	Open the link below %0D%0A" +
@@ -164,6 +150,7 @@ function uploadToIPFS(buf, withEncryption) {
             document.getElementById("smsSharer").style.display = "none";
           }
         } else {
+          log.iotaApiPost(true, gateway, false);
           document.getElementById("passwordStep").remove();
           document.getElementById("passwordTab").remove();
           document.getElementById("loggingText").remove();

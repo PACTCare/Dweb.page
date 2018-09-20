@@ -56,10 +56,7 @@ function ekUpload() {
     }
   }
 
-  // Output
   function output(msg) {
-    // Response
-    console.log(msg);
     var m = document.getElementById("messages");
     m.innerHTML = msg;
   }

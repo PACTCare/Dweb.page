@@ -3,11 +3,13 @@ const MIME = require("mime/lite");
 require("fast-text-encoding");
 require("./alert");
 require("./url-parameters");
+import { Log } from "./log/Log";
 import { saveAs } from "./file-saver";
 import "../css/style.css";
 import "../css/alert.css";
 
-let ipfsgate = "https://untangle.care/ipfs/";
+//Default Gateway
+var gateway = "https://untangle.care/ipfs/";
 
 var subtle = null;
 if (window.msCrypto) {
@@ -43,26 +45,6 @@ function decrypt(initialVector, key, fileArray) {
   );
 }
 
-function iotaApiPost(fileHash) {
-  storeLog(fileHash);
-  const http = new XMLHttpRequest();
-  const url =
-    "https://pksuxqpp7d.execute-api.eu-central-1.amazonaws.com/latest/api/iota";
-  const params = {
-    hash: fileHash,
-    upload: false,
-    gateway: "https://untangle.care/ipfs/"
-  };
-  http.open("POST", url, true);
-  http.setRequestHeader("Content-type", "application/json");
-  http.onreadystatechange = function() {
-    if (http.readyState == 4 && http.status == 200) {
-      console.log(http.responseText);
-    }
-  };
-  http.send(JSON.stringify(params));
-}
-
 function importKey(password) {
   return subtle.importKey(
     "jwk", //can be "jwk" or "raw"
@@ -81,16 +63,7 @@ function importKey(password) {
   );
 }
 
-function storeLog(hash) {
-  var logs = JSON.parse(localStorage.getItem("log"));
-  console.log(logs);
-  alert(hash);
-  logs.push(hash);
-  localStorage.setItem("log", JSON.stringify(logs));
-}
-
 function load() {
-  console.time("load");
   let password = document.getElementById("passwordField").value;
   let fileId = document.getElementById("firstField").value;
   if (fileId.length != 46) {
@@ -116,10 +89,10 @@ function load() {
         const fileName = new TextDecoder("utf-8").decode(
           arrayBuffer.slice(4, fileNameLength + 4)
         );
-
+        const log = new Log(fileId);
+        log.localLogStorage();
         // encrypted
         if (password !== "nopass") {
-          console.log("passdownload");
           let initialVector = new Uint8Array(
             arrayBuffer.slice(4 + fileNameLength, 16 + fileNameLength)
           );
@@ -136,7 +109,7 @@ function load() {
                   const blob = new Blob([decrypted], { type: typeM });
                   blob.name = fileName;
                   saveAs(blob, fileName);
-                  iotaApiPost(fileId);
+                  log.iotaApiPost(false, gateway, true);
                 })
                 .catch(function(err) {
                   console.log("line 95: " + err);
@@ -148,7 +121,6 @@ function load() {
               output("You have entered an invalid password!");
             });
         } else {
-          console.log("no pass download");
           const fileArray = new Uint8Array(
             arrayBuffer.slice(4 + fileNameLength)
           );
@@ -156,6 +128,7 @@ function load() {
           const blob = new Blob([fileArray], { type: typeM });
           blob.name = fileName;
           saveAs(blob, fileName);
+          log.iotaApiPost(false, gateway, false);
         }
       };
       oReq.onprogress = function(e) {
@@ -177,9 +150,9 @@ function load() {
 
       if (document.getElementById("hiddenGateway").innerText !== "empty") {
         console.log(document.getElementById("hiddenGateway").innerText);
-        ipfsgate = document.getElementById("hiddenGateway").innerText;
+        gateway = document.getElementById("hiddenGateway").innerText;
       }
-      oReq.open("GET", ipfsgate + fileId, true);
+      oReq.open("GET", gateway + fileId, true);
       oReq.responseType = "arraybuffer";
       oReq.send();
     }
