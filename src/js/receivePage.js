@@ -90,7 +90,7 @@ function load() {
           arrayBuffer.slice(4, fileNameLength + 4)
         );
         const log = new Log(fileId);
-        log.localLogStorage();
+        log.localLogStorage(fileName);
         // encrypted
         if (password !== "nopass") {
           let initialVector = new Uint8Array(

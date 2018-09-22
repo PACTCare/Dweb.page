@@ -9,13 +9,13 @@ export class Log {
     _hash.set(this, hash);
   }
 
-  localLogStorage() {
+  localLogStorage(filename) {
     var logs = JSON.parse(window.localStorage.getItem("log"));
     if (logs == null) {
       logs = [];
-      logs.push(_hash.get(this));
+      logs.push(_hash.get(this) + "&&&" + filename);
     } else {
-      logs.push(_hash.get(this));
+      logs.push(_hash.get(this) + "&&&" + filename);
       // remove double entries
       logs = Array.from(new Set(logs));
     }

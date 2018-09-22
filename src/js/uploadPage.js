@@ -4,13 +4,16 @@ const HOST = window.location.hostname;
 const PROTOCOL = window.location.protocol;
 require("./fileupload");
 require("./copy");
+require("./alert");
 require("./steps");
 import { Log } from "./log/Log";
 import "../css/style.css";
 import "../css/toggle.css";
 import "../css/steps.css";
+import "../css/alert.css";
 
 const SIZELIMIT = 1000; // In MB
+let filename;
 
 var subtle = null;
 if (window.msCrypto) {
@@ -85,7 +88,7 @@ function uploadToIPFS(buf, withEncryption) {
   let gateway = "http://localhost:8080/ipfs/";
   if (HOST.includes("pact")) {
     gateway = "https://untangle.care/ipfs/";
-  } else if (HOST != "localhost") {
+  } else if (HOST != "localhost" && HOST != "127.0.0.1") {
     gateway = PROTOCOL + "//" + HOST + "/ipfs/";
   }
   const http = new XMLHttpRequest();
@@ -95,9 +98,6 @@ function uploadToIPFS(buf, withEncryption) {
       const fingerPrint = http.getResponseHeader("ipfs-hash");
       document.getElementById("file-upload-form").style.display = "none";
       document.getElementById("headline").style.display = "none";
-      document.getElementsByClassName("switch")[0].style.display = "none";
-      document.getElementById("checkboxText").style.display = "none";
-      document.getElementById("passwordProtected").style.display = "none";
       document
         .getElementById("adDoFrame")
         .setAttribute("style", "display:inline-block !important");
@@ -110,19 +110,17 @@ function uploadToIPFS(buf, withEncryption) {
           "The Gateway of the IPFS node isn’t writable!";
       } else {
         const log = new Log(fingerPrint);
-        //log.localLogStorage();
+        log.localLogStorage(filename);
         if (withEncryption) {
           log.iotaApiPost(true, gateway, true);
           const link =
-            "https://pact.online/receive.html?id=" +
+            window.location.href +
+            "receive.html?id=" +
             fingerPrint +
             "&gate=" +
             gateway;
-          const loggingAddress = TRYTES.encodeTextAsTryteString(fingerPrint);
           document.getElementById("ipfsHash").href = link;
           document.getElementById("ipfsHash").innerText = link;
-          document.getElementById("logLink").href =
-            "https://thetangle.org/address/" + loggingAddress.slice(0, 81);
           document.getElementById("emailSharer").href =
             "mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A" +
             "1.	Open the link below %0D%0A" +
@@ -153,10 +151,10 @@ function uploadToIPFS(buf, withEncryption) {
           log.iotaApiPost(true, gateway, false);
           document.getElementById("passwordStep").remove();
           document.getElementById("passwordTab").remove();
-          document.getElementById("loggingText").remove();
           document.getElementById("doneHeadline").innerHTML = "Step 2: Done";
           const link =
-            "https://pact.online/receive.html?id=" +
+            window.location.href +
+            "receive.html?id=" +
             fingerPrint +
             "&gate=" +
             gateway +
@@ -210,7 +208,7 @@ function OpenOnMobile() {
   return isMobile;
 }
 
-function encryptBeforeUpload(reader, filename) {
+function encryptBeforeUpload(reader) {
   const keyPromise = generateKey();
   keyPromise.then(function(key) {
     const exportKeyPromise = exportKey(key);
@@ -220,16 +218,17 @@ function encryptBeforeUpload(reader, filename) {
         "https://api.whatsapp.com/send?text=Hi, here is your password to access the file: " +
         keydata.k;
       document.getElementById("telegramSharer").href =
-        "https://telegram.me/share/url?url=https://pact.online/receive.html" +
+        "https://telegram.me/share/url?url=" +
+        window.location.href +
+        "receive.html" +
         "&text=Hi, here is your password to access the file: " +
         keydata.k;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
     const encryptionPromise = encryption(INTIALVECTOR, key, reader);
     encryptionPromise.then(function(encryptedData) {
-      let fileNameArray;
       const lenNumber = filename.length + 1000;
-      fileNameArray = Buffer.from(lenNumber + filename);
+      let fileNameArray = Buffer.from(lenNumber + filename);
       const bufArray = appendBuffer3(
         fileNameArray,
         INTIALVECTOR,
@@ -244,11 +243,10 @@ function readFile(e) {
   const reader = new FileReader();
   reader.onloadend = function() {
     if (document.getElementById("endToEndCheck").checked) {
-      encryptBeforeUpload(reader, filename);
+      encryptBeforeUpload(reader);
     } else {
-      let fileNameArray;
       const lenNumber = filename.length + 1000;
-      fileNameArray = Buffer.from(lenNumber + filename);
+      let fileNameArray = Buffer.from(lenNumber + filename);
       const bufArray = appendBuffer2(fileNameArray, reader.result);
       uploadToIPFS(bufArray, false);
     }
@@ -257,7 +255,7 @@ function readFile(e) {
   var files = e.target.files || e.dataTransfer.files;
   for (var i = 0, f; (f = files[i]); i++) {
     if (f.size <= SIZELIMIT * 1024 * 1024) {
-      var filename = f.name.replace(/[^A-Za-z0-9. _\-]/g, ""); //ä causes problems
+      filename = f.name.replace(/[^A-Za-z0-9. _\-]/g, ""); //ä causes problems
       reader.readAsArrayBuffer(f); // Read Provided File
     }
   }

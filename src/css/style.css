@@ -39,6 +39,14 @@ h2 {
   color: #db3e4d;
   font-weight: 500;
 }
+#whatsappSharer,
+#telegramSharer,
+#emailSharer,
+#smsSharer,
+#copyFirstLink,
+#copySecondLink {
+  color: #fff;
+}
 
 p {
   margin-top: 3vh;

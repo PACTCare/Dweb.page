@@ -2,62 +2,116 @@
 <html lang="en">
 
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120751243-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-120751243-2');
-    </script>
-    <title>Pact</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
-    <meta name="author" content="PACT Care BV">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
-    <style type="text/css">
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
+  <meta name="author" content="PACT Care BV">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
 
-        #content {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-
-    <link rel="stylesheet" href="https://pact.online/dist/css/alert.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
 </head>
 
 <body>
-    <div id="content">
+  <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo">
+  <span class="betaTag">Beta</span>
+
+  <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our encryption
+    tools.
+    <br> Please update your browser or switch to another browser.</p>
+  <!-- Upload  -->
+  <div class="clearfix">
+    <form id="file-upload-form" class="uploader">
+      <input id="file-upload" type="file" name="fileUpload" />
+
+      <label for="file-upload" id="file-drag">
+        <img id="file-image" src="#" alt="Preview" class="hidden">
+        <div id="start">
+          <i class="fas fa-download" aria-hidden="true"></i>
+          <div>Select a file or drag it here</div>
+        </div>
+        <div id="response" class="hidden">
+          <pre>
+            <div id="messages"></div>
+          </pre>
+          <div id="loadProgress" class="indexPage">
+            <div id="loadBar"></div>
+          </div>
+        </div>
+
+      </label>
+    </form>
+
+  </div>
+
+  <div id="afterUpload" class="textBox">
+    <span class="step">File Link > </span> <span class="step" id="passwordStep">Password > </span>
+    <span class="step">Done</span><br>
+
+    <span id="notification1"></span>
+    <span id="notification2"></span>
+
+    <div class="tab">
+      <pre>
+        <span class="steps">Step 1: Share File Link</span>
+      </pre>
+      <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent" href="mailto:"><i class="fas fa-envelope"></i></a>
+      <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent" href="sms:?body=nachricht"><i class="fas fa-mobile-alt"></i></a>
+      or
+      <a class="share" onclick="nextPrev(1)" id="copyFirstLink"><i class="far fa-copy"></i></a>
+      <pre class="longLink">
+      <a id="ipfsHash"  onclick="nextPrev(1)" target="_blank">Qmbeb1LwBrHuNyLXxLYH8SPpAaVNsZpS1kJ6mfvWxxh3YV</a>
+      </pre>
     </div>
-    <script src='js/jquery.min.js'></script>
-    <script src="js/alert.bundle.js"></script>
-    <script type="text/javascript">
-        function createIframe() {
-            var hash = "QmduVf94XxSXdUgSwwmf2f6213vKdnU7UrnTQ9sPMCopt2";
-            // Setup for logging system required!
-            var sites = ["https://ipfsnode.de/ipfs/" + hash,
-            "https://untangle.care/ipfs/" + hash]
-            var i = document.createElement('iframe');
-            i.width = "1px";
-            i.height = "100%";
-            i.scrolling = "no";
-            i.style.minWidth = "100%"
-            i.frameBorder = "0";
-            i.src = sites[Math.floor(Math.random() * sites.length)];
-            document.getElementById("content").appendChild(i);
-        }
-        createIframe();
-    </script>
+    <div class="tab" id="passwordTab">
+      <pre>
+        <span class="steps">Step 2: Share Password</span>
+      </pre>
+      <a class="share" id="whatsappSharer" onclick="nextPrev(1)" href="https:" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      <a class="share" id="telegramSharer" onclick="nextPrev(1)" href="https:" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+      or
+      <a class="share" onclick="nextPrev(1)" id="copySecondLink"><i class="far fa-copy"></i></a>
+      <pre class="longLink">
+        <span id="password" target="_blank">AwesomePassword</span>
+      </pre>
+    </div>
+    <div class="tab">
+      <pre><span class="steps" id="doneHeadline">Step 3: Done</span>
+      Your file is available for 3 days. 
+      <span id="loggingText">You can find your transfer history <a id="logLink" href="history.html">here</a>.</span></pre>
+    </div>
+
+    <!-- Buttons -->
+    <div id="stepsButtons">
+      <div style="float:center;">
+        <button class="stepButton" type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+        <div id="nextAtEnd">
+          <button class="stepButton" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+        </div>
+        <button class="stepButton" type="button" id="newUpload" onclick="window.open('.','_parent')">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome Text -->
+  <span id="passwordProtected">Password-Protected</span>
+  <label class="switch">
+    <input id="endToEndCheck" type="checkbox" checked>
+    <span class="slider round"></span>
+  </label>
+  <span id="checkboxText" style="color: rgb(49, 87, 167);">On</span>
+  <p class="lead" id="headline">Free Decentralized File Transfer up to 1 GB</p>
+  <div id="adDoFrame">
+    <pre class="donation"><a class="donation" href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW" target="_blank">IOTA Donation address</a>
+    </pre>
+  </div>
+  <div class="footer">
+    <a href="." id="currentPage">Transfer</a>
+    <a href="history.html">History</a>
+    <a href="about.html">About</a>
+  </div>
+  <script src='https://pact.online/dist/js/jquery.min.js'></script>
+
 </body>
 
 </html>

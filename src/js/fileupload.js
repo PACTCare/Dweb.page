@@ -63,7 +63,9 @@ function ekUpload() {
 
   function parseFile(file) {
     output("<strong>" + encodeURI(file.name) + "</strong>");
-
+    document.getElementsByClassName("switch")[0].style.display = "none";
+    document.getElementById("checkboxText").style.display = "none";
+    document.getElementById("passwordProtected").style.display = "none";
     document.getElementById("start").classList.add("hidden");
     document.getElementById("response").classList.remove("hidden");
     // Thumbnail Preview

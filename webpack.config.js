@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+var HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 
 module.exports = {
   entry: {
@@ -7,44 +8,44 @@ module.exports = {
     receive: "./src/js/receivePage.js",
     upload: "./src/js/uploadPage.js",
     alert: "./src/js/alert.js",
-    log: "./src/js/logPage.js"
+    history: "./src/js/historyPage.js"
   },
-  //devtool: "inline-source-map",
+  // devtool: "inline-source-map",
   output: {
     filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist/js")
+    publicPath: "",
+    path: path.resolve(__dirname, "dist")
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "../about.html",
+      filename: "./html/about.html",
       template: "./src/html/about.html",
       chunks: ["about"],
-      minify: { collapseWhitespace: true }
+      minify: { collapseWhitespace: true },
+      inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
-      filename: "../upload.html",
-      template: "./src/html/upload.html",
+      filename: "./html/index.html",
+      template: "./src/html/index.html",
       chunks: ["upload"],
-      minify: { collapseWhitespace: true }
+      minify: { collapseWhitespace: true },
+      inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
-      filename: "../receive.html",
+      filename: "./html/receive.html",
       template: "./src/html/receive.html",
       chunks: ["receive"],
-      minify: { collapseWhitespace: true }
+      minify: { collapseWhitespace: true },
+      inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
-      filename: "../index.html",
-      template: "./src/html/index.html",
-      inject: false,
-      minify: { collapseWhitespace: true }
+      filename: "./html/history.html",
+      template: "./src/html/history.html",
+      chunks: ["history"],
+      minify: { collapseWhitespace: true },
+      inlineSource: ".(js|css)$"
     }),
-    new HtmlWebpackPlugin({
-      filename: "../log.html",
-      template: "./src/html/log.html",
-      chunks: ["log"],
-      minify: { collapseWhitespace: true }
-    })
+    new HtmlWebpackInlineSourcePlugin()
   ],
   module: {
     rules: [
