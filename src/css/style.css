@@ -137,9 +137,9 @@ pre {
   width: 90%;
   margin-top: 1rem;
   padding-top: 3vh;
-  padding-left: 2vw;
-  padding-right: 2vw;
-  padding-bottom: 3vw;
+  padding-left: 1.5vw;
+  padding-right: 1.5vw;
+  padding-bottom: 4vh;
   overflow: auto;
   position: absolute;
   top: 5rem;
@@ -351,7 +351,7 @@ a.share:hover {
   float: left;
   clear: both;
   width: 100%;
-  padding: 10vh;
+  padding: 9vh;
 }
 .uploader #start.hidden {
   display: none;

@@ -15,13 +15,6 @@ import "../css/alert.css";
 const SIZELIMIT = 1000; // In MB
 let filename;
 
-var subtle = null;
-if (window.msCrypto) {
-  subtle = window.msCrypto.subtle;
-} else if (window.crypto) {
-  subtle = window.crypto.subtle || window.crypto.webkitSubtle;
-}
-
 function upload() {
   const fileSelect = document.getElementById("file-upload");
   const fileDrag = document.getElementById("file-drag");
@@ -30,7 +23,7 @@ function upload() {
 }
 
 function generateKey() {
-  return subtle.generateKey(
+  return window.crypto.subtle.generateKey(
     {
       name: "AES-GCM",
       length: 256
@@ -41,14 +34,14 @@ function generateKey() {
 }
 
 function exportKey(key) {
-  return subtle.exportKey(
+  return window.crypto.subtle.exportKey(
     "jwk", //can be "jwk" or "raw"
     key
   );
 }
 
 function encryption(initialVector, key, reader) {
-  return subtle.encrypt(
+  return window.crypto.subtle.encrypt(
     {
       name: "AES-GCM",
       iv: initialVector,
@@ -91,11 +84,13 @@ function uploadToIPFS(buf, withEncryption) {
   } else if (HOST != "localhost" && HOST != "127.0.0.1") {
     gateway = PROTOCOL + "//" + HOST + "/ipfs/";
   }
-  const http = new XMLHttpRequest();
-  http.open("POST", gateway, true);
-  http.onreadystatechange = function() {
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", gateway, true);
+  xhr.responseType = "arraybuffer";
+  xhr.timeout = 3600000;
+  xhr.onreadystatechange = function() {
     if (this.readyState == this.HEADERS_RECEIVED) {
-      const fingerPrint = http.getResponseHeader("ipfs-hash");
+      const fingerPrint = xhr.getResponseHeader("ipfs-hash");
       document.getElementById("file-upload-form").style.display = "none";
       document.getElementById("headline").style.display = "none";
       document
@@ -184,13 +179,14 @@ function uploadToIPFS(buf, withEncryption) {
       }
     }
   };
-  http.upload.onprogress = function(e) {
+  xhr.upload.onprogress = function(e) {
     if (e.lengthComputable) {
       let per = Math.round((e.loaded * 100) / e.total);
       progressBar(per);
     }
   };
-  http.send(buf);
+
+  xhr.send(new Blob([buf]));
 }
 
 function OpenOnMobile() {
@@ -214,9 +210,9 @@ function encryptBeforeUpload(reader) {
     const exportKeyPromise = exportKey(key);
     exportKeyPromise.then(function(keydata) {
       document.getElementById("password").innerText = keydata.k;
+      // if you send text plus password on whatsapp you can't easily copy it
       document.getElementById("whatsappSharer").href =
-        "https://api.whatsapp.com/send?text=Hi, here is your password to access the file: " +
-        keydata.k;
+        "https://api.whatsapp.com/send?text=" + keydata.k;
       document.getElementById("telegramSharer").href =
         "https://telegram.me/share/url?url=" +
         window.location.href +

@@ -8,17 +8,7 @@ import { saveAs } from "./file-saver";
 import "../css/style.css";
 import "../css/alert.css";
 
-//Default Gateway
 var gateway = "https://untangle.care/ipfs/";
-
-var subtle = null;
-if (window.msCrypto) {
-  subtle = window.msCrypto.subtle;
-}
-// If other browsers then...
-else if (window.crypto) {
-  subtle = window.crypto.subtle || window.crypto.webkitSubtle;
-}
 
 function output(msg) {
   let m = document.getElementById("messages");
@@ -34,7 +24,7 @@ function progressBar(percent) {
 }
 
 function decrypt(initialVector, key, fileArray) {
-  return subtle.decrypt(
+  return window.crypto.subtle.decrypt(
     {
       name: "AES-GCM",
       iv: initialVector,
@@ -46,7 +36,7 @@ function decrypt(initialVector, key, fileArray) {
 }
 
 function importKey(password) {
-  return subtle.importKey(
+  return window.crypto.subtle.importKey(
     "jwk", //can be "jwk" or "raw"
     {
       kty: "oct",

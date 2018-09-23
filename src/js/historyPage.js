@@ -3,6 +3,7 @@ const TRYTES = require("trytes");
 const r = require("jsrsasign");
 const IOTA = require("iota.lib.js");
 require("./alert");
+require("./tableToCsv");
 import "../css/style.css";
 import "../css/alert.css";
 import "../css/table.css";
@@ -25,41 +26,40 @@ const verification = (msg, sigValueHex) => {
 };
 
 async function createListOfLogs(logs) {
-  let logObjects = [];
+  let storageLogArray = [];
   for (var i = 0; i < logs.length; i++) {
     {
-      logObjects.push({
+      storageLogArray.push({
         hash: logs[i].split("&&&")[0],
         name: logs[i].split("&&&")[1]
       });
     }
   }
 
-  let logObjArray = [];
-  let transactionsArray = [];
-  console.log(logObjects);
+  let iotaLogArray = [];
   const iota = new IOTA({ provider: "https://nodes.thetangle.org:443" });
 
-  for (const logObject of logObjects) {
-    let transactions = await getTransaction(logObject.hash, iota);
-    transactionsArray = transactionsArray.concat(transactions);
-  }
+  await Promise.all(
+    storageLogArray.map(async logObject => {
+      let transactions = await getTransaction(logObject.hash, iota);
+      await Promise.all(
+        transactions.map(async transaction => {
+          let logObj = await getLog(iota, transaction);
+          iotaLogArray.push(logObj);
+        })
+      );
+    })
+  );
 
-  for (const transaction of transactionsArray) {
-    let logObj = await getLog(iota, transaction);
-    console.log(logObj);
-    logObjArray.push(logObj);
-  }
-
-  console.log("Done: " + logObjArray[1]);
-  if (logObjArray.length > 0) {
-    printLog(logObjArray);
+  if (iotaLogArray.length > 0) {
+    printLog(iotaLogArray, storageLogArray);
+  } else {
+    document.getElementById("csvDownload").remove();
   }
 }
 
 function getTransaction(hash, iota) {
   const loggingAddress = TRYTES.encodeTextAsTryteString(hash).substring(0, 81);
-  console.log(loggingAddress);
   var searchVarsAddress = {
     addresses: [loggingAddress]
   };
@@ -91,7 +91,6 @@ function getLog(iota, transaction) {
         var stringVerification =
           obj.fileId + obj.time + obj.gateway + obj.isUpload + obj.encrypted;
         if (verification(stringVerification, obj.signature)) {
-          console.log("Correct Signature");
           resolve(obj);
         } else {
           reject("Wrong Signature");
@@ -101,57 +100,112 @@ function getLog(iota, transaction) {
   });
 }
 
-function compareFileId(a, b) {
-  if (a.fileId < b.fileId) return -1;
-  if (a.fileId > b.fileId) return 1;
+function compareTime(a, b) {
+  let da = new Date(a.time).getTime();
+  let db = new Date(b.time).getTime();
+  if (da > db) return -1;
+  if (da < db) return 1;
   return 0;
 }
 
-function printLog(arrayOfLogObj) {
-  // sort according to hashes, then time
-  arrayOfLogObj.sort(compareFileId);
-  const encryptedArray = arrayOfLogObj.filter(x => x.encrypted);
-  const notEncryptedArray = arrayOfLogObj.filter(x => !x.encrypted);
+function hideColumn(col) {
+  var tbl = document.getElementById("table");
+  if (tbl != null) {
+    for (var i = 0; i < tbl.rows.length; i++) {
+      for (var j = 0; j < tbl.rows[i].cells.length; j++) {
+        tbl.rows[i].cells[j].style.display = "";
+        if (j == col) tbl.rows[i].cells[j].style.display = "none";
+      }
+    }
+  }
+}
+
+function printLog(iotaLogArray, storageLogArray) {
+  iotaLogArray.sort(compareTime);
+  document.getElementById("loader").remove();
+  document
+    .getElementById("csvDownload")
+    .setAttribute("style", "display:inherit !important");
   let flags = {};
-  // for (const obj of notEncryptedArray) {
-  //   if (!flags[obj.fileId]) {
-  //     flags[obj.fileId] = true;
-  //     let a = document.createElement("a");
-  //     let linkText = document.createTextNode(obj.fileId);
-  //     a.appendChild(linkText);
-  //     a.title = obj.fileId;
-  //     a.target = "_blank";
-  //     a.href =
-  //       window.location.href.replace("history", "receive") +
-  //       "?id=" +
-  //       obj.fileId +
-  //       "&gate=" +
-  //       obj.gateway +
-  //       "&password=nopass";
-  //     console.log(a.href);
-  //     document.getElementById("unencryptedFiles").appendChild(a);
-  //   }
-  // } else {
-  //   let li = document.createElement("li");
-  //   li.style.fontSize = "12px";
-  //   li.innerHTML = obj.fileId + obj.time + " " + obj.gateway;
-  //   document.getElementById("unencryptedFiles").appendChild(li);
-  // }
-  //}
-  // for (const obj of encryptedArray) {
-  // }
+  for (const obj of iotaLogArray) {
+    if (!flags[obj.fileId]) {
+      flags[obj.fileId] = true;
+      var table = document.getElementById("table");
+      var row = table.insertRow(-1);
+      var cell1 = row.insertCell(0);
+      cell1.setAttribute("data-title", "Name: ");
+      var cell2 = row.insertCell(1);
+      cell2.setAttribute("data-title", "File ID: ");
+      var cell3 = row.insertCell(2);
+      cell3.setAttribute("data-title", "Encrypted: ");
+      var cell4 = row.insertCell(3);
+      cell4.setAttribute("data-title", "Upload: ");
+      var cell5 = row.insertCell(4);
+      cell5.setAttribute("data-title", "Download: ");
+
+      let linkText = storageLogArray.find(x => x.hash === obj.fileId).name;
+      let link =
+        window.location.href.replace("history", "receive") +
+        "?id=" +
+        obj.fileId +
+        "&gate=" +
+        obj.gateway;
+      if (!obj.encrypted) {
+        link = link + "&password=nopass";
+      }
+      cell1.innerHTML =
+        '<a href="' + link + '" target="_blank">' + linkText + "</a>";
+      cell2.innerHTML = obj.fileId;
+      if (obj.encrypted) {
+        cell3.innerHTML = "Yes";
+      } else {
+        cell3.innerHTML = "No";
+      }
+      let cellUpload = "n/a";
+      const uploadArray = iotaLogArray.filter(
+        x => x.fileId === obj.fileId && x.isUpload
+      );
+      for (var i = 0; i < uploadArray.length; i++) {
+        if (i === 0) {
+          cellUpload = uploadArray[i].time.replace(",", "");
+        } else {
+          cellUpload =
+            cellUpload + "\n " + uploadArray[i].time.replace(",", "");
+        }
+      }
+      cell4.innerHTML = cellUpload;
+
+      let cellDownload = "n/a";
+      const downloadArray = iotaLogArray.filter(
+        x => x.fileId === obj.fileId && !x.isUpload
+      );
+      for (var i = 0; i < downloadArray.length; i++) {
+        if (i === 0) {
+          cellDownload = downloadArray[i].time.replace(",", "");
+        } else {
+          cellDownload =
+            cellDownload + "\n " + downloadArray[i].time.replace(",", "");
+        }
+      }
+      cell5.innerHTML = cellDownload;
+    }
+  }
+  hideColumn(1);
+  document.getElementById("firstRow").remove();
 }
 
 // Check browser support
 if (typeof Storage !== "undefined") {
   var logs = JSON.parse(localStorage.getItem("log"));
   if (logs == null) {
-    document.getElementById("result").innerHTML =
-      "Your personal logs are stored inside your browser and will be gone once you delete your browser storage. ";
+    document.getElementById("csvDownload").remove();
   } else {
+    document
+      .getElementById("loader")
+      .setAttribute("style", "display:inherit !important");
     createListOfLogs(logs);
   }
 } else {
-  document.getElementById("result").innerHTML =
+  document.getElementById("logResult").innerHTML =
     "Sorry, your browser does not support Web Storage.";
 }

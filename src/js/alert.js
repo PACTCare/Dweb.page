@@ -48,7 +48,7 @@ function Confirm(title, msg, $true, $false, $link) {
     "</div>";
   $("body").prepend($content);
   $(".doAction").click(function() {
-    setCookie("AgreeToTerms", "alreadyAgreed", 7);
+    setCookie("AgreeToTerms", "alreadyAgreed", 365);
     $(this)
       .parents(".dialog-ovelay")
       .fadeOut(500, function() {
