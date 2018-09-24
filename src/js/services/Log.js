@@ -1,6 +1,7 @@
 "use strict";
 
 const _hash = new WeakMap();
+const STORAGEKEY = "log";
 const url =
   "https://pksuxqpp7d.execute-api.eu-central-1.amazonaws.com/latest/api/iota";
 
@@ -10,7 +11,7 @@ export class Log {
   }
 
   localLogStorage(filename) {
-    var logs = JSON.parse(window.localStorage.getItem("log"));
+    var logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
     if (logs == null) {
       logs = [];
       logs.push(_hash.get(this) + "&&&" + filename);
@@ -21,7 +22,7 @@ export class Log {
     }
 
     console.log(logs);
-    window.localStorage.setItem("log", JSON.stringify(logs));
+    window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
   }
 
   iotaApiPost(isUpload, gateway, isEncrypted) {

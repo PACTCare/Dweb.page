@@ -1,18 +1,18 @@
 "use strict";
-const TRYTES = require("trytes");
-const HOST = window.location.hostname;
-const PROTOCOL = window.location.protocol;
 require("./fileupload");
 require("./copy");
 require("./alert");
 require("./steps");
-import { Log } from "./log/Log";
+import { Log } from "./services/Log";
+import { Encryption } from "./services/Encryption";
 import "../css/style.css";
 import "../css/toggle.css";
 import "../css/steps.css";
 import "../css/alert.css";
 
 const SIZELIMIT = 1000; // In MB
+const HOST = window.location.hostname;
+const PROTOCOL = window.location.protocol;
 let filename;
 
 function upload() {
@@ -20,36 +20,6 @@ function upload() {
   const fileDrag = document.getElementById("file-drag");
   fileSelect.addEventListener("change", readFile, false);
   fileDrag.addEventListener("drop", readFile, false);
-}
-
-function generateKey() {
-  return window.crypto.subtle.generateKey(
-    {
-      name: "AES-GCM",
-      length: 256
-    },
-    true, //whether the key is extractable
-    ["encrypt", "decrypt"]
-  );
-}
-
-function exportKey(key) {
-  return window.crypto.subtle.exportKey(
-    "jwk", //can be "jwk" or "raw"
-    key
-  );
-}
-
-function encryption(initialVector, key, reader) {
-  return window.crypto.subtle.encrypt(
-    {
-      name: "AES-GCM",
-      iv: initialVector,
-      tagLength: 128
-    },
-    key,
-    reader.result
-  );
 }
 
 function progressBar(percent) {
@@ -79,9 +49,7 @@ var appendBuffer3 = function(buffer1, buffer2, buffer3) {
 
 function uploadToIPFS(buf, withEncryption) {
   let gateway = "http://localhost:8080/ipfs/";
-  if (HOST.includes("pact")) {
-    gateway = "https://untangle.care/ipfs/";
-  } else if (HOST != "localhost" && HOST != "127.0.0.1") {
+  if (HOST != "localhost" && HOST != "127.0.0.1") {
     gateway = PROTOCOL + "//" + HOST + "/ipfs/";
   }
   const xhr = new XMLHttpRequest();
@@ -108,12 +76,7 @@ function uploadToIPFS(buf, withEncryption) {
         log.localLogStorage(filename);
         if (withEncryption) {
           log.iotaApiPost(true, gateway, true);
-          const link =
-            window.location.href +
-            "receive.html?id=" +
-            fingerPrint +
-            "&gate=" +
-            gateway;
+          const link = window.location.href + "receive.html?id=" + fingerPrint;
           document.getElementById("ipfsHash").href = link;
           document.getElementById("ipfsHash").innerText = link;
           document.getElementById("emailSharer").href =
@@ -151,8 +114,6 @@ function uploadToIPFS(buf, withEncryption) {
             window.location.href +
             "receive.html?id=" +
             fingerPrint +
-            "&gate=" +
-            gateway +
             "&password=nopass";
           document.getElementById("emailSharer").href =
             "mailto:?subject=Decentralized File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A " +
@@ -205,9 +166,10 @@ function OpenOnMobile() {
 }
 
 function encryptBeforeUpload(reader) {
-  const keyPromise = generateKey();
+  const enc = new Encryption();
+  const keyPromise = enc.generateKey();
   keyPromise.then(function(key) {
-    const exportKeyPromise = exportKey(key);
+    const exportKeyPromise = enc.exportKey(key);
     exportKeyPromise.then(function(keydata) {
       document.getElementById("password").innerText = keydata.k;
       // if you send text plus password on whatsapp you can't easily copy it
@@ -221,7 +183,7 @@ function encryptBeforeUpload(reader) {
         keydata.k;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
-    const encryptionPromise = encryption(INTIALVECTOR, key, reader);
+    const encryptionPromise = enc.encryption(INTIALVECTOR, key, reader);
     encryptionPromise.then(function(encryptedData) {
       const lenNumber = filename.length + 1000;
       let fileNameArray = Buffer.from(lenNumber + filename);

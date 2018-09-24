@@ -55,6 +55,7 @@ async function createListOfLogs(logs) {
     printLog(iotaLogArray, storageLogArray);
   } else {
     document.getElementById("csvDownload").remove();
+    document.getElementById("clearHistory").remove();
   }
 }
 
@@ -125,7 +126,10 @@ function printLog(iotaLogArray, storageLogArray) {
   document.getElementById("loader").remove();
   document
     .getElementById("csvDownload")
-    .setAttribute("style", "display:inherit !important");
+    .setAttribute("style", "display:inline-block !important");
+  document
+    .getElementById("clearHistory")
+    .setAttribute("style", "display:inline-block !important");
   let flags = {};
   for (const obj of iotaLogArray) {
     if (!flags[obj.fileId]) {
@@ -199,6 +203,7 @@ if (typeof Storage !== "undefined") {
   var logs = JSON.parse(localStorage.getItem("log"));
   if (logs == null) {
     document.getElementById("csvDownload").remove();
+    document.getElementById("clearHistory").remove();
   } else {
     document
       .getElementById("loader")

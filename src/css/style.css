@@ -323,8 +323,7 @@ a.share:hover {
 
 #encryptedUpload,
 #afterUpload,
-#unencryptedUpload,
-#hiddenGateway {
+#unencryptedUpload {
   display: none;
 }
 .uploader label:hover {

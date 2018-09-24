@@ -12,15 +12,11 @@ function GetURLParameter(sParam) {
 
 document.addEventListener("DOMContentLoaded", function() {
   const filename = GetURLParameter("id");
-  const gateway = GetURLParameter("gate");
   //nopass equals unencrypted
   const password = GetURLParameter("password");
   if (typeof filename !== "undefined") {
     document.getElementById("firstField").value = filename;
     document.getElementById("firstField").style.display = "none";
-  }
-  if (typeof gateway !== "undefined") {
-    document.getElementById("hiddenGateway").innerText = gateway;
   }
   if (typeof password !== "undefined") {
     document.getElementById("passwordField").value = password;

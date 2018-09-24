@@ -23,7 +23,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>File ID</th>
+                        <th style="display: none;">File ID</th>
                         <th>Encrypted</th>
                         <th>Upload</th>
                         <th>Download</th>
@@ -45,7 +45,12 @@
             <div class="loading-dot"></div>
             <div class="loading-dot"></div>
         </div>
-        <button id="csvDownload" class="boxButton" onclick="exportTableToCSV('FileTransfer.csv')">Download CSV</button>
+        <div>
+            <button id="clearHistory" class="boxButton" onclick="window.localStorage.clear();location.reload();">Clear
+                History</button>
+            <button id="csvDownload" class="boxButton" onclick="exportTableToCSV('FileTransfer.csv')">Download CSV</button>
+        </div>
+
     </div>
     <div class="footer">
         <a href=".">Transfer</a>

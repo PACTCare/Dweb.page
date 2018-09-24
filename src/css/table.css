@@ -1,14 +1,24 @@
 #loader,
-#csvDownload {
+#csvDownload,
+#clearHistory {
   display: none;
+  margin: 0.6rem;
+}
+#clearHistory {
+  background-color: rgb(248, 248, 248);
+  color: #5d5d5d;
+}
+#clearHistory:hover {
+  background-color: #f5f5f5;
 }
 
 .loading {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
-  margin: -14px 0 0 -42px;
-  padding: 10px;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: 9;
 }
 
 .loading-dot {
@@ -102,11 +112,7 @@
   text-align: left;
   font-size: 14px;
 }
-#csvDownload {
-  font-size: 14px;
-  margin-left: auto;
-  margin-right: auto;
-}
+
 #logResult > a {
   font-size: 14px;
 }

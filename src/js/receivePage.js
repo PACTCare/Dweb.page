@@ -3,12 +3,15 @@ const MIME = require("mime/lite");
 require("fast-text-encoding");
 require("./alert");
 require("./url-parameters");
-import { Log } from "./log/Log";
+import { Log } from "./services/Log";
+import { Encryption } from "./services/Encryption";
 import { saveAs } from "./file-saver";
 import "../css/style.css";
 import "../css/alert.css";
 
-var gateway = "https://untangle.care/ipfs/";
+const HOST = window.location.hostname;
+const PROTOCOL = window.location.protocol;
+let gateway = "http://localhost:8080/ipfs/";
 
 function output(msg) {
   let m = document.getElementById("messages");
@@ -21,36 +24,6 @@ function progressBar(percent) {
   if (percent >= 100) {
     document.getElementById("loadProgress").style.display = "none";
   }
-}
-
-function decrypt(initialVector, key, fileArray) {
-  return window.crypto.subtle.decrypt(
-    {
-      name: "AES-GCM",
-      iv: initialVector,
-      tagLength: 128 //The tagLength you used to encrypt (if any)
-    },
-    key, //from generateKey or importKey above
-    fileArray.buffer
-  );
-}
-
-function importKey(password) {
-  return window.crypto.subtle.importKey(
-    "jwk", //can be "jwk" or "raw"
-    {
-      kty: "oct",
-      k: password,
-      alg: "A256GCM",
-      ext: true
-    },
-    {
-      name: "AES-GCM",
-      length: 256
-    },
-    true, //whether the key is extractable (i.e. can be used in exportKey)
-    ["encrypt", "decrypt"]
-  );
 }
 
 function load() {
@@ -89,10 +62,11 @@ function load() {
           const fileArray = new Uint8Array(
             arrayBuffer.slice(16 + fileNameLength)
           );
-          const keyPromise = importKey(password);
+          const enc = new Encryption();
+          const keyPromise = enc.importKey(password);
           keyPromise
             .then(function(key) {
-              const decryptPromise = decrypt(initialVector, key, fileArray);
+              const decryptPromise = enc.decrypt(initialVector, key, fileArray);
               decryptPromise
                 .then(function(decrypted) {
                   let typeM = MIME.getType(fileName);
@@ -102,12 +76,10 @@ function load() {
                   log.iotaApiPost(false, gateway, true);
                 })
                 .catch(function(err) {
-                  console.log("line 95: " + err);
                   output("You have entered an invalid password!");
                 });
             })
             .catch(function(err) {
-              console.log("line 62" + err);
               output("You have entered an invalid password!");
             });
         } else {
@@ -138,10 +110,10 @@ function load() {
         }
       };
 
-      if (document.getElementById("hiddenGateway").innerText !== "empty") {
-        console.log(document.getElementById("hiddenGateway").innerText);
-        gateway = document.getElementById("hiddenGateway").innerText;
+      if (HOST != "localhost" && HOST != "127.0.0.1") {
+        gateway = PROTOCOL + "//" + HOST + "/ipfs/";
       }
+
       oReq.open("GET", gateway + fileId, true);
       oReq.responseType = "arraybuffer";
       oReq.send();
