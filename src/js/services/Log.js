@@ -1,45 +1,35 @@
 "use strict";
 
-const _hash = new WeakMap();
-const STORAGEKEY = "log";
-const url =
-  "https://pksuxqpp7d.execute-api.eu-central-1.amazonaws.com/latest/api/iota";
+import { Iota } from "./Iota";
+import { Signature } from "./Signature";
+const STORAGEKEY = "logs";
 
 export class Log {
-  constructor(hash) {
-    _hash.set(this, hash);
-  }
-
-  localLogStorage(filename) {
+  constructor() {}
+  createLog(fileId, filename, isUpload, gateway, isEncrypted) {
+    const time = new Date().toUTCString();
+    let idNumber = 0;
     var logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
     if (logs == null) {
       logs = [];
-      logs.push(_hash.get(this) + "&&&" + filename);
     } else {
-      logs.push(_hash.get(this) + "&&&" + filename);
-      // remove double entries
-      logs = Array.from(new Set(logs));
+      idNumber = logs.length;
     }
-
-    console.log(logs);
+    const sig = new Signature();
+    let publicKey = sig.generateKeyPairHex();
+    logs.push(idNumber + "???" + fileId + "&&&" + filename + "===" + publicKey);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
-  }
-
-  iotaApiPost(isUpload, gateway, isEncrypted) {
-    const http = new XMLHttpRequest();
-    const params = {
-      hash: _hash.get(this),
-      upload: isUpload,
-      gateway: gateway,
-      encrypted: isEncrypted
-    };
-    http.open("POST", url, true);
-    http.setRequestHeader("Content-type", "application/json");
-    http.onreadystatechange = function() {
-      if (http.readyState == 4 && http.status == 200) {
-        console.log(http.responseText);
-      }
-    };
-    http.send(JSON.stringify(params));
+    let signature = sig.sign(
+      idNumber + fileId + time + gateway + isUpload + isEncrypted
+    );
+    new Iota().send(
+      idNumber,
+      fileId,
+      time,
+      isUpload,
+      gateway,
+      isEncrypted,
+      signature
+    );
   }
 }

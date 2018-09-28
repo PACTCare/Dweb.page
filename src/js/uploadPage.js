@@ -47,7 +47,7 @@ var appendBuffer3 = function(buffer1, buffer2, buffer3) {
   return tmp.buffer;
 };
 
-function uploadToIPFS(buf, withEncryption) {
+function uploadToIPFS(buf, isEncrypted) {
   let gateway = "http://localhost:8080/ipfs/";
   if (HOST != "localhost" && HOST != "127.0.0.1") {
     gateway = PROTOCOL + "//" + HOST + "/ipfs/";
@@ -72,10 +72,8 @@ function uploadToIPFS(buf, withEncryption) {
         document.getElementById("ipfsHash").innerHTML =
           "The Gateway of the IPFS node isn’t writable!";
       } else {
-        const log = new Log(fingerPrint);
-        log.localLogStorage(filename);
-        if (withEncryption) {
-          log.iotaApiPost(true, gateway, true);
+        new Log().createLog(fingerPrint, filename, true, gateway, isEncrypted);
+        if (isEncrypted) {
           const link = window.location.href + "receive.html?id=" + fingerPrint;
           document.getElementById("ipfsHash").href = link;
           document.getElementById("ipfsHash").innerText = link;
@@ -106,7 +104,6 @@ function uploadToIPFS(buf, withEncryption) {
             document.getElementById("smsSharer").style.display = "none";
           }
         } else {
-          log.iotaApiPost(true, gateway, false);
           document.getElementById("passwordStep").remove();
           document.getElementById("passwordTab").remove();
           document.getElementById("doneHeadline").innerHTML = "Step 2: Done";
@@ -171,16 +168,17 @@ function encryptBeforeUpload(reader) {
   keyPromise.then(function(key) {
     const exportKeyPromise = enc.exportKey(key);
     exportKeyPromise.then(function(keydata) {
-      document.getElementById("password").innerText = keydata.k;
+      const keyString = keydata.k;
+      document.getElementById("password").innerText = keyString;
       // if you send text plus password on whatsapp you can't easily copy it
       document.getElementById("whatsappSharer").href =
-        "https://api.whatsapp.com/send?text=" + keydata.k;
+        "https://api.whatsapp.com/send?text=" + keyString;
       document.getElementById("telegramSharer").href =
         "https://telegram.me/share/url?url=" +
         window.location.href +
         "receive.html" +
         "&text=Hi, here is your password to access the file: " +
-        keydata.k;
+        keyString;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
     const encryptionPromise = enc.encryption(INTIALVECTOR, key, reader);

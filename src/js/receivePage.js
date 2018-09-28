@@ -52,8 +52,6 @@ function load() {
         const fileName = new TextDecoder("utf-8").decode(
           arrayBuffer.slice(4, fileNameLength + 4)
         );
-        const log = new Log(fileId);
-        log.localLogStorage(fileName);
         // encrypted
         if (password !== "nopass") {
           let initialVector = new Uint8Array(
@@ -73,7 +71,7 @@ function load() {
                   const blob = new Blob([decrypted], { type: typeM });
                   blob.name = fileName;
                   saveAs(blob, fileName);
-                  log.iotaApiPost(false, gateway, true);
+                  new Log().createLog(fileId, fileName, false, gateway, true);
                 })
                 .catch(function(err) {
                   output("You have entered an invalid password!");
@@ -90,7 +88,7 @@ function load() {
           const blob = new Blob([fileArray], { type: typeM });
           blob.name = fileName;
           saveAs(blob, fileName);
-          log.iotaApiPost(false, gateway, false);
+          new Log().createLog(fileId, fileName, false, gateway, false);
         }
       };
       oReq.onprogress = function(e) {

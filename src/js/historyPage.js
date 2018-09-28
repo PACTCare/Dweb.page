@@ -1,53 +1,43 @@
 "use strict";
-const TRYTES = require("trytes");
-const r = require("jsrsasign");
-const IOTA = require("iota.lib.js");
+
 require("./alert");
 require("./tableToCsv");
+import { Iota } from "./services/Iota";
+import { Signature } from "./services/Signature";
 import "../css/style.css";
 import "../css/alert.css";
 import "../css/table.css";
 
-const curve = "secp256k1";
-const sigalg = "SHA256withECDSA";
-
-const verification = (msg, sigValueHex) => {
-  var sig = new r.KJUR.crypto.Signature({
-    alg: sigalg,
-    prov: "cryptojs/jsrsa"
-  });
-  sig.init({
-    xy:
-      "04700a45dd4a19488bd8863baa493ff5756f1a23b5de982e86cca1688cfdf3ad90880d7d0d600541fdcc263d866c582ea48668ef9dab5bd46a41f92323c193a0fc",
-    curve: curve
-  });
-  sig.updateString(msg);
-  return sig.verify(sigValueHex);
-};
+const STORAGEKEY = "logs";
 
 async function createListOfLogs(logs) {
   let storageLogArray = [];
   for (var i = 0; i < logs.length; i++) {
     {
       storageLogArray.push({
-        hash: logs[i].split("&&&")[0],
-        name: logs[i].split("&&&")[1]
+        id: logs[i].split("???")[0],
+        hash: logs[i].split("???")[1].split("&&&")[0],
+        name: logs[i].split("&&&")[1].split("===")[0],
+        sig: logs[i].split("===")[1]
       });
     }
   }
 
   let iotaLogArray = [];
-  const iota = new IOTA({ provider: "https://nodes.thetangle.org:443" });
-
+  let flags = {};
+  const iota = new Iota();
   await Promise.all(
     storageLogArray.map(async logObject => {
-      let transactions = await getTransaction(logObject.hash, iota);
-      await Promise.all(
-        transactions.map(async transaction => {
-          let logObj = await getLog(iota, transaction);
-          iotaLogArray.push(logObj);
-        })
-      );
+      if (!flags[logObject.hash]) {
+        flags[logObject.hash] = true;
+        let transactions = await iota.getTransaction(logObject.hash);
+        await Promise.all(
+          transactions.map(async transaction => {
+            let logObj = await iota.getLog(transaction);
+            iotaLogArray.push(logObj);
+          })
+        );
+      }
     })
   );
 
@@ -59,48 +49,6 @@ async function createListOfLogs(logs) {
   }
 }
 
-function getTransaction(hash, iota) {
-  const loggingAddress = TRYTES.encodeTextAsTryteString(hash).substring(0, 81);
-  var searchVarsAddress = {
-    addresses: [loggingAddress]
-  };
-  return new Promise((resolve, reject) => {
-    iota.api.findTransactions(searchVarsAddress, function(error, transactions) {
-      if (error) {
-        console.log(error);
-        reject(error);
-      } else {
-        {
-          resolve(transactions);
-        }
-      }
-    });
-  });
-}
-
-function getLog(iota, transaction) {
-  return new Promise((resolve, reject) => {
-    iota.api.getBundle(transaction, function(error, sucess2) {
-      if (error) {
-        console.log(error);
-      } else {
-        var message = sucess2[0].signatureMessageFragment;
-        message = message.split(
-          "99999999999999999999999999999999999999999999999999"
-        )[0];
-        var obj = JSON.parse(iota.utils.fromTrytes(message));
-        var stringVerification =
-          obj.fileId + obj.time + obj.gateway + obj.isUpload + obj.encrypted;
-        if (verification(stringVerification, obj.signature)) {
-          resolve(obj);
-        } else {
-          reject("Wrong Signature");
-        }
-      }
-    });
-  });
-}
-
 function compareTime(a, b) {
   let da = new Date(a.time).getTime();
   let db = new Date(b.time).getTime();
@@ -109,13 +57,14 @@ function compareTime(a, b) {
   return 0;
 }
 
-function hideColumn(col) {
+function hideColumns(col1, col2, col3) {
   var tbl = document.getElementById("table");
   if (tbl != null) {
     for (var i = 0; i < tbl.rows.length; i++) {
       for (var j = 0; j < tbl.rows[i].cells.length; j++) {
         tbl.rows[i].cells[j].style.display = "";
-        if (j == col) tbl.rows[i].cells[j].style.display = "none";
+        if (j == col1 || j == col2 || j == col3)
+          tbl.rows[i].cells[j].style.display = "none";
       }
     }
   }
@@ -131,6 +80,9 @@ function printLog(iotaLogArray, storageLogArray) {
     .getElementById("clearHistory")
     .setAttribute("style", "display:inline-block !important");
   let flags = {};
+  const sig = new Signature();
+  // remove fake double entries,
+  // iotaLogArray = Array.from(new Set(iotaLogArray));
   for (const obj of iotaLogArray) {
     if (!flags[obj.fileId]) {
       flags[obj.fileId] = true;
@@ -146,7 +98,10 @@ function printLog(iotaLogArray, storageLogArray) {
       cell4.setAttribute("data-title", "Upload: ");
       var cell5 = row.insertCell(4);
       cell5.setAttribute("data-title", "Download: ");
-
+      var cell6 = row.insertCell(5);
+      cell6.setAttribute("data-title", "Public Upload Signature Keys: ");
+      var cell7 = row.insertCell(6);
+      cell7.setAttribute("data-title", "Public Download Signature Keys: ");
       let linkText = storageLogArray.find(x => x.hash === obj.fileId).name;
       let link =
         window.location.href.replace("history", "receive") +
@@ -165,42 +120,88 @@ function printLog(iotaLogArray, storageLogArray) {
       } else {
         cell3.innerHTML = "No";
       }
+
+      let signedText =
+        " <i style='color: #6f6f6f;' class='fas fa-file-signature'></i>"; //" (Signed by you)";
       let cellUpload = "n/a";
+      let cellUploadSig = "n/a";
       const uploadArray = iotaLogArray.filter(
-        x => x.fileId === obj.fileId && x.isUpload
+        x => x.fileId === obj.fileId && x.upload
       );
       for (var i = 0; i < uploadArray.length; i++) {
-        if (i === 0) {
-          cellUpload = uploadArray[i].time.replace(",", "");
-        } else {
-          cellUpload =
-            cellUpload + "\n " + uploadArray[i].time.replace(",", "");
+        let idPart = storageLogArray.find(x => x.id == uploadArray[i].id);
+        if (typeof idPart != "undefined") {
+          let pubSigKey = idPart.sig;
+          let ver = sig.verification(uploadArray[i], pubSigKey);
+          if (i === 0) {
+            if (ver) {
+              cellUpload = uploadArray[i].time.replace(",", "") + signedText;
+              cellUploadSig = pubSigKey;
+            } else {
+              cellUpload = uploadArray[i].time.replace(",", "");
+            }
+          } else {
+            if (ver) {
+              cellUpload =
+                cellUpload +
+                "\n " +
+                uploadArray[i].time.replace(",", "") +
+                signedText;
+              cellUploadSig = cellUpload + "\n " + pubSigKey;
+            } else {
+              cellUpload =
+                cellUpload + "\n " + uploadArray[i].time.replace(",", "");
+            }
+          }
         }
       }
       cell4.innerHTML = cellUpload;
+      cell6.innerHTML = cellUploadSig;
 
       let cellDownload = "n/a";
+      let cellDownloadSig = "n/a";
       const downloadArray = iotaLogArray.filter(
-        x => x.fileId === obj.fileId && !x.isUpload
+        x => x.fileId === obj.fileId && !x.upload
       );
       for (var i = 0; i < downloadArray.length; i++) {
-        if (i === 0) {
-          cellDownload = downloadArray[i].time.replace(",", "");
-        } else {
-          cellDownload =
-            cellDownload + "\n " + downloadArray[i].time.replace(",", "");
+        let idPart = storageLogArray.find(x => x.id == downloadArray[i].id);
+        if (typeof idPart != "undefined") {
+          let pubSigKey = idPart.sig;
+          let ver = sig.verification(downloadArray[i], pubSigKey);
+          if (i === 0) {
+            if (ver) {
+              cellDownload =
+                downloadArray[i].time.replace(",", "") + signedText;
+              cellDownloadSig = pubSigKey;
+            } else {
+              cellDownload = downloadArray[i].time.replace(",", "");
+            }
+          } else {
+            if (ver) {
+              cellDownload =
+                cellDownload +
+                "\n " +
+                downloadArray[i].time.replace(",", "") +
+                signedText;
+              cellDownloadSig = cellDownloadSig + "\n " + pubSigKey;
+            } else {
+              cellDownload =
+                cellDownload + "\n " + downloadArray[i].time.replace(",", "");
+            }
+          }
         }
       }
       cell5.innerHTML = cellDownload;
+      cell7.innerHTML = cellDownloadSig;
     }
   }
-  hideColumn(1);
+  hideColumns(1, 5, 6);
   document.getElementById("firstRow").remove();
 }
 
 // Check browser support
 if (typeof Storage !== "undefined") {
-  var logs = JSON.parse(localStorage.getItem("log"));
+  var logs = JSON.parse(localStorage.getItem(STORAGEKEY));
   if (logs == null) {
     document.getElementById("csvDownload").remove();
     document.getElementById("clearHistory").remove();

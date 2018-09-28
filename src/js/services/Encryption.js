@@ -4,9 +4,7 @@ const ENCRYPTIONNAME = "AES-GCM";
 const TAGLENGTH = 128;
 
 export class Encryption {
-  constructor() {
-    console.log("new constructor");
-  }
+  constructor() {}
   generateKey() {
     return window.crypto.subtle.generateKey(
       {
