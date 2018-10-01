@@ -121,8 +121,10 @@ function printLog(iotaLogArray, storageLogArray) {
         cell3.innerHTML = "No";
       }
 
-      let signedText =
-        " <i style='color: #6f6f6f;' class='fas fa-file-signature'></i>"; //" (Signed by you)";
+      let signedLinkPartOne =
+        " <a class='signRef' href='https://twitter.com/intent/tweet?text=I’m%20the%20owner%20of%20the%20following%20public%20signature%20key%20";
+      let signedLinkPartTwo =
+        "%20at%20&url=https://pact.online' target='_blank'><i class='fas fa-file-signature'></i></a>";
       let cellUpload = "n/a";
       let cellUploadSig = "n/a";
       const uploadArray = iotaLogArray.filter(
@@ -135,7 +137,11 @@ function printLog(iotaLogArray, storageLogArray) {
           let ver = sig.verification(uploadArray[i], pubSigKey);
           if (i === 0) {
             if (ver) {
-              cellUpload = uploadArray[i].time.replace(",", "") + signedText;
+              cellUpload =
+                uploadArray[i].time.replace(",", "") +
+                signedLinkPartOne +
+                pubSigKey +
+                signedLinkPartTwo;
               cellUploadSig = pubSigKey;
             } else {
               cellUpload = uploadArray[i].time.replace(",", "");
@@ -146,7 +152,9 @@ function printLog(iotaLogArray, storageLogArray) {
                 cellUpload +
                 "\n " +
                 uploadArray[i].time.replace(",", "") +
-                signedText;
+                signedLinkPartOne +
+                pubSigKey +
+                signedLinkPartTwo;
               cellUploadSig = cellUpload + "\n " + pubSigKey;
             } else {
               cellUpload =
@@ -171,7 +179,10 @@ function printLog(iotaLogArray, storageLogArray) {
           if (i === 0) {
             if (ver) {
               cellDownload =
-                downloadArray[i].time.replace(",", "") + signedText;
+                downloadArray[i].time.replace(",", "") +
+                signedLinkPartOne +
+                pubSigKey +
+                signedLinkPartTwo;
               cellDownloadSig = pubSigKey;
             } else {
               cellDownload = downloadArray[i].time.replace(",", "");
@@ -182,7 +193,9 @@ function printLog(iotaLogArray, storageLogArray) {
                 cellDownload +
                 "\n " +
                 downloadArray[i].time.replace(",", "") +
-                signedText;
+                signedLinkPartOne +
+                pubSigKey +
+                signedLinkPartTwo;
               cellDownloadSig = cellDownloadSig + "\n " + pubSigKey;
             } else {
               cellDownload =

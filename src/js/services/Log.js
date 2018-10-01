@@ -6,6 +6,14 @@ const STORAGEKEY = "logs";
 
 export class Log {
   constructor() {}
+  /**
+   *
+   * @param {string} fileId
+   * @param {string} filename
+   * @param {boolean} isUpload
+   * @param {string} gateway
+   * @param {boolean} isEncrypted
+   */
   createLog(fileId, filename, isUpload, gateway, isEncrypted) {
     const time = new Date().toUTCString();
     let idNumber = 0;

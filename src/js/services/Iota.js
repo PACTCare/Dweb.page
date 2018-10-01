@@ -44,6 +44,10 @@ export class Iota {
     });
   }
 
+  /**
+   *
+   * @param {string} hash
+   */
   getTransaction(hash) {
     const loggingAddress = iotaNode.utils.toTrytes(hash).substring(0, 81);
     var searchVarsAddress = {

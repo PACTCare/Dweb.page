@@ -1,8 +1,20 @@
+"use strict";
+
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const JavaScriptObfuscator = require("webpack-obfuscator");
 var HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 
 module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      }
+    ]
+  },
+  mode: "production",
   entry: {
     about: "./src/js/aboutPage.js",
     receive: "./src/js/receivePage.js",
@@ -45,15 +57,24 @@ module.exports = {
       minify: { collapseWhitespace: true },
       inlineSource: ".(js|css)$"
     }),
-    new HtmlWebpackInlineSourcePlugin()
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      }
-    ]
-  },
-  mode: "production"
+    new HtmlWebpackInlineSourcePlugin(),
+    new JavaScriptObfuscator({
+      compact: true,
+      controlFlowFlattening: true,
+      controlFlowFlatteningThreshold: 0.2,
+      deadCodeInjection: false,
+      debugProtection: true,
+      debugProtectionInterval: true,
+      disableConsoleOutput: true,
+      identifierNamesGenerator: "mangled",
+      log: false,
+      renameGlobals: false,
+      rotateStringArray: true,
+      // selfDefending: true,
+      stringArray: true,
+      stringArrayEncoding: "base64",
+      stringArrayThreshold: 0.75,
+      unicodeEscapeSequence: false
+    })
+  ]
 };
