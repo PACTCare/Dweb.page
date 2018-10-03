@@ -45,13 +45,14 @@
   </div>
 
   <div id="afterUpload" class="textBox">
-    <span class="step">File Link > </span> <span class="step" id="passwordStep">Password > </span>
-    <span class="step">Done</span><br>
-
+    <div id="stepsDiv">
+      <span class="step">File Link > </span> <span class="step" id="passwordStep">Password > </span>
+      <span class="step">Done</span><br>
+    </div>
     <span id="notification1"></span>
     <span id="notification2"></span>
 
-    <div class="tab">
+    <div class="tab" id="fileTab">
       <pre>
         <span class="steps">Step 1: Share File Link</span>
       </pre>
@@ -75,9 +76,9 @@
         <span id="password" target="_blank">AwesomePassword</span>
       </pre>
     </div>
-    <div class="tab">
+    <div class="tab" id="lastTab">
       <pre><span class="steps" id="doneHeadline">Step 3: Done</span>
-      Your file is available for 3 days. 
+      <span id="fileAvailable">Your file is available for 3 days. </span>
       <span id="loggingText">You can find your transfer history <a id="logLink" href="history.html">here</a>.</span></pre>
     </div>
 

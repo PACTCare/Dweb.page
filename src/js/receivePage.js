@@ -1,8 +1,8 @@
 "use strict";
-const MIME = require("mime/lite");
-require("fast-text-encoding");
-require("./alert");
-require("./url-parameters");
+import MIME from "mime/lite";
+import "fast-text-encoding";
+import "./alert";
+import "./url-parameters";
 import { Log } from "./services/Log";
 import { Encryption } from "./services/Encryption";
 import { saveAs } from "./file-saver";
@@ -13,9 +13,30 @@ const HOST = window.location.hostname;
 const PROTOCOL = window.location.protocol;
 let gateway = "http://localhost:8080/ipfs/";
 
+/**
+ *
+ * @param {string} msg
+ */
 function output(msg) {
   let m = document.getElementById("messages");
   m.innerHTML = msg;
+}
+
+async function downloadFile(fileId, fileName, blob) {
+  try {
+    const waitForResult = await new Log().createLog(
+      fileId,
+      fileName,
+      false,
+      gateway,
+      true
+    );
+    if (waitForResult[0].tag.includes("PACTDOTONLINE")) {
+      saveAs(blob, fileName);
+    }
+  } catch (err) {
+    output("Something is blocking the log entry!");
+  }
 }
 
 function progressBar(percent) {
@@ -45,7 +66,7 @@ function load() {
       oReq.onloadstart = function(e) {
         document.getElementById("loadProgress").style.display = "block";
       };
-      oReq.onload = function(oEvent) {
+      oReq.onload = async function(oEvent) {
         const arrayBuffer = oReq.response;
         const fileNameLength =
           new TextDecoder("utf-8").decode(arrayBuffer.slice(0, 4)) - 1000;
@@ -66,12 +87,12 @@ function load() {
             .then(function(key) {
               const decryptPromise = enc.decrypt(initialVector, key, fileArray);
               decryptPromise
-                .then(function(decrypted) {
+                .then(async function(decrypted) {
                   let typeM = MIME.getType(fileName);
                   const blob = new Blob([decrypted], { type: typeM });
                   blob.name = fileName;
-                  saveAs(blob, fileName);
-                  new Log().createLog(fileId, fileName, false, gateway, true);
+
+                  await downloadFile(fileId, fileName, blob);
                 })
                 .catch(function(err) {
                   output("You have entered an invalid password!");
@@ -87,8 +108,7 @@ function load() {
           let typeM = MIME.getType(fileName);
           const blob = new Blob([fileArray], { type: typeM });
           blob.name = fileName;
-          saveAs(blob, fileName);
-          new Log().createLog(fileId, fileName, false, gateway, false);
+          await downloadFile(fileId, fileName, blob);
         }
       };
       oReq.onprogress = function(e) {
@@ -101,8 +121,6 @@ function load() {
         // Ready State 4 = operation completed
         if (oReq.readyState === 4) {
           if (oReq.status !== 200) {
-            console.log(oReq);
-            console.log("Error", oReq.statusText);
             output("You have entered an invalid filename!");
           }
         }

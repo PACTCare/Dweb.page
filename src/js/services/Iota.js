@@ -1,7 +1,7 @@
 "use strict";
 
-const poWaaS = require("./powaas");
-const IOTA = require("iota.lib.js");
+import poWaaS from "./powaas";
+import IOTA from "iota.lib.js";
 
 const NODE = "https://nodes.thetangle.org:443";
 let iotaNode;
@@ -11,7 +11,16 @@ export class Iota {
     iotaNode = new IOTA({ provider: NODE });
   }
 
-  send(idNumber, fileId, time, isUpload, gateway, isEncrypted, signature) {
+  send(
+    idNumber,
+    fileId,
+    time,
+    isUpload,
+    gateway,
+    isEncrypted,
+    signature,
+    pageSignature
+  ) {
     const params = {
       id: idNumber,
       fileId: fileId,
@@ -19,8 +28,10 @@ export class Iota {
       gateway: gateway,
       upload: isUpload,
       encrypted: isEncrypted,
-      signature: signature
+      signature: signature,
+      pageSignature: pageSignature
     };
+    //Example U3hKhZOIDaUpH7Z5EBtAcojIFUDbGKRC3nVpJhF1j0w
     poWaaS(iotaNode, "https://api.powsrv.io:443/");
     const trytes = iotaNode.utils.toTrytes(fileId).slice(0, 81);
     console.log("Address: " + trytes);

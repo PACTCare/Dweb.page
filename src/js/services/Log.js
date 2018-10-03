@@ -2,7 +2,8 @@
 
 import { Iota } from "./Iota";
 import { Signature } from "./Signature";
-const STORAGEKEY = "logs";
+
+const STORAGEKEY = "logsv0.1";
 
 export class Log {
   constructor() {}
@@ -14,7 +15,7 @@ export class Log {
    * @param {string} gateway
    * @param {boolean} isEncrypted
    */
-  createLog(fileId, filename, isUpload, gateway, isEncrypted) {
+  async createLog(fileId, filename, isUpload, gateway, isEncrypted) {
     const time = new Date().toUTCString();
     let idNumber = 0;
     var logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
@@ -24,20 +25,26 @@ export class Log {
       idNumber = logs.length;
     }
     const sig = new Signature();
-    let publicKey = sig.generateKeyPairHex();
+    const publicKey = sig.generateKeyPairHex();
+
+    // log needs to be different
     logs.push(idNumber + "???" + fileId + "&&&" + filename + "===" + publicKey);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
-    let signature = sig.sign(
+    const signature = sig.sign(
       idNumber + fileId + time + gateway + isUpload + isEncrypted
     );
-    new Iota().send(
+    const pageSignature = sig.pageSign(
+      idNumber + fileId + time + gateway + isUpload + isEncrypted
+    );
+    return await new Iota().send(
       idNumber,
       fileId,
       time,
       isUpload,
       gateway,
       isEncrypted,
-      signature
+      signature,
+      pageSignature
     );
   }
 }

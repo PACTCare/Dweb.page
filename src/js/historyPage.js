@@ -1,14 +1,14 @@
 "use strict";
 
-require("./alert");
-require("./tableToCsv");
+import "./alert";
+import "./tableToCsv";
 import { Iota } from "./services/Iota";
 import { Signature } from "./services/Signature";
 import "../css/style.css";
 import "../css/alert.css";
 import "../css/table.css";
 
-const STORAGEKEY = "logs";
+const STORAGEKEY = "logsv0.1";
 
 async function createListOfLogs(logs) {
   let storageLogArray = [];
@@ -135,19 +135,20 @@ function printLog(iotaLogArray, storageLogArray) {
         if (typeof idPart != "undefined") {
           let pubSigKey = idPart.sig;
           let ver = sig.verification(uploadArray[i], pubSigKey);
+          let pageVer = sig.pageVerification(uploadArray[i]);
           if (i === 0) {
-            if (ver) {
+            if (ver && pageVer) {
               cellUpload =
                 uploadArray[i].time.replace(",", "") +
                 signedLinkPartOne +
                 pubSigKey +
                 signedLinkPartTwo;
               cellUploadSig = pubSigKey;
-            } else {
+            } else if (pageVer) {
               cellUpload = uploadArray[i].time.replace(",", "");
             }
           } else {
-            if (ver) {
+            if (ver && pageVer) {
               cellUpload =
                 cellUpload +
                 "\n " +
@@ -156,7 +157,7 @@ function printLog(iotaLogArray, storageLogArray) {
                 pubSigKey +
                 signedLinkPartTwo;
               cellUploadSig = cellUpload + "\n " + pubSigKey;
-            } else {
+            } else if (pageVer) {
               cellUpload =
                 cellUpload + "\n " + uploadArray[i].time.replace(",", "");
             }

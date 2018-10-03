@@ -326,6 +326,7 @@ a.share:hover {
 #unencryptedUpload {
   display: none;
 }
+
 .signRef:visited {
   color: #6f6f6f;
   pointer-events: none;

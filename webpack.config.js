@@ -2,18 +2,42 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const JavaScriptObfuscator = require("webpack-obfuscator");
-var HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
+const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
+
+const minifySettings = {
+  collapseWhitespace: true,
+  minifyCSS: true,
+  minifyJS: true,
+  minifyURLs: true,
+  removeComments: true,
+  removeEmptyAttributes: true,
+  removeOptionalTags: true,
+  removeRedundantAttributes: true,
+  removeScriptTypeAttributes: true,
+  removeStyleLinkTypeAttributes: true,
+  useShortDoctype: true
+};
+const obfuscatorSettings = {
+  compact: true,
+  controlFlowFlattening: true,
+  controlFlowFlatteningThreshold: 0.5,
+  deadCodeInjection: false,
+  debugProtection: true,
+  debugProtectionInterval: true,
+  disableConsoleOutput: true,
+  // identifiersPrefix: "p",
+  identifierNamesGenerator: "hexadecimal",
+  log: false,
+  renameGlobals: false,
+  rotateStringArray: true,
+  // selfDefending: true,
+  stringArray: true,
+  stringArrayEncoding: "base64",
+  stringArrayThreshold: 0.75,
+  unicodeEscapeSequence: false
+};
 
 module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      }
-    ]
-  },
   mode: "production",
   entry: {
     about: "./src/js/aboutPage.js",
@@ -30,51 +54,53 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      minify: false,
       filename: "./html/about.html",
       template: "./src/html/about.html",
       chunks: ["about"],
-      minify: { collapseWhitespace: true },
       inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
+      minify: false,
       filename: "./html/index.html",
       template: "./src/html/index.html",
       chunks: ["upload"],
-      minify: { collapseWhitespace: true },
       inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
+      minify: false,
       filename: "./html/receive.html",
       template: "./src/html/receive.html",
       chunks: ["receive"],
-      minify: { collapseWhitespace: true },
       inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
+      minify: false,
       filename: "./html/history.html",
       template: "./src/html/history.html",
       chunks: ["history"],
-      minify: { collapseWhitespace: true },
       inlineSource: ".(js|css)$"
     }),
-    new HtmlWebpackInlineSourcePlugin(),
-    new JavaScriptObfuscator({
-      compact: true,
-      controlFlowFlattening: true,
-      controlFlowFlatteningThreshold: 0.2,
-      deadCodeInjection: false,
-      debugProtection: true,
-      debugProtectionInterval: true,
-      disableConsoleOutput: true,
-      identifierNamesGenerator: "mangled",
-      log: false,
-      renameGlobals: false,
-      rotateStringArray: true,
-      // selfDefending: true,
-      stringArray: true,
-      stringArrayEncoding: "base64",
-      stringArrayThreshold: 0.75,
-      unicodeEscapeSequence: false
-    })
-  ]
+    new HtmlWebpackInlineSourcePlugin()
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.js$/,
+        include: [
+          path.resolve(__dirname, "src/js"),
+          path.resolve(__dirname, "src/js/services")
+        ],
+        enforce: "post", //makes sure it's called after other loaders!
+        use: {
+          loader: "obfuscator-loader",
+          options: obfuscatorSettings
+        }
+      }
+    ]
+  }
 };

@@ -1,8 +1,8 @@
 "use strict";
-require("./fileupload");
-require("./copy");
-require("./alert");
-require("./steps");
+import "./fileupload";
+import "./copy";
+import "./alert";
+import "./steps";
 import { Log } from "./services/Log";
 import { Encryption } from "./services/Encryption";
 import "../css/style.css";
@@ -56,83 +56,33 @@ function uploadToIPFS(buf, isEncrypted) {
   xhr.open("POST", gateway, true);
   xhr.responseType = "arraybuffer";
   xhr.timeout = 3600000;
-  xhr.onreadystatechange = function() {
+  xhr.onreadystatechange = async function() {
     if (this.readyState == this.HEADERS_RECEIVED) {
       const fingerPrint = xhr.getResponseHeader("ipfs-hash");
-      document.getElementById("file-upload-form").style.display = "none";
-      document.getElementById("headline").style.display = "none";
-      document
-        .getElementById("adDoFrame")
-        .setAttribute("style", "display:inline-block !important");
-      document
-        .getElementById("afterUpload")
-        .setAttribute("style", "display:block !important");
-      let isMobile = OpenOnMobile();
+      const isMobile = OpenOnMobile();
       if (fingerPrint == null || typeof fingerPrint == "undefined") {
-        document.getElementById("ipfsHash").innerHTML =
-          "The Gateway of the IPFS node isn’t writable!";
+        prepareStepsLayout();
+        errorMessage("The current IPFS gateway you are using  isn't writable!");
       } else {
-        new Log().createLog(fingerPrint, filename, true, gateway, isEncrypted);
-        if (isEncrypted) {
-          const link = window.location.href + "receive.html?id=" + fingerPrint;
-          document.getElementById("ipfsHash").href = link;
-          document.getElementById("ipfsHash").innerText = link;
-          document.getElementById("emailSharer").href =
-            "mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A" +
-            "1.	Open the link below %0D%0A" +
-            "2.	Enter the password I'll share with you via WhatsApp or Telegram %0D%0A %0D%0A" +
-            "Link: " +
-            encodeURIComponent(link) +
-            "%0D%0A %0D%0A" +
-            "Best Regards,";
-          if (isMobile) {
-            if (
-              /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-              !window.MSStream
-            ) {
-              document.getElementById("smsSharer").href =
-                "sms:&body=Hi, I shared a file on: " +
-                encodeURIComponent(link) +
-                " I'll send you the password on WhatsApp.";
+        try {
+          const waitForResult = await new Log().createLog(
+            fingerPrint,
+            filename,
+            true,
+            gateway,
+            isEncrypted
+          );
+          if (waitForResult[0].tag.includes("PACTDOTONLINE")) {
+            prepareStepsLayout();
+            if (isEncrypted) {
+              encryptedLayout(fingerPrint, isMobile);
             } else {
-              document.getElementById("smsSharer").href =
-                "sms:?body=Hi, I shared a file on: " +
-                encodeURIComponent(link) +
-                " I'll send you the password on WhatsApp.";
+              unencryptedLayout(fingerPrint, isMobile);
             }
-          } else {
-            document.getElementById("smsSharer").style.display = "none";
           }
-        } else {
-          document.getElementById("passwordStep").remove();
-          document.getElementById("passwordTab").remove();
-          document.getElementById("doneHeadline").innerHTML = "Step 2: Done";
-          const link =
-            window.location.href +
-            "receive.html?id=" +
-            fingerPrint +
-            "&password=nopass";
-          document.getElementById("emailSharer").href =
-            "mailto:?subject=Decentralized File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A " +
-            encodeURIComponent(link) +
-            "%0D%0A %0D%0A" +
-            "Best Regards,";
-          if (isMobile) {
-            if (
-              /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-              !window.MSStream
-            ) {
-              document.getElementById("smsSharer").href =
-                "sms:&body=Hi, I shared a file on: " + encodeURIComponent(link);
-            } else {
-              document.getElementById("smsSharer").href =
-                "sms:?body=Hi, I shared a file on: " + encodeURIComponent(link);
-            }
-          } else {
-            document.getElementById("smsSharer").style.display = "none";
-          }
-          document.getElementById("ipfsHash").href = link;
-          document.getElementById("ipfsHash").innerText = link;
+        } catch (err) {
+          prepareStepsLayout();
+          errorMessage("Something is blocking the log entry!");
         }
       }
     }
@@ -145,6 +95,89 @@ function uploadToIPFS(buf, isEncrypted) {
   };
 
   xhr.send(new Blob([buf]));
+}
+
+function prepareStepsLayout() {
+  document.getElementById("file-upload-form").style.display = "none";
+  document.getElementById("headline").style.display = "none";
+  document
+    .getElementById("adDoFrame")
+    .setAttribute("style", "display:inline-block !important");
+  document
+    .getElementById("afterUpload")
+    .setAttribute("style", "display:block !important");
+}
+
+function errorMessage(errorMessage) {
+  document.getElementById("fileTab").remove();
+  document.getElementById("passwordTab").remove();
+  document.getElementById("stepsDiv").remove();
+  document.getElementById("fileAvailable").remove();
+  document
+    .getElementById("lastTab")
+    .setAttribute("style", "display:block !important");
+  document.getElementById("doneHeadline").innerHTML = "Error";
+  document.getElementById("doneHeadline").style.color = "#db3e4d";
+  document.getElementById("loggingText").innerHTML = errorMessage;
+  document.getElementById("loggingText").style.color = "#db3e4d";
+}
+
+function unencryptedLayout(fingerPrint, isMobile) {
+  document.getElementById("passwordStep").remove();
+  document.getElementById("passwordTab").remove();
+  document.getElementById("doneHeadline").innerHTML = "Step 2: Done";
+  const link =
+    window.location.href +
+    "receive.html?id=" +
+    fingerPrint +
+    "&password=nopass";
+  document.getElementById("emailSharer").href =
+    "mailto:?subject=Decentralized File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A " +
+    encodeURIComponent(link) +
+    "%0D%0A %0D%0A" +
+    "Best Regards,";
+  if (isMobile) {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+      document.getElementById("smsSharer").href =
+        "sms:&body=Hi, I shared a file on: " + encodeURIComponent(link);
+    } else {
+      document.getElementById("smsSharer").href =
+        "sms:?body=Hi, I shared a file on: " + encodeURIComponent(link);
+    }
+  } else {
+    document.getElementById("smsSharer").style.display = "none";
+  }
+  document.getElementById("ipfsHash").href = link;
+  document.getElementById("ipfsHash").innerText = link;
+}
+
+function encryptedLayout(fingerPrint, isMobile) {
+  const link = window.location.href + "receive.html?id=" + fingerPrint;
+  document.getElementById("ipfsHash").href = link;
+  document.getElementById("ipfsHash").innerText = link;
+  document.getElementById("emailSharer").href =
+    "mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A" +
+    "1.	Open the link below %0D%0A" +
+    "2.	Enter the password I'll share with you via WhatsApp or Telegram %0D%0A %0D%0A" +
+    "Link: " +
+    encodeURIComponent(link) +
+    "%0D%0A %0D%0A" +
+    "Best Regards,";
+  if (isMobile) {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+      document.getElementById("smsSharer").href =
+        "sms:&body=Hi, I shared a file on: " +
+        encodeURIComponent(link) +
+        " I'll send you the password on WhatsApp.";
+    } else {
+      document.getElementById("smsSharer").href =
+        "sms:?body=Hi, I shared a file on: " +
+        encodeURIComponent(link) +
+        " I'll send you the password on WhatsApp.";
+    }
+  } else {
+    document.getElementById("smsSharer").style.display = "none";
+  }
 }
 
 function OpenOnMobile() {
