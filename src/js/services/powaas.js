@@ -41,7 +41,8 @@ const sandboxATT = async (trunk, branch, mwm, trytes, sandbox, apiKey) => {
   let params = {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "X-IOTA-API-Version": "1"
     },
     body: JSON.stringify(payload)
   };

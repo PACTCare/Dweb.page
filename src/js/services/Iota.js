@@ -31,8 +31,11 @@ export class Iota {
       signature: signature,
       pageSignature: pageSignature
     };
-    //Example U3hKhZOIDaUpH7Z5EBtAcojIFUDbGKRC3nVpJhF1j0w
-    poWaaS(iotaNode, "https://api.powsrv.io:443/");
+    //CORS not suported by powsrv https://stackoverflow.com/questions/49872111/detect-safari-and-stop-script
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (!isSafari) {
+      poWaaS(iotaNode, "https://api.powsrv.io:443/");
+    }
     const trytes = iotaNode.utils.toTrytes(fileId).slice(0, 81);
     console.log("Address: " + trytes);
     const tryteMessage = iotaNode.utils.toTrytes(JSON.stringify(params));

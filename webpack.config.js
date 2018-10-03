@@ -3,6 +3,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const minifySettings = {
   collapseWhitespace: true,
@@ -20,17 +21,17 @@ const minifySettings = {
 const obfuscatorSettings = {
   compact: true,
   controlFlowFlattening: true,
-  controlFlowFlatteningThreshold: 0.5,
+  controlFlowFlatteningThreshold: 0.75,
   deadCodeInjection: false,
-  debugProtection: true,
-  debugProtectionInterval: true,
+  debugProtection: true, //causes strang css load
+  // debugProtectionInterval: true, //caused issues on iphone
   disableConsoleOutput: true,
   // identifiersPrefix: "p",
   identifierNamesGenerator: "hexadecimal",
   log: false,
   renameGlobals: false,
   rotateStringArray: true,
-  // selfDefending: true,
+  // selfDefending: true, // generaly causes problem
   stringArray: true,
   stringArrayEncoding: "base64",
   stringArrayThreshold: 0.75,
@@ -54,32 +55,36 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      minify: false,
+      minify: minifySettings,
       filename: "./html/about.html",
       template: "./src/html/about.html",
       chunks: ["about"],
       inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
-      minify: false,
+      minify: minifySettings,
       filename: "./html/index.html",
       template: "./src/html/index.html",
       chunks: ["upload"],
       inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
-      minify: false,
+      minify: minifySettings,
       filename: "./html/receive.html",
       template: "./src/html/receive.html",
       chunks: ["receive"],
       inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
-      minify: false,
+      minify: minifySettings,
       filename: "./html/history.html",
       template: "./src/html/history.html",
       chunks: ["history"],
       inlineSource: ".(js|css)$"
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css"
     }),
     new HtmlWebpackInlineSourcePlugin()
   ],
@@ -87,7 +92,15 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: "../"
+            }
+          },
+          "css-loader"
+        ]
       },
       {
         test: /\.js$/,
