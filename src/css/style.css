@@ -83,12 +83,6 @@ a:active {
   color: #6f6f6f;
 }
 
-#adDoFrame {
-  margin-top: 2vh;
-  max-width: 500px;
-  width: 90%;
-  display: none;
-}
 .donation {
   font-size: 12px;
 }
@@ -213,9 +207,8 @@ pre {
 }
 
 .logo {
-  margin-top: 1vh;
   max-height: 9vh;
-  margin-bottom: 1vh;
+  margin-bottom: 3vh;
 }
 
 .uploader {
@@ -344,12 +337,6 @@ a.share:hover {
   -webkit-transform: scale(0.8);
   transform: scale(0.8);
   opacity: 0.3;
-}
-
-.betaTag {
-  display: block;
-  color: #6d91c7;
-  margin-bottom: 1vh;
 }
 
 .uploader #start {

@@ -1,9 +1,13 @@
+#passwordDiv {
+  display: block;
+  margin-bottom: 2vh;
+}
+
 .switch {
   position: relative;
   display: inline-block;
   width: 2.6rem;
   height: 1rem;
-  margin-top: 1.6rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }

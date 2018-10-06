@@ -7,6 +7,27 @@ const STORAGEKEY = "logsv0.1";
 
 export class Log {
   constructor() {}
+
+  Pinger_ping(ip, callback) {
+    if (!this.inUse) {
+      this.inUse = true;
+      this.callback = callback;
+      this.ip = ip;
+      var _that = this;
+      this.img = new Image();
+      this.img.onload = function() {
+        _that.good();
+      };
+      this.img.onerror = function() {
+        _that.good();
+      };
+      this.start = new Date().getTime();
+      this.img.src = "http://" + ip;
+      this.timer = setTimeout(function() {
+        _that.bad();
+      }, 1500);
+    }
+  }
   /**
    *
    * @param {string} fileId
@@ -15,7 +36,7 @@ export class Log {
    * @param {string} gateway
    * @param {boolean} isEncrypted
    */
-  async createLog(fileId, filename, isUpload, gateway, isEncrypted) {
+  createLog(fileId, filename, isUpload, gateway, isEncrypted) {
     const time = new Date().toUTCString();
     let idNumber = 0;
     var logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
@@ -36,7 +57,7 @@ export class Log {
     const pageSignature = sig.pageSign(
       idNumber + fileId + time + gateway + isUpload + isEncrypted
     );
-    return await new Iota().send(
+    new Iota().send(
       idNumber,
       fileId,
       time,

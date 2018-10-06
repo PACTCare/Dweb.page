@@ -20,10 +20,10 @@ const minifySettings = {
 };
 const obfuscatorSettings = {
   compact: true,
-  controlFlowFlattening: true,
-  controlFlowFlatteningThreshold: 0.75,
+  controlFlowFlattening: false,
+  //controlFlowFlatteningThreshold: 0.5,
   deadCodeInjection: false,
-  debugProtection: true, //causes strang css load
+  // debugProtection: true, //causes loading problems
   // debugProtectionInterval: true, //caused issues on iphone
   disableConsoleOutput: true,
   // identifiersPrefix: "p",
@@ -34,7 +34,7 @@ const obfuscatorSettings = {
   // selfDefending: true, // generaly causes problem
   stringArray: true,
   stringArrayEncoding: "base64",
-  stringArrayThreshold: 0.75,
+  stringArrayThreshold: 1, //= 1 because of signature key
   unicodeEscapeSequence: false
 };
 

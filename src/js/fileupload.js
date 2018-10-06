@@ -1,4 +1,9 @@
+"use strict";
+
+import { Cookie } from "./services/Cookie";
+
 const fileSizeLimit = 1000; // In MB
+const COOKIE = new Cookie();
 
 function supportsCrypto() {
   return window.crypto && crypto.subtle;
@@ -14,14 +19,22 @@ checkbox.addEventListener("change", function() {
   if (this.checked) {
     document.getElementById("checkboxText").innerText = "On";
     document.getElementById("checkboxText").style.color = "#3157a7";
+    COOKIE.setCookie("Checkbox", "on", 365);
   } else {
     document.getElementById("checkboxText").innerText = "Off";
     document.getElementById("checkboxText").style.color = "#6f6f6f";
+    COOKIE.setCookie("Checkbox", "off", 365);
   }
 });
 
 function ekUpload() {
   function Init() {
+    let checkboxCookie = COOKIE.getCookie("Checkbox");
+    if (checkboxCookie != "off") {
+      document.getElementById("endToEndCheck").checked = true;
+      document.getElementById("checkboxText").innerText = "On";
+      document.getElementById("checkboxText").style.color = "#3157a7";
+    }
     var fileSelect = document.getElementById("file-upload"),
       fileDrag = document.getElementById("file-drag");
 

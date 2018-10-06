@@ -28,6 +28,12 @@
   display: none;
 }
 
+#canvas {
+  margin-bottom: -6vh;
+}
+#iotaPining {
+  font-size: 12px;
+}
 .stepButton {
   text-transform: none;
   border-radius: 0.3rem;

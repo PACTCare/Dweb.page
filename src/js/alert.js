@@ -1,26 +1,14 @@
-function setCookie(name, value, days) {
-  var expires = "";
-  if (days) {
-    var date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
+import { Cookie } from "./services/Cookie";
 
-function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-}
-
+/**
+ *
+ * @param {string} title
+ * @param {string} msg
+ * @param {string} $true
+ * @param {string} $false
+ * @param {string} $link
+ */
 function Confirm(title, msg, $true, $false, $link) {
-  /*change*/
   var $content =
     "<div class='dialog-ovelay'>" +
     "<div class='dialog'><header>" +
@@ -48,7 +36,7 @@ function Confirm(title, msg, $true, $false, $link) {
     "</div>";
   $("body").prepend($content);
   $(".doAction").click(function() {
-    setCookie("AgreeToTerms", "alreadyAgreed", 365);
+    new Cookie().setCookie("AgreeToTerms", "alreadyAgreed", 365);
     $(this)
       .parents(".dialog-ovelay")
       .fadeOut(500, function() {
@@ -66,7 +54,7 @@ function Confirm(title, msg, $true, $false, $link) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  const x = getCookie("AgreeToTerms");
+  const x = new Cookie().getCookie("AgreeToTerms");
   if (x !== "alreadyAgreed") {
     Confirm(
       "Welcome",

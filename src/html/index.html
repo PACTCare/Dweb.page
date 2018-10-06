@@ -14,7 +14,15 @@
 
 <body>
   <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo">
-  <span class="betaTag">Beta</span>
+  <div id="passwordDiv">
+    <span id="passwordProtected">Password-Protected</span>
+    <label class="switch">
+      <input id="endToEndCheck" type="checkbox">
+      <span class="slider round"></span>
+    </label>
+    <span id="checkboxText" style="color: #6f6f6f;">Off</span>
+  </div>
+
 
   <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our encryption
     tools.
@@ -78,8 +86,12 @@
     </div>
     <div class="tab" id="lastTab">
       <pre><span class="steps" id="doneHeadline">Step 3: Done</span>
-      <span id="fileAvailable">Your file is available for 3 days. </span>
-      <span id="loggingText">You can find your transfer history <a id="logLink" href="history.html">here</a>.</span></pre>
+      <span id="fileAvailable">Your file is available for 3 days.
+        <span id="iotaPining">Keep your file available for 1 year by sending your file ID plus a voluntary donation to this <a class="donation" href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW" target="_blank">IOTA address</a> by scanning the <a class="donation" href="https://trinity.iota.org/" target="_blank">Trinity</a> QR code below.</span>
+        <canvas id="canvas"></canvas>
+      </span>
+    </pre>
+
     </div>
 
     <!-- Buttons -->
@@ -94,25 +106,12 @@
     </div>
   </div>
 
-  <!-- Welcome Text -->
-  <span id="passwordProtected">Password-Protected</span>
-  <label class="switch">
-    <input id="endToEndCheck" type="checkbox" checked>
-    <span class="slider round"></span>
-  </label>
-  <span id="checkboxText" style="color: rgb(49, 87, 167);">On</span>
-  <p class="lead" id="headline">Free Decentralized File Transfer up to 1 GB</p>
-  <div id="adDoFrame">
-    <pre class="donation"><a class="donation" href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW" target="_blank">IOTA Donation address</a>
-    </pre>
-  </div>
+  <p class="lead" id="headline">Free Decentralized File Transfer up to 1 GB (Beta)</p>
   <div class="footer">
     <a href="." id="currentPage">Transfer</a>
     <a href="history.html">History</a>
     <a href="about.html">About</a>
   </div>
-  <script src='https://pact.online/dist/js/jquery.min.js'></script>
-
 </body>
 
 </html>

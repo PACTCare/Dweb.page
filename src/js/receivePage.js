@@ -3,9 +3,11 @@ import MIME from "mime/lite";
 import "fast-text-encoding";
 import "./alert";
 import "./url-parameters";
+import "./jquery/jquery";
 import { Log } from "./services/Log";
 import { Encryption } from "./services/Encryption";
 import { saveAs } from "./file-saver";
+import Ping from "./services/Ping.js";
 import "../css/style.css";
 import "../css/alert.css";
 
@@ -22,21 +24,16 @@ function output(msg) {
   m.innerHTML = msg;
 }
 
-async function downloadFile(fileId, fileName, blob) {
-  try {
-    const waitForResult = await new Log().createLog(
-      fileId,
-      fileName,
-      false,
-      gateway,
-      true
-    );
-    if (waitForResult[0].tag.includes("PACTDOTONLINE")) {
-      saveAs(blob, fileName);
+function downloadFile(fileId, fileName, blob, isEncrypted) {
+  var p = new Ping();
+  p.ping(function(err, data) {
+    if (err) {
+      output("Something is blocking the log entry!");
     }
-  } catch (err) {
-    output("Something is blocking the log entry!");
-  }
+    console.log(data);
+    new Log().createLog(fileId, fileName, false, gateway, isEncrypted);
+    saveAs(blob, fileName);
+  });
 }
 
 function progressBar(percent) {
@@ -66,7 +63,7 @@ function load() {
       oReq.onloadstart = function(e) {
         document.getElementById("loadProgress").style.display = "block";
       };
-      oReq.onload = async function(oEvent) {
+      oReq.onload = function(oEvent) {
         const arrayBuffer = oReq.response;
         const fileNameLength =
           new TextDecoder("utf-8").decode(arrayBuffer.slice(0, 4)) - 1000;
@@ -87,12 +84,11 @@ function load() {
             .then(function(key) {
               const decryptPromise = enc.decrypt(initialVector, key, fileArray);
               decryptPromise
-                .then(async function(decrypted) {
+                .then(function(decrypted) {
                   let typeM = MIME.getType(fileName);
                   const blob = new Blob([decrypted], { type: typeM });
                   blob.name = fileName;
-
-                  await downloadFile(fileId, fileName, blob);
+                  downloadFile(fileId, fileName, blob, true);
                 })
                 .catch(function(err) {
                   output("You have entered an invalid password!");
@@ -108,7 +104,7 @@ function load() {
           let typeM = MIME.getType(fileName);
           const blob = new Blob([fileArray], { type: typeM });
           blob.name = fileName;
-          await downloadFile(fileId, fileName, blob);
+          downloadFile(fileId, fileName, blob, false);
         }
       };
       oReq.onprogress = function(e) {
@@ -136,6 +132,15 @@ function load() {
     }
   }
 }
+
+document
+  .getElementById("passwordField")
+  .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+      document.getElementById("load").click();
+    }
+  });
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("load").onclick = load;

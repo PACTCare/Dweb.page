@@ -3,17 +3,38 @@ import "./fileupload";
 import "./copy";
 import "./alert";
 import "./steps";
+import "./jquery/jquery";
 import { Log } from "./services/Log";
 import { Encryption } from "./services/Encryption";
+import Ping from "./services/Ping.js";
 import "../css/style.css";
 import "../css/toggle.css";
 import "../css/steps.css";
 import "../css/alert.css";
+import QRCode from "qrcode";
 
 const SIZELIMIT = 1000; // In MB
 const HOST = window.location.hostname;
 const PROTOCOL = window.location.protocol;
 let filename;
+
+function makeCode(message) {
+  const object = {
+    address:
+      "AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKWXNH9LVMWD",
+    message: message
+  };
+  var canvas = document.getElementById("canvas");
+  QRCode.toCanvas(canvas, JSON.stringify(object), { scale: 2 }, function(
+    error
+  ) {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("success!");
+    }
+  });
+}
 
 function upload() {
   const fileSelect = document.getElementById("file-upload");
@@ -64,26 +85,27 @@ function uploadToIPFS(buf, isEncrypted) {
         prepareStepsLayout();
         errorMessage("The current IPFS gateway you are using  isn't writable!");
       } else {
-        try {
-          const waitForResult = await new Log().createLog(
+        var p = new Ping();
+        p.ping(function(err, data) {
+          prepareStepsLayout();
+          if (err) {
+            errorMessage("Something is blocking the log entry!");
+          }
+          console.log(data);
+          makeCode(fingerPrint);
+          new Log().createLog(
             fingerPrint,
             filename,
             true,
             gateway,
             isEncrypted
           );
-          if (waitForResult[0].tag.includes("PACTDOTONLINE")) {
-            prepareStepsLayout();
-            if (isEncrypted) {
-              encryptedLayout(fingerPrint, isMobile);
-            } else {
-              unencryptedLayout(fingerPrint, isMobile);
-            }
+          if (isEncrypted) {
+            encryptedLayout(fingerPrint, isMobile);
+          } else {
+            unencryptedLayout(fingerPrint, isMobile);
           }
-        } catch (err) {
-          prepareStepsLayout();
-          errorMessage("Something is blocking the log entry!");
-        }
+        });
       }
     }
   };
@@ -101,9 +123,6 @@ function prepareStepsLayout() {
   document.getElementById("file-upload-form").style.display = "none";
   document.getElementById("headline").style.display = "none";
   document
-    .getElementById("adDoFrame")
-    .setAttribute("style", "display:inline-block !important");
-  document
     .getElementById("afterUpload")
     .setAttribute("style", "display:block !important");
 }
@@ -112,14 +131,13 @@ function errorMessage(errorMessage) {
   document.getElementById("fileTab").remove();
   document.getElementById("passwordTab").remove();
   document.getElementById("stepsDiv").remove();
-  document.getElementById("fileAvailable").remove();
   document
     .getElementById("lastTab")
     .setAttribute("style", "display:block !important");
   document.getElementById("doneHeadline").innerHTML = "Error";
   document.getElementById("doneHeadline").style.color = "#db3e4d";
-  document.getElementById("loggingText").innerHTML = errorMessage;
-  document.getElementById("loggingText").style.color = "#db3e4d";
+  document.getElementById("fileAvailable").innerHTML = errorMessage;
+  document.getElementById("fileAvailable").style.color = "#db3e4d";
 }
 
 function unencryptedLayout(fingerPrint, isMobile) {

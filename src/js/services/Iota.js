@@ -31,20 +31,21 @@ export class Iota {
       signature: signature,
       pageSignature: pageSignature
     };
-    //CORS not suported by powsrv https://stackoverflow.com/questions/49872111/detect-safari-and-stop-script
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (!isSafari) {
-      poWaaS(iotaNode, "https://api.powsrv.io:443/");
-    }
+
+    poWaaS(iotaNode, "https://api.powsrv.io:443/");
     const trytes = iotaNode.utils.toTrytes(fileId).slice(0, 81);
     console.log("Address: " + trytes);
     const tryteMessage = iotaNode.utils.toTrytes(JSON.stringify(params));
+    let tag = "PACTDOTONLINE";
+    // if (!isEncrypted) {
+    //   tag = this.filenameToTag(filename);
+    // }
     const transfers = [
       {
         value: 0,
         address: trytes,
         message: tryteMessage,
-        tag: "PACTDOTONLINE"
+        tag: tag
       }
     ];
     return new Promise((resolve, reject) => {
@@ -58,6 +59,15 @@ export class Iota {
     });
   }
 
+  filenameToTag(filename) {
+    filename = filename.split(".")[0]; //remove file ending
+    let tag = filename.replace(/[^a-zA-Z]+/g, "").toUpperCase();
+    if (tag.length > 27) {
+      tag = tag.substring(0, 27);
+    }
+    return tag;
+  }
+
   /**
    *
    * @param {string} hash
@@ -66,6 +76,28 @@ export class Iota {
     const loggingAddress = iotaNode.utils.toTrytes(hash).substring(0, 81);
     var searchVarsAddress = {
       addresses: [loggingAddress]
+    };
+    return new Promise((resolve, reject) => {
+      iotaNode.api.findTransactions(searchVarsAddress, function(
+        error,
+        transactions
+      ) {
+        if (error) {
+          console.log(error);
+          reject(error);
+        } else {
+          {
+            resolve(transactions);
+          }
+        }
+      });
+    });
+  }
+
+  findHashByFilename(filename) {
+    const tag = this.filenameToTag(filename);
+    var searchVarsAddress = {
+      tag: [tag]
     };
     return new Promise((resolve, reject) => {
       iotaNode.api.findTransactions(searchVarsAddress, function(

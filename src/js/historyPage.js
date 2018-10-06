@@ -2,6 +2,7 @@
 
 import "./alert";
 import "./tableToCsv";
+import "./jquery/jquery";
 import { Iota } from "./services/Iota";
 import { Signature } from "./services/Signature";
 import "../css/style.css";
