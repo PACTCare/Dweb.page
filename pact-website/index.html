@@ -2,64 +2,86 @@
 <html lang="en">
 
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120751243-2"></script>
-    <script>window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-120751243-2');</script>
-    <title>Pact</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
-    <meta name="author" content="PACT Care BV">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120751243-2"></script>
+  <script>window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-120751243-2', { 'send_page_view': false, 'transport_type': 'beacon' });
+  </script>
+  <title>Pact</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
+  <meta name="author" content="PACT Care BV">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
 </head>
 
 <body>
-    <script type="text/javascript">
-        function setCookie(name, value, days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-        //delete if node is no longer supported
-        function eraseCookie(name) {
-            document.cookie = name + '=; Max-Age=-99999999;';
+  <script type="text/javascript">
+    // IE11 Polyfill
+    if (!String.prototype.includes) {
+      String.prototype.includes = function (search, start) {
+        'use strict';
+        if (typeof start !== 'number') {
+          start = 0;
         }
 
-        function openPage
-            () {
-            // eraseCookie("website")
-            var x = getCookie("website");
-            var hash = "QmPbqFC5h7XJg34yTb7pDavY5AyCqfDp4JibQmBMDg7KVw";
-            if (!x || !x.includes("https")) {
-                console.log("first time");
-                var node = ["https://untangle.care/ipfs/", "https://ipfsnode.de/ipfs/"
-                ];
-                var newSite = node[Math.floor(Math.random() * node.length)];
-                setCookie("website", newSite, 3650);
-                window.location.replace(newSite + hash);
-            }
-            else {
-                console.log(x);
-                window.location.replace(x + hash);
-            }
+        if (start + search.length > this.length) {
+          return false;
+        } else {
+          return this.indexOf(search, start) !== -1;
         }
-        openPage();</script>
+      };
+    }
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+    //delete if node is no longer supported
+    function eraseCookie(name) {
+      document.cookie = name + '=; Max-Age=-99999999;';
+    }
+
+    function openPage
+      () {
+      var x = getCookie("websiteV01");
+      var hash = "QmWdn7XsnGVfmYeiWd52ic6efZYWYAHPMCSuh7U72KB1Ja";
+      if (!x || !x.includes("https")) {
+        // erase previous version
+        eraseCookie("website")
+        var node = ["https://untangle.care/ipfs/", "https://pactcare.online/ipfs/"
+        ];
+        var newSite = node[Math.floor(Math.random() * node.length)];
+        setCookie("websiteV01", newSite, 3650);
+        window.location.replace(newSite + hash);
+      }
+      else {
+        window.location.replace(x + hash);
+      }
+    }
+    //Backup if someone blocks Google Analytics
+    setTimeout(openPage, 1000);
+
+    gtag('event', 'page_view', {
+      'transport_type': 'beacon', //using 'navigator.sendBeacon' in browser that support it.
+      'event_callback': openPage
+    });
+  </script>
 </body>
 
 </html>

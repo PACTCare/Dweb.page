@@ -1,5 +1,3 @@
-"use strict";
-
 const poWaaS = (iotaInstance, endpoint, apiKey) => {
   // Save Sandbox URL
   iotaInstance.sandboxUrl = endpoint;
@@ -11,18 +9,18 @@ const poWaaS = (iotaInstance, endpoint, apiKey) => {
     branch,
     mwm,
     trytes,
-    callback
+    callback,
   ) => {
     // Validate all the things!
     validate(iotaInstance, trunk, branch, mwm, trytes, callback);
     // Send ATT call to the sandbox
-    let data = await sandboxATT(
+    const data = await sandboxATT(
       trunk,
       branch,
       mwm,
       trytes,
       iotaInstance.sandboxUrl,
-      iotaInstance.sandboxKey
+      iotaInstance.sandboxKey,
     );
     callback(null, data.trytes);
   };
@@ -31,23 +29,23 @@ const poWaaS = (iotaInstance, endpoint, apiKey) => {
 const sandboxATT = async (trunk, branch, mwm, trytes, sandbox, apiKey) => {
   // Create Request Payload
   const payload = {
-    command: "attachToTangle",
+    command: 'attachToTangle',
     trunkTransaction: trunk,
     branchTransaction: branch,
     minWeightMagnitude: mwm,
-    trytes: trytes
+    trytes,
   };
   // Create Request Object
-  let params = {
-    method: "POST",
+  const params = {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "X-IOTA-API-Version": "1"
+      'Content-Type': 'application/json',
+      'X-IOTA-API-Version': '1',
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   };
   // If API add auth
-  if (apiKey) params.headers["Authorization"] = apiKey;
+  if (apiKey) params.headers.Authorization = apiKey;
   // Post job to Sandbox
   const response = await window.fetch(`${sandbox}`, params);
   const data = await response.json();
@@ -56,31 +54,33 @@ const sandboxATT = async (trunk, branch, mwm, trytes, sandbox, apiKey) => {
 
 const validate = (iotaInstance, trunk, branch, mwm, trytes, callback) => {
   // inputValidator: Check if correct hash
-  if (!iotaInstance.valid.isHash(trunk))
+  if (!iotaInstance.valid.isHash(trunk)) {
     return callback(
       new Error(
-        "You have provided an invalid hash as a trunk/branch: " + trunk
+        `You have provided an invalid hash as a trunk/branch: ${trunk}`,
       ),
-      null
+      null,
     );
+  }
 
   // inputValidator: Check if correct hash
-  if (!iotaInstance.valid.isHash(branch))
+  if (!iotaInstance.valid.isHash(branch)) {
     return callback(
       new Error(
-        "You have provided an invalid hash as a trunk/branch: " + branch
+        `You have provided an invalid hash as a trunk/branch: ${branch}`,
       ),
-      null
+      null,
     );
+  }
 
   // inputValidator: Check if int
   if (!iotaInstance.valid.isValue(mwm)) {
-    return callback(new Error("One of your inputs is not an integer"), null);
+    return callback(new Error('One of your inputs is not an integer'), null);
   }
 
   // inputValidator: Check if array of trytes
   if (!iotaInstance.valid.isArrayOfTrytes(trytes)) {
-    return callback(new Error("Invalid Trytes provided"), null);
+    return callback(new Error('Invalid Trytes provided'), null);
   }
 };
 

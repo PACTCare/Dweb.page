@@ -1,33 +1,11 @@
-"use strict";
+import Iota from './Iota';
+import Signature from './Signature';
 
-import { Iota } from "./Iota";
-import { Signature } from "./Signature";
+const STORAGEKEY = 'logsv0.1';
 
-const STORAGEKEY = "logsv0.1";
+export default class Log {
+  constructor() { }
 
-export class Log {
-  constructor() {}
-
-  Pinger_ping(ip, callback) {
-    if (!this.inUse) {
-      this.inUse = true;
-      this.callback = callback;
-      this.ip = ip;
-      var _that = this;
-      this.img = new Image();
-      this.img.onload = function() {
-        _that.good();
-      };
-      this.img.onerror = function() {
-        _that.good();
-      };
-      this.start = new Date().getTime();
-      this.img.src = "http://" + ip;
-      this.timer = setTimeout(function() {
-        _that.bad();
-      }, 1500);
-    }
-  }
   /**
    *
    * @param {string} fileId
@@ -39,7 +17,7 @@ export class Log {
   createLog(fileId, filename, isUpload, gateway, isEncrypted) {
     const time = new Date().toUTCString();
     let idNumber = 0;
-    var logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
+    let logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
     if (logs == null) {
       logs = [];
     } else {
@@ -49,13 +27,13 @@ export class Log {
     const publicKey = sig.generateKeyPairHex();
 
     // log needs to be different
-    logs.push(idNumber + "???" + fileId + "&&&" + filename + "===" + publicKey);
+    logs.push(`${idNumber}???${fileId}&&&${filename}===${publicKey}`);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
     const signature = sig.sign(
-      idNumber + fileId + time + gateway + isUpload + isEncrypted
+      idNumber + fileId + time + gateway + isUpload + isEncrypted,
     );
     const pageSignature = sig.pageSign(
-      idNumber + fileId + time + gateway + isUpload + isEncrypted
+      idNumber + fileId + time + gateway + isUpload + isEncrypted,
     );
     new Iota().send(
       idNumber,
@@ -65,7 +43,7 @@ export class Log {
       gateway,
       isEncrypted,
       signature,
-      pageSignature
+      pageSignature,
     );
   }
 }

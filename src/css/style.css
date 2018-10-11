@@ -82,7 +82,12 @@ a:active {
 #currentPage {
   color: #6f6f6f;
 }
-
+#adDoFrame {
+  margin-top: 2vh;
+  max-width: 500px;
+  width: 90%;
+  display: none;
+}
 .donation {
   font-size: 12px;
 }

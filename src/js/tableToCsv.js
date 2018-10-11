@@ -1,35 +1,30 @@
 function downloadCSV(csv, filename) {
-  var csvFile;
-  var downloadLink;
-  csvFile = new Blob([csv], { type: "text/csv" });
-  downloadLink = document.createElement("a");
+  const csvFile = new Blob([csv], { type: 'text/csv' });
+  const downloadLink = document.createElement('a');
   downloadLink.download = filename;
   downloadLink.href = window.URL.createObjectURL(csvFile);
-  downloadLink.style.display = "none";
+  downloadLink.style.display = 'none';
   document.body.appendChild(downloadLink);
   downloadLink.click();
 }
 
-function replaceAll(str, find, replace) {
-  return str.replace(new RegExp(find, "g"), replace);
-}
-
-window.exportTableToCSV = function(filename) {
-  var csv = [];
-
-  var rows = document.querySelectorAll("table tr");
+window.exportTableToCSV = function (filename) {
+  const csv = [];
+  const rows = document.querySelectorAll('table tr');
 
   // Number of rows
-  for (var i = 0; i < rows.length; i++) {
-    var row = [],
-      cols = rows[i].querySelectorAll("td, th");
+  for (let i = 0; i < rows.length; i++) {
+    const row = [];
 
-    for (var j = 0; j < cols.length; j++) {
-      row.push(cols[j].innerText.replace("\n", ""));
+
+    const cols = rows[i].querySelectorAll('td, th');
+
+    for (let j = 0; j < cols.length; j++) {
+      row.push(cols[j].innerText.replace('\n', ''));
     }
 
-    csv.push(row.join(","));
+    csv.push(row.join(','));
   }
 
-  downloadCSV(csv.join("\n"), filename);
+  downloadCSV(csv.join('\n'), filename);
 };

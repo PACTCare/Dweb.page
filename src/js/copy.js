@@ -1,39 +1,19 @@
-document.getElementById("copyFirstLink").addEventListener("click", copyHash);
+document.getElementById('copyFirstLink').addEventListener('click', copyHash);
 document
-  .getElementById("copySecondLink")
-  .addEventListener("click", copyPassword);
-
-function copyHash() {
-  var copyText = document.getElementById("ipfsHash");
-  copy(copyText);
-  document.getElementById("notification1").innerHTML =
-    "Link copied to clipboard!";
-  setTimeout(function() {
-    document.getElementById("notification1").innerHTML = "";
-  }, 5000);
-}
-
-function copyPassword() {
-  var copyText = document.getElementById("password");
-  copy(copyText);
-  document.getElementById("notification2").innerHTML =
-    "Password copied to clipboard!";
-  setTimeout(function() {
-    document.getElementById("notification2").innerHTML = "";
-  }, 5000);
-}
+  .getElementById('copySecondLink')
+  .addEventListener('click', copyPassword);
 
 function copy(copyText) {
-  var textArea = document.createElement("textarea");
+  const textArea = document.createElement('textarea');
   textArea.value = copyText.textContent;
   textArea.contentEditable = true;
   textArea.readOnly = false;
   document.body.appendChild(textArea);
   if (navigator.userAgent.match(/ipad|iphone/i)) {
-    var range = document.createRange();
+    const range = document.createRange();
     range.selectNodeContents(textArea);
 
-    var selection = window.getSelection();
+    const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
 
@@ -41,6 +21,25 @@ function copy(copyText) {
   } else {
     textArea.select();
   }
-  document.execCommand("Copy");
+  document.execCommand('Copy');
   textArea.remove();
+}
+
+
+function copyHash() {
+  const copyText = document.getElementById('ipfsHash');
+  copy(copyText);
+  document.getElementById('notification1').innerHTML = 'Link copied to clipboard!';
+  setTimeout(() => {
+    document.getElementById('notification1').innerHTML = '';
+  }, 5000);
+}
+
+function copyPassword() {
+  const copyText = document.getElementById('password');
+  copy(copyText);
+  document.getElementById('notification2').innerHTML = 'Password copied to clipboard!';
+  setTimeout(() => {
+    document.getElementById('notification2').innerHTML = '';
+  }, 5000);
 }

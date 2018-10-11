@@ -1,34 +1,33 @@
-"use strict";
-
-export class Cookie {
-  constructor() {}
+export default class Cookie {
   /**
-   *
    * @param {string} name
-   * @param {string} value
-   * @param {number} days
    */
-  setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  constructor(name) {
+    this.name = name;
   }
 
   /**
    *
-   * @param {string} name
+   * @param {string} value
+   * @param {number} days
    */
-  getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  setCookie(value, days) {
+    let expires = '';
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = `; expires=${date.toUTCString()}`;
+    }
+    document.cookie = `${this.name}=${value || ''}${expires}; path=/`;
+  }
+
+  getCookie() {
+    const nameEQ = `${this.name}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i += 1) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
   }

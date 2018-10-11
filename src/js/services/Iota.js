@@ -1,14 +1,11 @@
-"use strict";
+import IOTA from 'iota.lib.js';
+import poWaaS from './powaas';
 
-import poWaaS from "./powaas";
-import IOTA from "iota.lib.js";
+const NODE = 'https://nodes.thetangle.org:443';
 
-const NODE = "https://nodes.thetangle.org:443";
-let iotaNode;
-
-export class Iota {
+export default class Iota {
   constructor() {
-    iotaNode = new IOTA({ provider: NODE });
+    this.iotaNode = new IOTA({ provider: NODE });
   }
 
   send(
@@ -19,53 +16,39 @@ export class Iota {
     gateway,
     isEncrypted,
     signature,
-    pageSignature
+    pageSignature,
   ) {
     const params = {
       id: idNumber,
-      fileId: fileId,
-      time: time,
-      gateway: gateway,
+      fileId,
+      time,
+      gateway,
       upload: isUpload,
       encrypted: isEncrypted,
-      signature: signature,
-      pageSignature: pageSignature
+      signature,
+      pageSignature,
     };
 
-    poWaaS(iotaNode, "https://api.powsrv.io:443/");
-    const trytes = iotaNode.utils.toTrytes(fileId).slice(0, 81);
-    console.log("Address: " + trytes);
-    const tryteMessage = iotaNode.utils.toTrytes(JSON.stringify(params));
-    let tag = "PACTDOTONLINE";
-    // if (!isEncrypted) {
-    //   tag = this.filenameToTag(filename);
-    // }
+    poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
+    const trytes = this.iotaNode.utils.toTrytes(fileId).slice(0, 81);
+    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(params));
+    const tag = 'PACTDOTONLINE';
     const transfers = [
       {
         value: 0,
         address: trytes,
         message: tryteMessage,
-        tag: tag
-      }
+        tag,
+      },
     ];
     return new Promise((resolve, reject) => {
-      iotaNode.api.sendTransfer(trytes, 3, 14, transfers, (err, res) => {
+      this.iotaNode.api.sendTransfer(trytes, 3, 14, transfers, (err, res) => {
         if (!err) {
           return resolve(res);
         }
-        console.log(`Send error: ${err}`);
         return reject(err);
       });
     });
-  }
-
-  filenameToTag(filename) {
-    filename = filename.split(".")[0]; //remove file ending
-    let tag = filename.replace(/[^a-zA-Z]+/g, "").toUpperCase();
-    if (tag.length > 27) {
-      tag = tag.substring(0, 27);
-    }
-    return tag;
   }
 
   /**
@@ -73,44 +56,19 @@ export class Iota {
    * @param {string} hash
    */
   getTransaction(hash) {
-    const loggingAddress = iotaNode.utils.toTrytes(hash).substring(0, 81);
-    var searchVarsAddress = {
-      addresses: [loggingAddress]
+    const loggingAddress = this.iotaNode.utils.toTrytes(hash).substring(0, 81);
+    const searchVarsAddress = {
+      addresses: [loggingAddress],
     };
     return new Promise((resolve, reject) => {
-      iotaNode.api.findTransactions(searchVarsAddress, function(
+      this.iotaNode.api.findTransactions(searchVarsAddress, (
         error,
-        transactions
-      ) {
+        transactions,
+      ) => {
         if (error) {
-          console.log(error);
           reject(error);
         } else {
-          {
-            resolve(transactions);
-          }
-        }
-      });
-    });
-  }
-
-  findHashByFilename(filename) {
-    const tag = this.filenameToTag(filename);
-    var searchVarsAddress = {
-      tag: [tag]
-    };
-    return new Promise((resolve, reject) => {
-      iotaNode.api.findTransactions(searchVarsAddress, function(
-        error,
-        transactions
-      ) {
-        if (error) {
-          console.log(error);
-          reject(error);
-        } else {
-          {
-            resolve(transactions);
-          }
+          resolve(transactions);
         }
       });
     });
@@ -118,15 +76,15 @@ export class Iota {
 
   getLog(transaction) {
     return new Promise((resolve, reject) => {
-      iotaNode.api.getBundle(transaction, function(error, sucess2) {
+      this.iotaNode.api.getBundle(transaction, (error, sucess2) => {
         if (error) {
-          reject("error");
+          reject('error');
         } else {
-          var message = sucess2[0].signatureMessageFragment;
+          let message = sucess2[0].signatureMessageFragment;
           message = message.split(
-            "99999999999999999999999999999999999999999999999999"
+            '99999999999999999999999999999999999999999999999999',
           )[0];
-          var obj = JSON.parse(iotaNode.utils.fromTrytes(message));
+          const obj = JSON.parse(this.iotaNode.utils.fromTrytes(message));
           resolve(obj);
         }
       });
