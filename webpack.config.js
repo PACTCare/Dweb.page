@@ -17,23 +17,23 @@ const minifySettings = {
   useShortDoctype: true,
 };
 const obfuscatorSettings = {
-  // compact: true,
-  // controlFlowFlattening: false,
-  // //controlFlowFlatteningThreshold: 0.5,
-  // deadCodeInjection: false,
-  // debugProtection: true, //causes loading problems
-  // // debugProtectionInterval: true, //caused issues on iphone
-  // disableConsoleOutput: true,
-  // // identifiersPrefix: "p",
-  // identifierNamesGenerator: "hexadecimal",
-  // log: false,
-  // renameGlobals: false,
-  // rotateStringArray: true,
-  // // selfDefending: true, // generaly causes problem
-  // stringArray: true,
-  // stringArrayEncoding: "base64",
-  // stringArrayThreshold: 1, //= 1 because of signature key
-  // unicodeEscapeSequence: false
+  compact: true,
+  controlFlowFlattening: false,
+  // controlFlowFlatteningThreshold: 0.5,
+  deadCodeInjection: false,
+  debugProtection: true, // causes loading problems
+  // debugProtectionInterval: true, //caused issues on iphone
+  disableConsoleOutput: true,
+  // identifiersPrefix: "p",
+  identifierNamesGenerator: 'hexadecimal',
+  log: false,
+  renameGlobals: false,
+  rotateStringArray: true,
+  // selfDefending: true, // generaly causes problem
+  stringArray: true,
+  stringArrayEncoding: 'base64',
+  stringArrayThreshold: 1, //= 1 because of signature key
+  unicodeEscapeSequence: false,
 };
 
 module.exports = {

@@ -1,6 +1,7 @@
 import '@babel/polyfill';
 import './alert';
 import './tableToCsv';
+import './polyfill/remove';
 import Iota from './services/Iota';
 import Signature from './services/Signature';
 import '../css/style.css';
@@ -158,7 +159,7 @@ function printLog(iotaLogArray, storageLogArray) {
     }
   }
   hideColumns(1, 5, 6);
-  $('firstRow').remove();
+  document.getElementById('firstRow').remove();
 }
 
 async function createListOfLogs(logs) {
@@ -192,8 +193,8 @@ async function createListOfLogs(logs) {
   if (iotaLogArray.length > 0) {
     printLog(iotaLogArray, storageLogArray);
   } else {
-    $('csvDownload').remove();
-    $('clearHistory').remove();
+    document.getElementById('csvDownload').remove();
+    document.getElementById('clearHistory').remove();
   }
 }
 
@@ -201,8 +202,8 @@ async function createListOfLogs(logs) {
 if (typeof Storage !== 'undefined') {
   const logs = JSON.parse(localStorage.getItem(STORAGEKEY));
   if (logs == null) {
-    $('csvDownload').remove();
-    $('clearHistory').remove();
+    document.getElementById('csvDownload').remove();
+    document.getElementById('clearHistory').remove();
   } else {
     document
       .getElementById('loader')

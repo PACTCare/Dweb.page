@@ -3,9 +3,9 @@ import Cookie from './services/Cookie';
 const fileSizeLimit = 1000; // In MB
 const checkBoxCookie = new Cookie('Checkbox');
 
-function supportsCrypto() {
-  return window.crypto && crypto.subtle;
-}
+// function supportsCrypto() {
+//   return window.crypto && crypto.subtle;
+// }
 
 function supportsFileread() {
   return window.File && window.FileList && window.FileReader;
