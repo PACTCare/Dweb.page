@@ -1,7 +1,9 @@
+import '@babel/polyfill';
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
 import './alert';
 import './url-parameters';
+import './crypto-polyfill/webcrypto-shim';
 import Log from './services/Log';
 import Encryption from './services/Encryption';
 import { saveAs } from './file-saver';
@@ -24,11 +26,10 @@ function output(msg) {
 
 function downloadFile(fileId, fileName, blob, isEncrypted) {
   const p = new Ping();
-  p.ping((err, data) => {
+  p.ping((err) => {
     if (err) {
       output('Something is blocking the log entry!');
     }
-    console.log(data);
     new Log().createLog(fileId, fileName, false, gateway, isEncrypted);
     saveAs(blob, fileName);
   });

@@ -1,6 +1,6 @@
 /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
-var saveAs = saveAs
-  || (function (e) {
+const saveAs = saveAs
+  || (function saveAs(e) {
     if (
       typeof e === 'undefined'
       || (typeof navigator !== 'undefined'
@@ -9,28 +9,17 @@ var saveAs = saveAs
       return;
     }
     const t = e.document;
-
-
-    const n = function () {
+    const n = function url() {
       return e.URL || e.webkitURL || e;
     };
-
-
     const r = t.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-
-
     const o = 'download' in r;
-
-
-    const a = function (e) {
-      const t = new MouseEvent('click');
-      e.dispatchEvent(t);
+    const a = function MouseEvent(et) {
+      const te = new MouseEvent('click');
+      et.dispatchEvent(te);
     };
 
-
     const i = /constructor/i.test(e.HTMLElement) || e.safari;
-
-
     const f = /CriOS\/[\d]+/.test(navigator.userAgent);
 
 
@@ -40,13 +29,8 @@ var saveAs = saveAs
       }, 0);
     };
 
-
     const s = 'application/octet-stream';
-
-
     const d = 1e3 * 40;
-
-
     const c = function (e) {
       const t = function () {
         if (typeof e === 'string') {
@@ -57,7 +41,6 @@ var saveAs = saveAs
       };
       setTimeout(t, d);
     };
-
 
     const l = function (e, t, n) {
       t = [].concat(t);
@@ -103,7 +86,7 @@ var saveAs = saveAs
       let y;
 
 
-      const h = function () {
+      const h = function writestart() {
         l(v, 'writestart progress write writeend'.split(' '));
       };
 

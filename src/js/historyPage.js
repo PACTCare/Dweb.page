@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import './alert';
 import './tableToCsv';
 import Iota from './services/Iota';
@@ -7,45 +8,6 @@ import '../css/alert.css';
 import '../css/table.css';
 
 const STORAGEKEY = 'logsv0.1';
-
-async function createListOfLogs(logs) {
-  const storageLogArray = [];
-  for (let i = 0; i < logs.length; i += 1) {
-    {
-      storageLogArray.push({
-        id: logs[i].split('???')[0],
-        hash: logs[i].split('???')[1].split('&&&')[0],
-        name: logs[i].split('&&&')[1].split('===')[0],
-        sig: logs[i].split('===')[1],
-      });
-    }
-  }
-
-  const iotaLogArray = [];
-  const flags = {};
-  const iota = new Iota();
-  await Promise.all(
-    storageLogArray.map(async (logObject) => {
-      if (!flags[logObject.hash]) {
-        flags[logObject.hash] = true;
-        const transactions = await iota.getTransaction(logObject.hash);
-        await Promise.all(
-          transactions.map(async (transaction) => {
-            const logObj = await iota.getLog(transaction);
-            iotaLogArray.push(logObj);
-          }),
-        );
-      }
-    }),
-  );
-
-  if (iotaLogArray.length > 0) {
-    printLog(iotaLogArray, storageLogArray);
-  } else {
-    document.getElementById('csvDownload').remove();
-    document.getElementById('clearHistory').remove();
-  }
-}
 
 function compareTime(a, b) {
   const da = new Date(a.time).getTime();
@@ -61,7 +23,7 @@ function hideColumns(col1, col2, col3) {
     for (let i = 0; i < tbl.rows.length; i += 1) {
       for (let j = 0; j < tbl.rows[i].cells.length; j += 1) {
         tbl.rows[i].cells[j].style.display = '';
-        if (j == col1 || j == col2 || j == col3) { tbl.rows[i].cells[j].style.display = 'none'; }
+        if (j === col1 || j === col2 || j === col3) { tbl.rows[i].cells[j].style.display = 'none'; }
       }
     }
   }
@@ -69,7 +31,9 @@ function hideColumns(col1, col2, col3) {
 
 function printLog(iotaLogArray, storageLogArray) {
   iotaLogArray.sort(compareTime);
-  document.getElementById('loader').remove();
+  document
+    .getElementById('loader')
+    .setAttribute('style', 'display:none !important');
   document
     .getElementById('csvDownload')
     .setAttribute('style', 'display:inline-block !important');
@@ -80,9 +44,10 @@ function printLog(iotaLogArray, storageLogArray) {
   const sig = new Signature();
   // remove fake double entries,
   // iotaLogArray = Array.from(new Set(iotaLogArray));
-  for (const obj of iotaLogArray) {
-    if (!flags[obj.fileId]) {
-      flags[obj.fileId] = true;
+  // for (const obj of iotaLogArray)
+  for (let j = 0; j < iotaLogArray.length; j += 1) {
+    if (!flags[iotaLogArray[j].fileId]) {
+      flags[iotaLogArray[j].fileId] = true;
       const table = document.getElementById('table');
       const row = table.insertRow(-1);
       const cell1 = row.insertCell(0);
@@ -99,18 +64,18 @@ function printLog(iotaLogArray, storageLogArray) {
       cell6.setAttribute('data-title', 'Public Upload Signature Keys: ');
       const cell7 = row.insertCell(6);
       cell7.setAttribute('data-title', 'Public Download Signature Keys: ');
-      const linkText = storageLogArray.find(x => x.hash === obj.fileId).name;
+      const linkText = storageLogArray.find(x => x.hash === iotaLogArray[j].fileId).name;
       let link = `${window.location.href.replace('history', 'receive')
       }?id=${
-        obj.fileId
+        iotaLogArray[j].fileId
       }&gate=${
-        obj.gateway}`;
-      if (!obj.encrypted) {
+        iotaLogArray[j].gateway}`;
+      if (!iotaLogArray[j].encrypted) {
         link += '&password=nopass';
       }
       cell1.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
-      cell2.innerHTML = obj.fileId;
-      if (obj.encrypted) {
+      cell2.innerHTML = iotaLogArray[j].fileId;
+      if (iotaLogArray[j].encrypted) {
         cell3.innerHTML = 'Yes';
       } else {
         cell3.innerHTML = 'No';
@@ -121,9 +86,9 @@ function printLog(iotaLogArray, storageLogArray) {
       let cellUpload = 'n/a';
       let cellUploadSig = 'n/a';
       const uploadArray = iotaLogArray.filter(
-        x => x.fileId === obj.fileId && x.upload,
+        x => x.fileId === iotaLogArray[j].fileId && x.upload,
       );
-      for (var i = 0; i < uploadArray.length; i++) {
+      for (let i = 0; i < uploadArray.length; i += 1) {
         const idPart = storageLogArray.find(x => x.id == uploadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
@@ -158,9 +123,9 @@ function printLog(iotaLogArray, storageLogArray) {
       let cellDownload = 'n/a';
       let cellDownloadSig = 'n/a';
       const downloadArray = iotaLogArray.filter(
-        x => x.fileId === obj.fileId && !x.upload,
+        x => x.fileId === iotaLogArray[j].fileId && !x.upload,
       );
-      for (var i = 0; i < downloadArray.length; i++) {
+      for (let i = 0; i < downloadArray.length; i += 1) {
         const idPart = storageLogArray.find(x => x.id == downloadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
@@ -193,15 +158,51 @@ function printLog(iotaLogArray, storageLogArray) {
     }
   }
   hideColumns(1, 5, 6);
-  document.getElementById('firstRow').remove();
+  $('firstRow').remove();
+}
+
+async function createListOfLogs(logs) {
+  const storageLogArray = [];
+  for (let i = 0; i < logs.length; i += 1) {
+    storageLogArray.push({
+      id: logs[i].split('???')[0],
+      hash: logs[i].split('???')[1].split('&&&')[0],
+      name: logs[i].split('&&&')[1].split('===')[0],
+      sig: logs[i].split('===')[1],
+    });
+  }
+  const iotaLogArray = [];
+  const flags = {};
+  const iota = new Iota();
+  await Promise.all(
+    storageLogArray.map(async (logObject) => {
+      if (!flags[logObject.hash]) {
+        flags[logObject.hash] = true;
+        const transactions = await iota.getTransaction(logObject.hash);
+        await Promise.all(
+          transactions.map(async (transaction) => {
+            const logObj = await iota.getLog(transaction);
+            iotaLogArray.push(logObj);
+          }),
+        );
+      }
+    }),
+  );
+
+  if (iotaLogArray.length > 0) {
+    printLog(iotaLogArray, storageLogArray);
+  } else {
+    $('csvDownload').remove();
+    $('clearHistory').remove();
+  }
 }
 
 // Check browser support
 if (typeof Storage !== 'undefined') {
   const logs = JSON.parse(localStorage.getItem(STORAGEKEY));
   if (logs == null) {
-    document.getElementById('csvDownload').remove();
-    document.getElementById('clearHistory').remove();
+    $('csvDownload').remove();
+    $('clearHistory').remove();
   } else {
     document
       .getElementById('loader')

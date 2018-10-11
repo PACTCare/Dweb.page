@@ -1,5 +1,5 @@
 import IOTA from 'iota.lib.js';
-import poWaaS from './powaas';
+// import poWaaS from './powaas';
 
 const NODE = 'https://nodes.thetangle.org:443';
 
@@ -29,7 +29,8 @@ export default class Iota {
       pageSignature,
     };
 
-    poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
+    // not needed since the tangle as poWaas integrated!
+    // poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
     const trytes = this.iotaNode.utils.toTrytes(fileId).slice(0, 81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(params));
     const tag = 'PACTDOTONLINE';
@@ -78,7 +79,7 @@ export default class Iota {
     return new Promise((resolve, reject) => {
       this.iotaNode.api.getBundle(transaction, (error, sucess2) => {
         if (error) {
-          reject('error');
+          reject(error);
         } else {
           let message = sucess2[0].signatureMessageFragment;
           message = message.split(

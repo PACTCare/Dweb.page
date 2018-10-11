@@ -1,25 +1,18 @@
-function downloadCSV(csv, filename) {
+import { saveAs } from './file-saver';
+
+function downloadCSV(csv, fileName) {
   const csvFile = new Blob([csv], { type: 'text/csv' });
-  const downloadLink = document.createElement('a');
-  downloadLink.download = filename;
-  downloadLink.href = window.URL.createObjectURL(csvFile);
-  downloadLink.style.display = 'none';
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
+  saveAs(csvFile, fileName);
 }
 
-window.exportTableToCSV = function (filename) {
+window.exportTableToCSV = function exportTableToCSV(filename) {
   const csv = [];
   const rows = document.querySelectorAll('table tr');
-
   // Number of rows
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < rows.length; i += 1) {
     const row = [];
-
-
     const cols = rows[i].querySelectorAll('td, th');
-
-    for (let j = 0; j < cols.length; j++) {
+    for (let j = 0; j < cols.length; j += 1) {
       row.push(cols[j].innerText.replace('\n', ''));
     }
 

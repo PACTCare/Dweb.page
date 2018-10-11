@@ -4,8 +4,6 @@ import Signature from './Signature';
 const STORAGEKEY = 'logsv0.1';
 
 export default class Log {
-  constructor() { }
-
   /**
    *
    * @param {string} fileId

@@ -1,7 +1,9 @@
+import '@babel/polyfill';
 import './fileupload';
 import './copy';
 import './alert';
 import './steps';
+import './crypto-polyfill/webcrypto-shim';
 import Log from './services/Log';
 import Encryption from './services/Encryption';
 import Ping from './services/Ping';
@@ -67,9 +69,9 @@ function OpenOnMobile() {
 }
 
 function errorMessage(errorMsg) {
-  document.getElementById('fileTab').remove();
-  document.getElementById('passwordTab').remove();
-  document.getElementById('stepsDiv').remove();
+  $('fileTab').remove();
+  $('passwordTab').remove();
+  $('stepsDiv').remove();
   document
     .getElementById('lastTab')
     .setAttribute('style', 'display:block !important');
@@ -80,8 +82,8 @@ function errorMessage(errorMsg) {
 }
 
 function unencryptedLayout(fingerPrint, isMobile) {
-  document.getElementById('passwordStep').remove();
-  document.getElementById('passwordTab').remove();
+  $('passwordStep').remove();
+  $('passwordTab').remove();
   document.getElementById('doneHeadline').innerHTML = 'Step 2: Done';
   const link = `${
     window.location.href

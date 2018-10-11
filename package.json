@@ -11,6 +11,7 @@
   "author": "David Hawig",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "fast-text-encoding": "^1.0.0",
     "iota.lib.js": "^0.5.0",
     "jsrsasign": "^8.0.12",

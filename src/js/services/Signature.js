@@ -13,8 +13,6 @@ const pukey2 = '746166a55a66c29f3843abf131676b4';
 // Alternative
 // https://github.com/cryptocoinjs/secp256k1-node
 export default class Signature {
-  constructor() { }
-
   generateKeyPairHex() {
     const ec = new jsrsasign.KJUR.crypto.ECDSA({ curve: CURVE });
     keypair = ec.generateKeyPairHex();

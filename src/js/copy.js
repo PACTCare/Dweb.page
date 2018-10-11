@@ -22,7 +22,7 @@ function copy(copyText) {
     textArea.select();
   }
   document.execCommand('Copy');
-  textArea.remove();
+  textArea.parentNode.removeChild(textArea);
 }
 
 

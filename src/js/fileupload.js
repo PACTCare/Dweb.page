@@ -89,12 +89,10 @@ function ekUpload() {
       document.getElementById('loadingAnimation').style.display = 'none';
     }
   }
-
-  if (supportsCrypto() && supportsFileread()) {
-    console.log('crypto supported');
+  // supportsCrypto() &&
+  if (supportsFileread()) {
     Init();
   } else {
-    console.log('not supported');
     document.getElementById('file-drag').style.display = 'none';
     document
       .getElementById('notSupported')
