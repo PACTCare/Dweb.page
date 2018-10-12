@@ -1,9 +1,9 @@
 import '@babel/polyfill';
 import './alert';
-import './tableToCsv';
+import './services/tableToCsv';
 import './polyfill/remove';
-import Iota from './services/Iota';
-import Signature from './services/Signature';
+import Iota from './log/Iota';
+import Signature from './log/Signature';
 import '../css/style.css';
 import '../css/alert.css';
 import '../css/table.css';

@@ -2,28 +2,16 @@
 
 import '../css/style.css';
 import '../css/tab.css';
+import GetURLParameter from './services/urlParameter';
 
-function GetURLParameter(sParam) {
-  const sPageURL = window.location.search.substring(1);
-  const sURLVariables = sPageURL.split('&');
-  for (let i = 0; i < sURLVariables.length; i += 1) {
-    const sParameterName = sURLVariables[i].split('=');
-    if (sParameterName[0] == sParam) {
-      return sParameterName[1];
-    }
-  }
-}
-
-window.openCity = function (evt, cityName) {
-  console.log('clicked');
-  let i; let tabcontent; let
-    tablinks;
-  tabcontent = document.getElementsByClassName('tabcontent');
-  for (i = 0; i < tabcontent.length; i++) {
+window.openCity = function openCity(evt, cityName) {
+  let i;
+  const tabcontent = document.getElementsByClassName('tabcontent');
+  for (i = 0; i < tabcontent.length; i += 1) {
     tabcontent[i].style.display = 'none';
   }
-  tablinks = document.getElementsByClassName('tablinks');
-  for (i = 0; i < tablinks.length; i++) {
+  const tablinks = document.getElementsByClassName('tablinks');
+  for (i = 0; i < tablinks.length; i += 1) {
     tablinks[i].className = tablinks[i].className.replace(' active', '');
   }
   document.getElementById(cityName).style.display = 'block';
@@ -32,7 +20,7 @@ window.openCity = function (evt, cityName) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlParameter = GetURLParameter('par');
-  if (urlParameter == 'terms') {
+  if (urlParameter === 'terms') {
     document.getElementById('terms').click();
   } else if (urlParameter == 'privacy') {
     document.getElementById('privacy').click();

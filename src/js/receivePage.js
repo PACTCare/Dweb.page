@@ -2,12 +2,12 @@ import '@babel/polyfill';
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
 import './alert';
-import './url-parameters';
 import './polyfill/webcrypto-shim';
 import './polyfill/remove';
-import Log from './services/Log';
+import Log from './log/Log';
+import GetURLParameter from './services/urlParameter';
 import Encryption from './services/Encryption';
-import { saveAs } from './file-saver';
+import { saveAs } from './services/fileSaver';
 import Ping from './services/Ping';
 import '../css/style.css';
 import '../css/alert.css';
@@ -141,4 +141,18 @@ document
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('load').onclick = load;
+  const filename = GetURLParameter('id');
+  const password = GetURLParameter('password');
+  if (typeof filename !== 'undefined') {
+    document.getElementById('firstField').value = filename;
+    document.getElementById('firstField').style.display = 'none';
+  }
+  if (typeof password !== 'undefined') {
+    document.getElementById('passwordField').value = password;
+    if (password === 'nopass') {
+      document.getElementById('hideSpace1').style.display = 'none';
+      document.getElementById('hideSpace2').style.display = 'none';
+    }
+    document.getElementById('passwordField').style.display = 'none';
+  }
 });

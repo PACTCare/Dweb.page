@@ -1,4 +1,4 @@
-import { saveAs } from './file-saver';
+import { saveAs } from './fileSaver';
 
 function downloadCSV(csv, fileName) {
   const csvFile = new Blob([csv], { type: 'text/csv' });

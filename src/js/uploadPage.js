@@ -5,7 +5,7 @@ import './alert';
 import './steps';
 import './polyfill/webcrypto-shim';
 import './polyfill/remove';
-import Log from './services/Log';
+import Log from './log/Log';
 import Encryption from './services/Encryption';
 import Ping from './services/Ping';
 import '../css/style.css';
