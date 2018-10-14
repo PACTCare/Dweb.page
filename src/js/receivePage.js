@@ -10,13 +10,11 @@ import GetURLParameter from './services/urlParameter';
 import Encryption from './services/Encryption';
 import { saveAs } from './services/fileSaver';
 import Ping from './services/Ping';
+import GetGateway from './services/getGateway';
 import '../css/style.css';
 import '../css/alert.css';
 
-const HOST = window.location.hostname;
-const PROTOCOL = window.location.protocol;
-let gateway = 'http://localhost:8080/ipfs/';
-
+const gateway = GetGateway();
 /**
  *
  * @param {string} msg
@@ -120,10 +118,6 @@ function load() {
         }
       }
     };
-
-    if (HOST !== 'localhost' && HOST !== '127.0.0.1') {
-      gateway = `${PROTOCOL}//${HOST}/ipfs/`;
-    }
 
     oReq.open('GET', gateway + fileId, true);
     oReq.responseType = 'arraybuffer';

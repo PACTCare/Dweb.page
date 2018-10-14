@@ -14,6 +14,26 @@
 </head>
 
 <body>
+  <!-- Cookie Alert  -->
+  <div id='dialog-ovelay'>
+    <div class='dialog'>
+      <header>
+        <h2>Welcome</h2>
+      </header>
+      <div class='dialog-msg'>
+        <p>Pact.online is a decentralized and free end-to-end encrypted file transfer service. <br> To continue, please
+          agree to our <a href='about.html?par=terms' target='_blank'>Terms of Service</a> and <a href='about.html?par=privacy'
+            target='_blank'>Privacy as well as Cookie Policy</a>.</p>
+      </div>
+      <footer>
+        <div class='controls'>
+          <button id="agreeButton" class='button button-danger doAction'>I agree</button>
+          <button id="declineButton" class='button button-default cancelAction'>Leave</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
   <div class="logBackground">
     <h2 id="logHeadline">Transfer History</h2>
   </div>
@@ -67,8 +87,6 @@
     <input id="backgroundUpload" type="file" name="filename" accept="image/gif, image/jpeg, image/png">
     <i id="resetImage" class="fas fa-ban"></i>
   </div>
-
-  <script src='https://pact.online/dist/js/jquery.min.js'></script>
 
 </body>
 

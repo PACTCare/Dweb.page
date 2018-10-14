@@ -5,7 +5,7 @@
   display: none;
 }
 
-.dialog-ovelay {
+#dialog-ovelay {
   position: absolute;
   top: 0;
   left: 0;
@@ -14,46 +14,31 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999999;
 }
-.dialog-ovelay .dialog {
+#dialog-ovelay .dialog {
   max-width: 90%;
   width: 480px;
-  margin: 21vh auto 0;
+  margin: 20vh auto 0;
   background-color: #fff;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
   overflow: hidden;
 }
-.dialog-ovelay .dialog header {
+#dialog-ovelay .dialog header {
   padding: 10px 8px;
 }
 
-.dialog-ovelay .dialog header .fa-close {
-  float: right;
-  color: #c4c5c7;
-  cursor: pointer;
-  transition: all 0.5s ease;
-  padding: 0 2px;
-  border-radius: 1px;
-}
-.dialog-ovelay .dialog header .fa-close:hover {
-  color: #b9b9b9;
-}
-.dialog-ovelay .dialog header .fa-close:active {
-  box-shadow: 0 0 5px #673ab7;
-  color: #a2a2a2;
-}
-.dialog-ovelay .dialog .dialog-msg {
+#dialog-ovelay .dialog .dialog-msg {
   padding: 0px 4vw;
 }
 
-.dialog-ovelay .dialog footer {
+#dialog-ovelay .dialog footer {
   padding-bottom: 4vh;
   padding-top: 2vh;
 }
-.dialog-ovelay .dialog footer .controls {
+#dialog-ovelay .dialog footer .controls {
   direction: rtl;
 }
-.dialog-ovelay .dialog footer .controls .button {
+#dialog-ovelay .dialog footer .controls .button {
   padding: 5px 15px;
   border-radius: 3px;
 }

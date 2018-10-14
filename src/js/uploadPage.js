@@ -9,14 +9,13 @@ import Log from './log/Log';
 import './services/background';
 import Encryption from './services/Encryption';
 import Ping from './services/Ping';
+import GetGateway from './services/getGateway';
 import '../css/style.css';
 import '../css/toggle.css';
 import '../css/steps.css';
 import '../css/alert.css';
 
 const SIZELIMIT = 1000; // In MB
-const HOST = window.location.hostname;
-const PROTOCOL = window.location.protocol;
 let filename;
 
 function progressBar(percent) {
@@ -138,10 +137,7 @@ function encryptedLayout(fingerPrint, isMobile) {
 }
 
 function uploadToIPFS(buf, isEncrypted) {
-  let gateway = 'http://localhost:8080/ipfs/';
-  if (HOST !== 'localhost' && HOST !== '127.0.0.1') {
-    gateway = `${PROTOCOL}//${HOST}/ipfs/`;
-  }
+  const gateway = GetGateway();
   const xhr = new XMLHttpRequest();
   xhr.open('POST', gateway, true);
   xhr.responseType = 'arraybuffer';
@@ -185,7 +181,6 @@ function uploadToIPFS(buf, isEncrypted) {
 
   xhr.send(new Blob([buf]));
 }
-
 
 function encryptBeforeUpload(reader) {
   const enc = new Encryption();
