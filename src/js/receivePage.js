@@ -5,6 +5,7 @@ import './alert';
 import './polyfill/webcrypto-shim';
 import './polyfill/remove';
 import Log from './log/Log';
+import './services/background';
 import GetURLParameter from './services/urlParameter';
 import Encryption from './services/Encryption';
 import { saveAs } from './services/fileSaver';

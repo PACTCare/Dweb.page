@@ -16,7 +16,7 @@
 <body>
 
   <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" class="logo" id="logo">
-  <div class="textBox">
+  <div id="receiveTextBox" class="textBox">
     <h2 class="receiveHeadline">Receive File</h2>
     <form id="inputForm">
       <input type="text" name="EmailFrom" id="firstField" placeholder="Enter your File Id" class="boxInput">
@@ -37,6 +37,11 @@
     <a href=".">Transfer</a>
     <a href="history.html">History</a>
     <a href="about.html">About</a>
+  </div>
+  <div id="right">
+    <i id="filtersubmit" class="far fa-image"></i>
+    <input id="backgroundUpload" type="file" name="filename" accept="image/gif, image/jpeg, image/png">
+    <i id="resetImage" class="fas fa-ban"></i>
   </div>
 
   <script src='https://pact.online/dist/js/jquery.min.js'></script>

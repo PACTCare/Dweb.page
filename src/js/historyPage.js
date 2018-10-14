@@ -2,6 +2,7 @@ import '@babel/polyfill';
 import './alert';
 import './services/tableToCsv';
 import './polyfill/remove';
+import './services/background';
 import Iota from './log/Iota';
 import Signature from './log/Signature';
 import '../css/style.css';
@@ -208,6 +209,10 @@ if (typeof Storage !== 'undefined') {
     document
       .getElementById('loader')
       .setAttribute('style', 'display:inherit !important');
+    document.getElementById('clearHistory').addEventListener('click', () => {
+      window.localStorage.removeItem(STORAGEKEY);
+      window.location.reload();
+    });
     createListOfLogs(logs);
   }
 } else {

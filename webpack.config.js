@@ -21,7 +21,7 @@ const obfuscatorSettings = {
   controlFlowFlattening: false,
   // controlFlowFlatteningThreshold: 0.5,
   deadCodeInjection: false,
-  debugProtection: true, // causes loading problems
+  // debugProtection: true, // causes loading problems
   // debugProtectionInterval: true, //caused issues on iphone
   disableConsoleOutput: true,
   // identifiersPrefix: "p",
@@ -110,8 +110,7 @@ module.exports = {
       {
         test: /\.js$/,
         include: [
-          path.resolve(__dirname, 'src/js'),
-          path.resolve(__dirname, 'src/js/services'),
+          path.resolve(__dirname, 'src/js/log'),
         ],
         enforce: 'post', // makes sure it's called after other loaders!
         use: {

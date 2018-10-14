@@ -19,7 +19,7 @@
       <input id="endToEndCheck" type="checkbox">
       <span class="slider round"></span>
     </label>
-    <span id="checkboxText" style="color: #6f6f6f;">Off</span>
+    <span id="checkboxText">Off</span>
   </div>
 
 
@@ -106,7 +106,7 @@
 
   <p class="lead" id="headline">Free Decentralized File Transfer up to 1 GB (Beta)</p>
   <div id="adDoFrame">
-    <pre class="donation"><a class="donation" href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW" target="_blank">IOTA Donation address</a>
+    <pre class="donation"><a class="donation" id="donationLink" href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW" target="_blank">IOTA Donation address</a>
     </pre>
   </div>
 
@@ -114,6 +114,11 @@
     <a href="." id="currentPage">Transfer</a>
     <a href="history.html">History</a>
     <a href="about.html">About</a>
+  </div>
+  <div id="right">
+    <i id="filtersubmit" class="far fa-image"></i>
+    <input id="backgroundUpload" type="file" name="filename" accept="image/gif, image/jpeg, image/png">
+    <i id="resetImage" class="fas fa-ban"></i>
   </div>
 
   <script src='https://pact.online/dist/js/jquery.min.js'></script>

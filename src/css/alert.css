@@ -5,40 +5,6 @@
   display: none;
 }
 
-h2 {
-  font-family: "Quicksand", sans-serif;
-  font-size: 26px;
-  line-height: 1;
-  color: #000000;
-  margin-bottom: 0;
-  text-align: center;
-}
-a:link {
-  color: #6d91c7;
-  text-decoration: none;
-}
-
-a:visited {
-  color: #3157a7;
-}
-p {
-  margin-top: 3vh;
-  margin-right: 1.5rem;
-  margin-left: 1.5rem;
-  font-size: 16px;
-  color: #6f6f6f;
-}
-
-html,
-body,
-* {
-  font-family: "Roboto", sans-serif;
-  box-sizing: border-box;
-  font-size: 16px;
-  line-height: 1.4em;
-  text-align: center;
-}
-
 .dialog-ovelay {
   position: absolute;
   top: 0;
@@ -50,7 +16,7 @@ body,
 }
 .dialog-ovelay .dialog {
   max-width: 90%;
-  width: 527px;
+  width: 480px;
   margin: 21vh auto 0;
   background-color: #fff;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);

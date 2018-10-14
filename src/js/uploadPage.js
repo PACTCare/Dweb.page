@@ -6,6 +6,7 @@ import './steps';
 import './polyfill/webcrypto-shim';
 import './polyfill/remove';
 import Log from './log/Log';
+import './services/background';
 import Encryption from './services/Encryption';
 import Ping from './services/Ping';
 import '../css/style.css';
@@ -138,7 +139,7 @@ function encryptedLayout(fingerPrint, isMobile) {
 
 function uploadToIPFS(buf, isEncrypted) {
   let gateway = 'http://localhost:8080/ipfs/';
-  if (HOST != 'localhost' && HOST != '127.0.0.1') {
+  if (HOST !== 'localhost' && HOST !== '127.0.0.1') {
     gateway = `${PROTOCOL}//${HOST}/ipfs/`;
   }
   const xhr = new XMLHttpRequest();
@@ -230,11 +231,11 @@ function readFile(e) {
     }
   };
 
-  const files = e.target.files || e.dataTransfer.files;
-  for (var i = 0, f; (f = files[i]); i += 1) {
-    if (f.size <= SIZELIMIT * 1024 * 1024) {
-      filename = f.name.replace(/[^A-Za-z0-9. _\-]/g, ''); // ä causes problems
-      reader.readAsArrayBuffer(f); // Read Provided File
+  const file = e.target.files[0] || e.dataTransfer.files[0];
+  if (file) {
+    if (file.size <= SIZELIMIT * 1024 * 1024) {
+      filename = file.name.replace(/[^A-Za-z0-9. _\-]/g, ''); // ä causes problems
+      reader.readAsArrayBuffer(file); // Read Provided File
     }
   }
 }

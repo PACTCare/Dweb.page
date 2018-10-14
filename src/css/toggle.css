@@ -16,6 +16,10 @@
   display: none;
 }
 
+#checkboxText{
+  color: #fff;
+}
+
 .slider {
   position: absolute;
   cursor: pointer;

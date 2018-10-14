@@ -3,10 +3,6 @@ import Cookie from './services/Cookie';
 const fileSizeLimit = 1000; // In MB
 const checkBoxCookie = new Cookie('Checkbox');
 
-// function supportsCrypto() {
-//   return window.crypto && crypto.subtle;
-// }
-
 function supportsFileread() {
   return window.File && window.FileList && window.FileReader;
 }
@@ -16,11 +12,9 @@ const checkbox = document.getElementById('endToEndCheck');
 checkbox.addEventListener('change', function checkBox() {
   if (this.checked) {
     document.getElementById('checkboxText').innerText = 'On';
-    document.getElementById('checkboxText').style.color = '#3157a7';
     checkBoxCookie.setCookie('on', 365);
   } else {
     document.getElementById('checkboxText').innerText = 'Off';
-    document.getElementById('checkboxText').style.color = '#6f6f6f';
     checkBoxCookie.setCookie('off', 365);
   }
 });
@@ -31,7 +25,6 @@ function ekUpload() {
     if (checkboxCookie !== 'off') {
       document.getElementById('endToEndCheck').checked = true;
       document.getElementById('checkboxText').innerText = 'On';
-      document.getElementById('checkboxText').style.color = '#3157a7';
     }
     const fileSelect = document.getElementById('file-upload');
 

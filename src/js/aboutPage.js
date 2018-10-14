@@ -2,6 +2,7 @@
 
 import '../css/style.css';
 import '../css/tab.css';
+import './services/background';
 import GetURLParameter from './services/urlParameter';
 
 window.openCity = function openCity(evt, cityName) {

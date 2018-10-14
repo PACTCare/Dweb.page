@@ -2,540 +2,550 @@
 <html lang="en">
 
 <head>
-    <title>About | Pact</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
-    <meta name="author" content="PACT Care BV">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
+  <title>About | Pact</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Free Decentralized and Encrypted File Transfer up to 1 GB">
+  <meta name="author" content="PACT Care BV">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
 </head>
 
 <body>
-    <div class="tab">
-        <button class="tablinks" onclick="openCity(event, 'About')" id="defaultOpen">About</button>
-        <button class="tablinks" onclick="openCity(event, 'Terms')" id="terms">Terms</button>
-        <button class="tablinks" onclick="openCity(event, 'Policies')" id="privacy">Policies</button>
+  <div class="tab">
+    <button class="tablinks" onclick="openCity(event, 'About')" id="defaultOpen">About</button>
+    <button class="tablinks" onclick="openCity(event, 'Terms')" id="terms">Terms</button>
+    <button class="tablinks" onclick="openCity(event, 'Policies')" id="privacy">Policies</button>
+  </div>
+  <div class="longText">
+
+    <div id="About" class="tabcontent">
+      <h2>About Pact</h2>
+      <p>Pact.online is a simple and highly secure file transfer service. It is free to use, decentralized,
+        immutable, and offers optional end-to-end encryption. Currently, the service allows for the transfer of
+        files up to 1GB. The recipient can download the
+        file(s) for 3 days. Please reach out to us if you need to share even bigger files
+        (info[at]pact[dot]care).</p>
+
+      <p>If you choose end-to-end encryption, we recommend using two separate channels: 1) for sharing the file
+        link and 2) for the password link. To maximize security, consider using a channel you are confident
+        only the intended receiver has access to. Usually, using email for the file link and WhatsApp for the
+        password link works fine. </p>
+      <h2>The Technology</h2>
+      <p>The files are uploaded on <a href="https://ipfs.io/" target="_blank">IPFS</a> and uploads, as well as
+        downloads,
+        are logged on <a href="https://www.iota.org/" target="_blank">IOTA</a>. This way files are transfered
+        immutable
+        and decentralized on IPFS. IOTA makes sure that nobody can delete or alter the logs. Furthermore, you
+        can
+        use the <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank">Web Crypto API</a>
+        (AES256-GCM) to fully encrypt the files inside your browser before they get even uploaded.</p>
+      <p>The upload page itself is hosted on different servers, which you can also access directly in case
+        someone starts to blog our service. If you open pact.online you will see a random select version of the
+        upload
+        page. Uploaded files can be download from any <a href="https://ipfs.github.io/public-gateway-checker/" target="_blank">IPFS
+          gateway</a>
+        or simply under the generated link. </p>
+      <h2>Participate</h2>
+      <p>If you wish to participate you can simply set up your own IPFS node with a writeable Gateway. You need
+        to
+        allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care so
+        we then can integrate your side on our main page. Currently, we share the IOTA donations equally among
+        all participants at the end of every month. For transparency, you can track all donations under the
+        current <a href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW"
+          target="_blank"> IOTA donation address</a>. In the future, we might set up an advertising model
+        to make it more attractive for IPFS nodes to participate.
+      </p>
+      <h2>Who We Are</h2>
+      <p>Pact.online was developed by Pact Care, a young startup based in Amsterdam, the Netherlands. We would
+        love you supporting
+        us in our efforts, for example, by reaching out or simply reading more about our initiatives on <a href="https://blog.florence.chat/"
+          target="_blank">official medium blog</a>.</p>
+      <p>Herengracht 420, 1017BZ,<br> Amsterdam, Netherlands<br> info[at]pact[dot]care
+        <br> +31 20 893 4143</p>
     </div>
-    <div class="longText">
-
-        <div id="About" class="tabcontent">
-            <h2>About Pact</h2>
-            <p>Pact.online is a simple and highly secure file transfer service. It is free to use, decentralized,
-                immutable, and offers optional end-to-end encryption. Currently, the service allows for the transfer of
-                files up to 1GB. The recipient can download the
-                file(s) for 3 days. Please reach out to us if you need to share even bigger files
-                (info[at]pact[dot]care).</p>
-
-            <p>If you choose end-to-end encryption, we recommend using two separate channels: 1) for sharing the file
-                link and 2) for the password link. To maximize security, consider using a channel you are confident
-                only the intended receiver has access to. Usually, using email for the file link and WhatsApp for the
-                password link works fine. </p>
-            <h2>The Technology</h2>
-            <p>The files are uploaded on <a href="https://ipfs.io/" target="_blank">IPFS</a> and uploads, as well as
-                downloads,
-                are logged on <a href="https://www.iota.org/" target="_blank">IOTA</a>. This way files are transfered
-                immutable
-                and decentralized on IPFS. IOTA makes sure that nobody can delete or alter the logs. Furthermore, you
-                can
-                use the <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank">Web Crypto API</a>
-                (AES256-GCM) to fully encrypt the files inside your browser before they get even uploaded.</p>
-            <p>The upload page itself is hosted on different servers, which you can also access directly in case
-                someone starts to blog our service. If you open pact.online you will see a random select version of the
-                upload
-                page. Uploaded files can be download from any <a href="https://ipfs.github.io/public-gateway-checker/"
-                    target="_blank">IPFS gateway</a>
-                or simply under the generated link. </p>
-            <h2>Participate</h2>
-            <p>If you wish to participate you can simply set up your own IPFS node with a writeable Gateway. You need
-                to
-                allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care so
-                we then can integrate your side on our main page. Currently, we share the IOTA donations equally among
-                all participants at the end of every month. For transparency, you can track all donations under the
-                current <a href="https://thetangle.org/address/AA9CHPLCIDBGXPM9FWNZPJCJVRBQHTBHFQDASGOAVLZOUPZIRAWPTLUVB9WJMNFXSUKLOLABZPFPKUCKW"
-                    target="_blank"> IOTA donation address</a>. In the future, we might set up an advertising model
-                to make it more attractive for IPFS nodes to participate.
-            </p>
-            <h2>Who We Are</h2>
-            <p>Pact.online was developed by Pact Care, a young startup based in Amsterdam, the Netherlands. We would
-                love you supporting
-                us in our efforts, for example, by reaching out or simply reading more about our initiatives on <a href="https://blog.florence.chat/"
-                    target="_blank">official medium blog</a>.</p>
-            <p>Herengracht 420, 1017BZ,<br> Amsterdam, Netherlands<br> info[at]pact[dot]care
-                <br> +31 20 893 4143</p>
-        </div>
-        <div id="Terms" class="tabcontent">
-            <h2>Terms of Service</h2>
-            <p><strong>1) Introduction</strong><br> a) PACT provides a simple way to transfer confidential and
-                end-to-end
-                encrypted digital files up to a maximum total size of 1 GB (“Service”)<br> b) PACT is free from
-                registration
-                and charge.<br> c) In this policy, “We”, “Us” and “Our” refer to PACT Care BV. For more information
-                about
-                us, see Section 11.
-                <br> d) By using our Service, you accept these terms and conditions in full; accordingly, if you
-                disagree
-                with these terms and conditions or any part of these terms and conditions, you must not use our
-                Service.
-                <br> e) Your file will be automatically encrypted in your browser (AES256-GCM) before the upload. After
-                that,
-                you receive a unique file id (hash) as well as a password. The file is available for at least 3 days.
-                f)
-                It’s recommended to use two different channels to send the file id and password. At least to one
-                channel
-                only the intended receiver should have access. In most cases, email for the file id and WhatsApp for
-                the
-                password should be fine. <br> g) PACT will permanently delete the uploaded files after the expiry
-                period
-                mentioned in Section 1e. However, since the file transfer is based on a decentralized storage network
-                named
-                IPFS, in rare cases other servers could copy the end-to-end files and thus provide the files even after
-                the
-                expiry period. h) Please keep that in mind that this Service is still in beta phase.
+    <div id="Terms" class="tabcontent">
+      <h2>Terms of Service</h2>
+      <p><strong>1) Introduction</strong><br> a) PACT provides a simple way to transfer confidential and
+        end-to-end
+        encrypted digital files up to a maximum total size of 1 GB (“Service”)<br> b) PACT is free from
+        registration
+        and charge.<br> c) In this policy, “We”, “Us” and “Our” refer to PACT Care BV. For more information
+        about
+        us, see Section 11.
+        <br> d) By using our Service, you accept these terms and conditions in full; accordingly, if you
+        disagree
+        with these terms and conditions or any part of these terms and conditions, you must not use our
+        Service.
+        <br> e) Your file will be automatically encrypted in your browser (AES256-GCM) before the upload. After
+        that,
+        you receive a unique file id (hash) as well as a password. The file is available for at least 3 days.
+        f)
+        It’s recommended to use two different channels to send the file id and password. At least to one
+        channel
+        only the intended receiver should have access. In most cases, email for the file id and WhatsApp for
+        the
+        password should be fine. <br> g) PACT will permanently delete the uploaded files after the expiry
+        period
+        mentioned in Section 1e. However, since the file transfer is based on a decentralized storage network
+        named
+        IPFS, in rare cases other servers could copy the end-to-end files and thus provide the files even after
+        the
+        expiry period. h) Please keep that in mind that this Service is still in beta phase.
 
 
-            </p>
-            <p><strong>2) Copyright notice</strong><br> a) Copyright (c) 2018 PACT Care BV.<br> b) Subject to the
-                express
-                provisions of these terms and conditions:<br> i) we, together with our licensors, own and control all
-                the
-                copyright and other intellectual property rights in our Service and the material on our Service; and
-                <br>ii) all the copyright and other intellectual property rights in our Service and the material on our
-                Service
-                are reserved.
-            </p>
-            <p><strong>3) License to use service</strong><br>a) Except as expressly permitted by these terms and
-                conditions,
-                you must not edit or otherwise modify any material on our Service.
-                <br>b) Unless you own or control the relevant rights in the material, you must not:
-                <br> i) republish material from our Service (including republication on another website);
-                <br>ii) sell, rent or sub-license material from our Service;
-                <br>iii) exploit material from our Service for a commercial purpose; or
-                <br>iv) redistribute material from our Service.
-                <br>c) We reserve the right to restrict access to areas of our Service, or indeed our whole Service, at
-                our
-                discretion; you must not circumvent or bypass, or attempt to circumvent or bypass, any access
-                restriction
-                measures in our Service.
-            </p>
-            <p><strong>4) Confidentiality</strong><br>a) All file transfers between you and recipients are encrypted
-                and
-                treated confidentially. Only you and your recipients will have the key to decrypt and to look into the
-                content
-                of your transfer.
-                <br>b) You acknowledge that download links and password can be forwarded and - whoever is passed on or
-                has
-                access to a download link can download the files contained in that transfer. It's the responsibility of
-                the
-                uploader to share and take the right precautions to keep password safe.
-                <br>c) PACT provides a public log of transactions that is anonymized and stored on a distributed ledger
-                named
-                IOTA. This log includes exclusively file id as well as the date and time of uploading and downloading
-                of
-                the file transmitted.
-            </p>
-            <p><strong>5) File ownership, permissions, and responsibility</strong><br>a) You are fully and solely
-                responsible
-                and accountable for all materials and information that you upload, post or otherwise transmit via the
-                Service.
-                PACT does not claim any ownership of the contents of the files you transfer through our Service.
-                <br>b) By using our Service you guarantee that you have, for each file, all required permissions to
-                distribute,
-                transfer, store and/or make available online as part of our Service, including copyrights, intellectual
-                property
-                rights and personal data processing consents.
-            </p>
-            <p><strong>6) Restrictions</strong><br>a) PACT trusts you to use our Service responsibly. Therefore, you
-                agree
-                not to transfer, distribute or store any files that:
-                <br>i) be libelous or maliciously false;
-                <br>ii) be obscene or indecent;
-                <br>iii) infringe any copyright, moral right, database right, trademark right, design right, right in
-                passing
-                off, or other intellectual property right;
-                <br>iv) infringe any right of confidence, right of privacy or right under data protection legislation;
-                <br>v) constitute negligent advice or contain any negligent statement;
-                <br>vi) be in contempt of any court, or in breach of any court order;
-                <br>vii) be in breach of racial or religious hatred or discrimination legislation;
-                <br>viii) be blasphemous;
-                <br>ix) be in breach of official secrets legislation;
-                <br>x) be in breach of any contractual obligation owed to any person;
-                <br>xi) constitute spam;
-                <br>xii) cause annoyance, inconvenience or needless anxiety to any person.
-                <br>b) Also, you agree not to:
-                <br>i) use our Service in any way or take any action that causes, or may cause, damage to the Service
-                or
-                impairment of the performance, availability or accessibility of the Service;
-                <br>ii) probe, scan, or test the vulnerability of any system or network;
-                <br>iii) breach or otherwise circumvent any security or authentication measures;
-                <br>iv) impersonate or falsely pretend affiliation with any person or entity;
-                <br>v) access, tamper with, or use non-public areas of the Service;
-                <br>vi) conduct any systematic or automated data collection activities (including without limitation
-                scraping,
-                data mining, data extraction, and data harvesting) on or in relation to our Service without our express
-                written
-                consent;
-                <br>vii) send viruses, overloading, flooding, spamming, worms, malware to any part of the Service;
-                <br>viii) send junk mail, chain letters, altered, deceptive or false source-identifying information
-                (including
-                "spoofing" or "phishing"), unsolicited communications, promotions or advertisements to any part of the
-                Service;
-                <br>ix) sell, promote or advertise the Service unless specifically authorized to do so;
-                <br>x) circumvent transfer or storage space limits;
-                <br>xi) decipher, decompile, disassemble, reverse engineer or otherwise attempt to derive any source
-                code
-                or underlying ideas or algorithms of any part of the Service
-            </p>
-            <p><strong>7) Disclaimer</strong><br>a) We strive to provide a great Service, but there are certain things
-                that
-                we can't guarantee. To the fullest extent permitted by law, our Service is provided without any
-                warranty,
-                on an “AS-IS” basis.
-                <br>b) We disclaim any warranties of merchantability, fitness for a particular purpose, and
-                non-infringement.
-                <br>c) The use of PACT is at your own risk and you acknowledge and agree that PACT is not responsible
-                for
-                any damages to your computer system or the computer system of any third party that result from the use
-                of
-                the Service.
-                <br>d) PACT is not responsible for any failure of the Service to transfer, store or delete a file or
-                for
-                the corruption or loss of any data, information or content contained in a file.
-                <br>e) PACT reserves the right to make changes, updates or enhancements to the Service at any time
-                without
-                prior notice and makes no warranty that the Service is available on an uninterrupted, secure or
-                error-free
-                basis. We may also add or remove functionalities or features, or we may suspend or stop the Service
-                altogether.
-            </p>
-            <p><strong>8) Limitations and exclusions of liability</strong><br>a) Nothing in these terms and conditions
-                will:
-                <br>i) limit or exclude any liability for death or personal injury resulting from negligence;
-                <br>ii) limit or exclude any liability for fraud or fraudulent misrepresentation;
-                <br>iii) limit any liabilities in any way that is not permitted under applicable law; or
-                <br>iv) exclude any liabilities that may not be excluded under applicable law.
-                <br>b) The limitations and exclusions of liability set out in this Section 8 and elsewhere in these
-                terms
-                and conditions:
-                <br>i) are subject to Section 8a; and
-                <br>ii) govern all liabilities arising under these terms and conditions or relating to the subject
-                matter
-                of these terms and conditions, including liabilities arising in contract, in tort (including
-                negligence)
-                and for breach of statutory duty, except to the extent expressly provided otherwise in these terms and
-                conditions.
-                <br>c) We will not be liable to you in respect of any losses arising out of any event or events beyond
-                our
-                reasonable control.
-                <br>d) We will not be liable to you in respect of any business losses, including (without limitation)
-                loss
-                of or damage to profits, income, revenue, use, production, anticipated savings, business, contracts,
-                commercial
-                opportunities or goodwill.
-                <br>e) You accept that we have an interest in limiting the personal liability of our officers and
-                employees
-                and, having regard to that interest, you acknowledge that we are a limited liability entity; you agree
-                that
-                you will not bring any claim personally against our officers or employees in respect of any losses you
-                suffer
-                in connection with the Service or these terms and conditions (this will not, of course, limit or
-                exclude
-                the liability of the limited liability entity itself for the acts and omissions of our officers and
-                employees).
-                <br>f) In the event PACT is liable for damage under mandatory law, PACT’s aggregate liability to you
-                for
-                any and all claims arising out of or in connection with the use of the Service will in no event exceed
-                ten
-                euros (€10) per incident.
-            </p>
-            <p><strong>9) Severability</strong><br>a) If a provision of these terms and conditions is determined by any
-                court
-                or other competent authority to be unlawful and/or unenforceable, the other provisions will continue in
-                effect.
-                <br>b) If any unlawful and/or unenforceable provision of these terms and conditions would be lawful or
-                enforceable
-                if part of it were deleted, that part will be deemed to be deleted, and the rest of the provision will
-                continue
-                in effect.
-            </p>
-            <p><strong>10) Law and jurisdiction</strong><br>a) These terms and conditions shall be governed by and
-                construed
-                in accordance with Dutch law.
-                <br>b) Any disputes relating to these terms and conditions shall be subject to the exclusive
-                jurisdiction
-                of the courts of the Netherlands.
-            </p>
-            <p><strong>11) Our details</strong><br>a) This Service is owned and operated by PACT Care BV.
-                <br>b) Our principal place of business is at Herengracht 420, 1017BZ, Amsterdam, Netherlands.
-                <br> c) PACT Care BV registered at the Dutch Chamber of Commerce under 71768947.
-                <br> d) You can contact us:
-                <br>i) by post, to the postal address given above;
-                <br>ii) by telephone +31 20 893 4143;
-                <br>iii) by email, using info[at]pact[dot]care
-            </p>
-        </div>
-
-        <div id="Policies" class="tabcontent">
-            <h2>Privacy Policy</h2>
-            <p><strong>1) Introduction</strong><br>a) We are committed to safeguarding the privacy of our Service
-                (PACT)
-                users.
-                <br>b) This policy applies where we are acting as a data controller with respect to the personal data
-                of
-                our service users; in other words, where we determine the purposes and means of the processing of that
-                personal
-                data.
-                <br>c) We use cookies on our website. For detailed information on the cookies we use see the Cookie
-                Policy
-                below.
-                <br>d) In this policy, "We", "Us" and "Our" refer to PACT Care BV. For more information about us, see
-                Section
-                7 or visit our company website https://pact.care.
-                <br>e) All information transmitted through our Service is encrypted and temporarily stored on a third
-                party
-                secured cloud servers (Amazon Web Services). We take appropriate steps to maintain the security of your
-                data
-                on our service. The security of your personal information is important to us, but remember that no
-                method
-                of transmission over the internet, or method of electronic storage, is 100% secure. While we strive to
-                use
-                commercially acceptable means to protect your personal information, we cannot guarantee its absolute
-                security.
-            </p>
-            <p><strong>2) How we use your personal data</strong><br>a) In this Section 2 we have set out:
-                <br>i) the general categories of personal data that we may process;
-                <br>ii) the purposes for which we may process personal data; and
-                <br>iii) the legal bases of the processing.
-                <br>b) When using our PACT service, you do not have to sign up for an account, nor is there any other
-                kind
-                of login procedure.
-                <br>c) We may process data about your use of our service ("usage data"). The usage data may include
-                your
-                IP address, geographical location, browser type and version, operating system length of visit, page
-                views
-                and website navigation on our website. The source of the usage data of our website is provided through
-                Google
-                Analytics. This usage data may be processed for adapting the website experience according to your
-                platform.
-                The legal basis for this processing is consent.
-                <br>d) In addition to the specific purposes for which we may process your personal data set out in this
-                Section
-                2, we may also process any of your personal data where such processing is necessary for compliance with
-                a
-                legal obligation to which we are subject, or in order to protect your vital interests or the vital
-                interests
-                of another natural person.
-                <br> e) Please do not supply any other person's personal data to us, unless we prompt you to do so.
-            </p>
-            <p><strong>3) Retaining and deleting personal data</strong><br>a) This Section 3 sets out our data
-                retention
-                policies and procedure, which are designed to help ensure that we comply with our legal obligations in
-                relation
-                to the retention and deletion of personal data.
-                <br>b) Personal data that we process for any purpose or purposes shall not be kept for longer than is
-                necessary
-                for that purpose or those purposes.
-                <br>c) When using PACT your uploaded file or files (the upload) are stored on our servers for a period
-                of
-                at least 3 days by default.
-                <br>d) Your personal data collected by Google Analytics will be retained for 14 months.
-                <br>e) Notwithstanding the other provisions of this Section 3, we may retain your personal data where
-                such
-                retention is necessary for compliance with a legal obligation to which we are subject, or in order to
-                protect
-                your vital interests or the vital interests of another natural person.
-            </p>
-            <p><strong>4) Amendments</strong><br>a) We may update this policy from time to time by publishing a new
-                version
-                on our website.
-                <br>b) You should check this page occasionally to ensure you are happy with any changes to this policy.
-            </p>
-            <p><strong>5) Your rights</strong><br>a) In this Section 5, we have summarized the rights that you have
-                under
-                data protection law. Some of the rights are complex, and not all of the details have been included in
-                our
-                summaries. Accordingly, you should read the relevant laws and guidance from the regulatory authorities
-                for
-                a full explanation of these rights.
-                <br>b) Your principal rights under data protection law are:
-                <br>i) the right to access;
-                <br>ii) the right to rectification;
-                <br>iii) the right to erasure;
-                <br>iv) the right to restrict processing;
-                <br>v) the right to object to processing;
-                <br>vi) the right to data portability;
-                <br>vii) the right to complain to a supervisory authority; and
-                <br>viii) the right to withdraw consent.
-                <br>c) You have the right to confirmation as to whether or not we process your personal data and, where
-                we
-                do, access to the personal data, together with certain additional information. That additional
-                information
-                includes details of the purposes of the processing, the categories of personal data concerned and the
-                recipients
-                of the personal data. Providing the rights and freedoms of others are not affected, we will supply to
-                you
-                a copy of your personal data. The first copy will be provided free of charge, but additional copies may
-                be
-                subject to a reasonable fee.
-                <br>d) You have the right to have any inaccurate personal data about you rectified and, taking into
-                account
-                the purposes of the processing, to have any incomplete personal data about you completed.
-                <br>e) In some circumstances you have the right to the erasure of your personal data without undue
-                delay.
-                Those circumstances include: the personal data are no longer necessary in relation to the purposes for
-                which
-                they were collected or otherwise processed; you withdraw consent to consent-based processing; you
-                object
-                to the processing under certain rules of applicable data protection law and the personal data have been
-                unlawfully
-                processed. However, there are exclusions of the right to erasure. The general exclusions include where
-                processing
-                is necessary: for exercising the right of freedom of expression and information; for compliance with a
-                legal
-                obligation; or for the establishment, exercise or defense of legal claims.
-                <br>f) In some circumstances you have the right to restrict the processing of your personal data. Those
-                circumstances
-                are: you contest the accuracy of the personal data; processing is unlawful but you oppose erasure; we
-                no
-                longer need the personal data for the purposes of our processing, but you require personal data for the
-                establishment,
-                exercise or defense of legal claims; and you have objected to processing, pending the verification of
-                that
-                objection. Where processing has been restricted on this basis, we may continue to store your personal
-                data.
-                However, we will only otherwise process it: with your consent; for the establishment, exercise or
-                defense
-                of legal claims; for the protection of the rights of another natural or legal person; or for reasons of
-                important
-                public interest.
-                <br>g) You have the right to object to our processing of your personal data on grounds relating to your
-                particular
-                situation, but only to the extent that the legal basis for the processing is that the processing is
-                necessary
-                for: the performance of a task carried out in the public interest or in the exercise of any official
-                authority
-                vested in us; or the purposes of the legitimate interests pursued by us or by a third party. If you
-                make
-                such an objection, we will cease to process the personal information unless we can demonstrate
-                compelling
-                legitimate grounds for the processing which override your interests, rights and freedoms, or the
-                processing
-                is for the establishment, exercise or defense of legal claims.
-                <br>h) You have the right to object to our processing of your personal data for scientific or
-                historical
-                research purposes or statistical purposes on grounds relating to your particular situation, unless the
-                processing
-                is necessary for the performance of a task carried out for reasons of public interest. To the extent
-                that
-                the legal basis for our processing of your personal data is:
-                <br>i) consent; or
-                <br>ii) that the processing is necessary for the performance of a contract to which you are party or in
-                order
-                to take steps at your request prior to entering into a contract, and such processing is carried out by
-                automated
-                means, you have the right to receive your personal data from us in a structured, commonly used and
-                machine-readable
-                format. However, this right does not apply where it would adversely affect the rights and freedoms of
-                others.
-                <br>i) If you consider that our processing of your personal information infringes data protection laws,
-                you
-                have a legal right to lodge a complaint with a supervisory authority responsible for data protection.
-                You
-                may do so in the EU member state of your habitual residence, your place of work or the place of the
-                alleged
-                infringement.
-                <br>j) To the extent that the legal basis for our processing of your personal information is consent,
-                you
-                have the right to withdraw that consent at any time. Withdrawal will not affect the lawfulness of
-                processing
-                before the withdrawal.
-                <br>k) You may exercise any of your rights in relation to your personal data by written notice to us.
-            </p>
-            <p><strong>6) Third party services</strong><br>a) PACT partners with third party companies for purposes of
-                database
-                and storage management:
-                <br>i) File server (Amazon Web Services)
-                <br>ii) Decentralized storage (IOTA)
-                <br>We do not share with these partners any personal information.
-            </p><br>
-            <h2>Cookie Policy</h2>
-            <p><strong>1) Introduction</strong><br>a) Our website uses cookies. Insofar as those cookies are not
-                strictly
-                necessary for the provision of our website, we will ask you to consent to our use of cookies when you
-                first
-                visit our website.</p>
-            <p><strong>2) About cookies</strong><br>a) A cookie is a file containing an identifier (a string of letters
-                and
-                numbers) that is sent by a web server to a web browser and is stored by the browser. The identifier is
-                then
-                sent back to the server each time the browser requests a page from the server.
-                <br>b) Cookies may be either "persistent" cookies or "session" cookies: a persistent cookie will be
-                stored
-                by a web browser and will remain valid until its set expiry date, unless deleted by the user before the
-                expiry
-                date; a session cookie, on the other hand, will expire at the end of the user session, when the web
-                browser
-                is closed.
-                <br>c) Cookies do not typically contain any information that personally identifies a user, but personal
-                information
-                that we store about you may be linked to the information stored in and obtained from cookies.
-            </p>
-            <p><strong>3) Cookies that we use</strong><br>a) We use cookies to store your preferences in relation to
-                the use of cookies. Cookies used for this purpose are named “AgreeToTerms“ and are created by the
-                participating IPFS node.<br>
-                b) We use cookies to store your preferences in relation to the password-protection. Cookies used for
-                this purpose are named “Checkbox“ and are created by the participating IPFS node.<br>
-                c) If you open pact.online you are automatically redirected to one participating IPFS node, which hosts
-                our website. A cookie stores your redirect address so that you're always redirected to the same node.
-                Cookies used for this purpose are named: “website“.<br>
-                d)We use the local storage of your browser to keep track of your transfer history. The key of this
-                local storage is named “log” and is and created by the participating IPFS node.<br>
-            </p>
-            <p><strong>4) Cookies used by our service providers</strong><br>a) Our service providers use cookies and
-                those
-                cookies may be stored on your computer when you visit our website.
-                <br>b) We use Google Analytics to analyse the use of our website pact.online. We don’t use Google
-                Analytics on the participating IPFS nodes, only on the initial redirect page pact.online! Google
-                Analytics gathers
-                information
-                about
-                website use by means of cookies. The information gathered relating to our website is used to create
-                reports
-                about the use of our website. Google's privacy policy is available at:
-                https://www.google.com/policies/privacy/.
-                You can more about the cookies used by Google Analytics here
-                https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage
-            </p>
-            <p><strong>5) Managing cookies</strong><br>a) Most browsers allow you to refuse to accept cookies and to
-                delete
-                cookies. The methods for doing so vary from browser to browser, and from version to version. You can
-                however
-                obtain up-to-date information about blocking and deleting cookies via these links:
-                <br>i) https://support.google.com/chrome/answer/95647?hl=en (Chrome);
-                <br>ii) https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences (Firefox);
-                <br>iii) http://www.opera.com/help/tutorials/security/cookies/ (Opera);
-                <br>iv) https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies
-                (Internet
-                Explorer);
-                <br>v) https://support.apple.com/kb/PH21411 (Safari); and
-                <br>vi) https://privacy.microsoft.com/en-us/windows-10-microsoft-edge-and-privacy (Edge).
-                <br>b) Blocking all cookies will have a negative impact upon the usability of many websites.
-                <br>c) If you block cookies, you will not be able to use all the features on our website.
-            </p>
-            <p><strong>6) Our details</strong><br>a) This website is owned and operated by PACT Care BV.
-                <br>b) Our principal place of business is at Herengracht 420, 1017BZ, Amsterdam, Netherlands
-                <br>c) You can contact us:
-                <br>i) by post, to Herengracht 420, 1017BZ, Amsterdam, Netherlands;
-                <br>ii) by telephone, +31 20 893 4143;
-                <br>iii) by email, using info[at]pact[dot]care
-            </p>
-        </div>
+      </p>
+      <p><strong>2) Copyright notice</strong><br> a) Copyright (c) 2018 PACT Care BV.<br> b) Subject to the
+        express
+        provisions of these terms and conditions:<br> i) we, together with our licensors, own and control all
+        the
+        copyright and other intellectual property rights in our Service and the material on our Service; and
+        <br>ii) all the copyright and other intellectual property rights in our Service and the material on our
+        Service
+        are reserved.
+      </p>
+      <p><strong>3) License to use service</strong><br>a) Except as expressly permitted by these terms and
+        conditions,
+        you must not edit or otherwise modify any material on our Service.
+        <br>b) Unless you own or control the relevant rights in the material, you must not:
+        <br> i) republish material from our Service (including republication on another website);
+        <br>ii) sell, rent or sub-license material from our Service;
+        <br>iii) exploit material from our Service for a commercial purpose; or
+        <br>iv) redistribute material from our Service.
+        <br>c) We reserve the right to restrict access to areas of our Service, or indeed our whole Service, at
+        our
+        discretion; you must not circumvent or bypass, or attempt to circumvent or bypass, any access
+        restriction
+        measures in our Service.
+      </p>
+      <p><strong>4) Confidentiality</strong><br>a) All file transfers between you and recipients are encrypted
+        and
+        treated confidentially. Only you and your recipients will have the key to decrypt and to look into the
+        content
+        of your transfer.
+        <br>b) You acknowledge that download links and password can be forwarded and - whoever is passed on or
+        has
+        access to a download link can download the files contained in that transfer. It's the responsibility of
+        the
+        uploader to share and take the right precautions to keep password safe.
+        <br>c) PACT provides a public log of transactions that is anonymized and stored on a distributed ledger
+        named
+        IOTA. This log includes exclusively file id as well as the date and time of uploading and downloading
+        of
+        the file transmitted.
+      </p>
+      <p><strong>5) File ownership, permissions, and responsibility</strong><br>a) You are fully and solely
+        responsible
+        and accountable for all materials and information that you upload, post or otherwise transmit via the
+        Service.
+        PACT does not claim any ownership of the contents of the files you transfer through our Service.
+        <br>b) By using our Service you guarantee that you have, for each file, all required permissions to
+        distribute,
+        transfer, store and/or make available online as part of our Service, including copyrights, intellectual
+        property
+        rights and personal data processing consents.
+      </p>
+      <p><strong>6) Restrictions</strong><br>a) PACT trusts you to use our Service responsibly. Therefore, you
+        agree
+        not to transfer, distribute or store any files that:
+        <br>i) be libelous or maliciously false;
+        <br>ii) be obscene or indecent;
+        <br>iii) infringe any copyright, moral right, database right, trademark right, design right, right in
+        passing
+        off, or other intellectual property right;
+        <br>iv) infringe any right of confidence, right of privacy or right under data protection legislation;
+        <br>v) constitute negligent advice or contain any negligent statement;
+        <br>vi) be in contempt of any court, or in breach of any court order;
+        <br>vii) be in breach of racial or religious hatred or discrimination legislation;
+        <br>viii) be blasphemous;
+        <br>ix) be in breach of official secrets legislation;
+        <br>x) be in breach of any contractual obligation owed to any person;
+        <br>xi) constitute spam;
+        <br>xii) cause annoyance, inconvenience or needless anxiety to any person.
+        <br>b) Also, you agree not to:
+        <br>i) use our Service in any way or take any action that causes, or may cause, damage to the Service
+        or
+        impairment of the performance, availability or accessibility of the Service;
+        <br>ii) probe, scan, or test the vulnerability of any system or network;
+        <br>iii) breach or otherwise circumvent any security or authentication measures;
+        <br>iv) impersonate or falsely pretend affiliation with any person or entity;
+        <br>v) access, tamper with, or use non-public areas of the Service;
+        <br>vi) conduct any systematic or automated data collection activities (including without limitation
+        scraping,
+        data mining, data extraction, and data harvesting) on or in relation to our Service without our express
+        written
+        consent;
+        <br>vii) send viruses, overloading, flooding, spamming, worms, malware to any part of the Service;
+        <br>viii) send junk mail, chain letters, altered, deceptive or false source-identifying information
+        (including
+        "spoofing" or "phishing"), unsolicited communications, promotions or advertisements to any part of the
+        Service;
+        <br>ix) sell, promote or advertise the Service unless specifically authorized to do so;
+        <br>x) circumvent transfer or storage space limits;
+        <br>xi) decipher, decompile, disassemble, reverse engineer or otherwise attempt to derive any source
+        code
+        or underlying ideas or algorithms of any part of the Service
+      </p>
+      <p><strong>7) Disclaimer</strong><br>a) We strive to provide a great Service, but there are certain things
+        that
+        we can't guarantee. To the fullest extent permitted by law, our Service is provided without any
+        warranty,
+        on an “AS-IS” basis.
+        <br>b) We disclaim any warranties of merchantability, fitness for a particular purpose, and
+        non-infringement.
+        <br>c) The use of PACT is at your own risk and you acknowledge and agree that PACT is not responsible
+        for
+        any damages to your computer system or the computer system of any third party that result from the use
+        of
+        the Service.
+        <br>d) PACT is not responsible for any failure of the Service to transfer, store or delete a file or
+        for
+        the corruption or loss of any data, information or content contained in a file.
+        <br>e) PACT reserves the right to make changes, updates or enhancements to the Service at any time
+        without
+        prior notice and makes no warranty that the Service is available on an uninterrupted, secure or
+        error-free
+        basis. We may also add or remove functionalities or features, or we may suspend or stop the Service
+        altogether.
+      </p>
+      <p><strong>8) Limitations and exclusions of liability</strong><br>a) Nothing in these terms and conditions
+        will:
+        <br>i) limit or exclude any liability for death or personal injury resulting from negligence;
+        <br>ii) limit or exclude any liability for fraud or fraudulent misrepresentation;
+        <br>iii) limit any liabilities in any way that is not permitted under applicable law; or
+        <br>iv) exclude any liabilities that may not be excluded under applicable law.
+        <br>b) The limitations and exclusions of liability set out in this Section 8 and elsewhere in these
+        terms
+        and conditions:
+        <br>i) are subject to Section 8a; and
+        <br>ii) govern all liabilities arising under these terms and conditions or relating to the subject
+        matter
+        of these terms and conditions, including liabilities arising in contract, in tort (including
+        negligence)
+        and for breach of statutory duty, except to the extent expressly provided otherwise in these terms and
+        conditions.
+        <br>c) We will not be liable to you in respect of any losses arising out of any event or events beyond
+        our
+        reasonable control.
+        <br>d) We will not be liable to you in respect of any business losses, including (without limitation)
+        loss
+        of or damage to profits, income, revenue, use, production, anticipated savings, business, contracts,
+        commercial
+        opportunities or goodwill.
+        <br>e) You accept that we have an interest in limiting the personal liability of our officers and
+        employees
+        and, having regard to that interest, you acknowledge that we are a limited liability entity; you agree
+        that
+        you will not bring any claim personally against our officers or employees in respect of any losses you
+        suffer
+        in connection with the Service or these terms and conditions (this will not, of course, limit or
+        exclude
+        the liability of the limited liability entity itself for the acts and omissions of our officers and
+        employees).
+        <br>f) In the event PACT is liable for damage under mandatory law, PACT’s aggregate liability to you
+        for
+        any and all claims arising out of or in connection with the use of the Service will in no event exceed
+        ten
+        euros (€10) per incident.
+      </p>
+      <p><strong>9) Severability</strong><br>a) If a provision of these terms and conditions is determined by any
+        court
+        or other competent authority to be unlawful and/or unenforceable, the other provisions will continue in
+        effect.
+        <br>b) If any unlawful and/or unenforceable provision of these terms and conditions would be lawful or
+        enforceable
+        if part of it were deleted, that part will be deemed to be deleted, and the rest of the provision will
+        continue
+        in effect.
+      </p>
+      <p><strong>10) Law and jurisdiction</strong><br>a) These terms and conditions shall be governed by and
+        construed
+        in accordance with Dutch law.
+        <br>b) Any disputes relating to these terms and conditions shall be subject to the exclusive
+        jurisdiction
+        of the courts of the Netherlands.
+      </p>
+      <p><strong>11) Our details</strong><br>a) This Service is owned and operated by PACT Care BV.
+        <br>b) Our principal place of business is at Herengracht 420, 1017BZ, Amsterdam, Netherlands.
+        <br> c) PACT Care BV registered at the Dutch Chamber of Commerce under 71768947.
+        <br> d) You can contact us:
+        <br>i) by post, to the postal address given above;
+        <br>ii) by telephone +31 20 893 4143;
+        <br>iii) by email, using info[at]pact[dot]care
+      </p>
     </div>
 
-    <div class="footer">
-        <a href=".">Transfer</a>
-        <a href="history.html">History</a>
-        <a href="about.html" id="currentPage">About</a>
+    <div id="Policies" class="tabcontent">
+      <h2>Privacy Policy</h2>
+      <p><strong>1) Introduction</strong><br>a) We are committed to safeguarding the privacy of our Service
+        (PACT)
+        users.
+        <br>b) This policy applies where we are acting as a data controller with respect to the personal data
+        of
+        our service users; in other words, where we determine the purposes and means of the processing of that
+        personal
+        data.
+        <br>c) We use cookies on our website. For detailed information on the cookies we use see the Cookie
+        Policy
+        below.
+        <br>d) In this policy, "We", "Us" and "Our" refer to PACT Care BV. For more information about us, see
+        Section
+        7 or visit our company website https://pact.care.
+        <br>e) All information transmitted through our Service is encrypted and temporarily stored on a third
+        party
+        secured cloud servers (Amazon Web Services). We take appropriate steps to maintain the security of your
+        data
+        on our service. The security of your personal information is important to us, but remember that no
+        method
+        of transmission over the internet, or method of electronic storage, is 100% secure. While we strive to
+        use
+        commercially acceptable means to protect your personal information, we cannot guarantee its absolute
+        security.
+      </p>
+      <p><strong>2) How we use your personal data</strong><br>a) In this Section 2 we have set out:
+        <br>i) the general categories of personal data that we may process;
+        <br>ii) the purposes for which we may process personal data; and
+        <br>iii) the legal bases of the processing.
+        <br>b) When using our PACT service, you do not have to sign up for an account, nor is there any other
+        kind
+        of login procedure.
+        <br>c) We may process data about your use of our service ("usage data"). The usage data may include
+        your
+        IP address, geographical location, browser type and version, operating system length of visit, page
+        views
+        and website navigation on our website. The source of the usage data of our website is provided through
+        Google
+        Analytics. This usage data may be processed for adapting the website experience according to your
+        platform.
+        The legal basis for this processing is consent.
+        <br>d) In addition to the specific purposes for which we may process your personal data set out in this
+        Section
+        2, we may also process any of your personal data where such processing is necessary for compliance with
+        a
+        legal obligation to which we are subject, or in order to protect your vital interests or the vital
+        interests
+        of another natural person.
+        <br> e) Please do not supply any other person's personal data to us, unless we prompt you to do so.
+      </p>
+      <p><strong>3) Retaining and deleting personal data</strong><br>a) This Section 3 sets out our data
+        retention
+        policies and procedure, which are designed to help ensure that we comply with our legal obligations in
+        relation
+        to the retention and deletion of personal data.
+        <br>b) Personal data that we process for any purpose or purposes shall not be kept for longer than is
+        necessary
+        for that purpose or those purposes.
+        <br>c) When using PACT your uploaded file or files (the upload) are stored on our servers for a period
+        of
+        at least 3 days by default.
+        <br>d) Your personal data collected by Google Analytics will be retained for 14 months.
+        <br>e) Notwithstanding the other provisions of this Section 3, we may retain your personal data where
+        such
+        retention is necessary for compliance with a legal obligation to which we are subject, or in order to
+        protect
+        your vital interests or the vital interests of another natural person.
+      </p>
+      <p><strong>4) Amendments</strong><br>a) We may update this policy from time to time by publishing a new
+        version
+        on our website.
+        <br>b) You should check this page occasionally to ensure you are happy with any changes to this policy.
+      </p>
+      <p><strong>5) Your rights</strong><br>a) In this Section 5, we have summarized the rights that you have
+        under
+        data protection law. Some of the rights are complex, and not all of the details have been included in
+        our
+        summaries. Accordingly, you should read the relevant laws and guidance from the regulatory authorities
+        for
+        a full explanation of these rights.
+        <br>b) Your principal rights under data protection law are:
+        <br>i) the right to access;
+        <br>ii) the right to rectification;
+        <br>iii) the right to erasure;
+        <br>iv) the right to restrict processing;
+        <br>v) the right to object to processing;
+        <br>vi) the right to data portability;
+        <br>vii) the right to complain to a supervisory authority; and
+        <br>viii) the right to withdraw consent.
+        <br>c) You have the right to confirmation as to whether or not we process your personal data and, where
+        we
+        do, access to the personal data, together with certain additional information. That additional
+        information
+        includes details of the purposes of the processing, the categories of personal data concerned and the
+        recipients
+        of the personal data. Providing the rights and freedoms of others are not affected, we will supply to
+        you
+        a copy of your personal data. The first copy will be provided free of charge, but additional copies may
+        be
+        subject to a reasonable fee.
+        <br>d) You have the right to have any inaccurate personal data about you rectified and, taking into
+        account
+        the purposes of the processing, to have any incomplete personal data about you completed.
+        <br>e) In some circumstances you have the right to the erasure of your personal data without undue
+        delay.
+        Those circumstances include: the personal data are no longer necessary in relation to the purposes for
+        which
+        they were collected or otherwise processed; you withdraw consent to consent-based processing; you
+        object
+        to the processing under certain rules of applicable data protection law and the personal data have been
+        unlawfully
+        processed. However, there are exclusions of the right to erasure. The general exclusions include where
+        processing
+        is necessary: for exercising the right of freedom of expression and information; for compliance with a
+        legal
+        obligation; or for the establishment, exercise or defense of legal claims.
+        <br>f) In some circumstances you have the right to restrict the processing of your personal data. Those
+        circumstances
+        are: you contest the accuracy of the personal data; processing is unlawful but you oppose erasure; we
+        no
+        longer need the personal data for the purposes of our processing, but you require personal data for the
+        establishment,
+        exercise or defense of legal claims; and you have objected to processing, pending the verification of
+        that
+        objection. Where processing has been restricted on this basis, we may continue to store your personal
+        data.
+        However, we will only otherwise process it: with your consent; for the establishment, exercise or
+        defense
+        of legal claims; for the protection of the rights of another natural or legal person; or for reasons of
+        important
+        public interest.
+        <br>g) You have the right to object to our processing of your personal data on grounds relating to your
+        particular
+        situation, but only to the extent that the legal basis for the processing is that the processing is
+        necessary
+        for: the performance of a task carried out in the public interest or in the exercise of any official
+        authority
+        vested in us; or the purposes of the legitimate interests pursued by us or by a third party. If you
+        make
+        such an objection, we will cease to process the personal information unless we can demonstrate
+        compelling
+        legitimate grounds for the processing which override your interests, rights and freedoms, or the
+        processing
+        is for the establishment, exercise or defense of legal claims.
+        <br>h) You have the right to object to our processing of your personal data for scientific or
+        historical
+        research purposes or statistical purposes on grounds relating to your particular situation, unless the
+        processing
+        is necessary for the performance of a task carried out for reasons of public interest. To the extent
+        that
+        the legal basis for our processing of your personal data is:
+        <br>i) consent; or
+        <br>ii) that the processing is necessary for the performance of a contract to which you are party or in
+        order
+        to take steps at your request prior to entering into a contract, and such processing is carried out by
+        automated
+        means, you have the right to receive your personal data from us in a structured, commonly used and
+        machine-readable
+        format. However, this right does not apply where it would adversely affect the rights and freedoms of
+        others.
+        <br>i) If you consider that our processing of your personal information infringes data protection laws,
+        you
+        have a legal right to lodge a complaint with a supervisory authority responsible for data protection.
+        You
+        may do so in the EU member state of your habitual residence, your place of work or the place of the
+        alleged
+        infringement.
+        <br>j) To the extent that the legal basis for our processing of your personal information is consent,
+        you
+        have the right to withdraw that consent at any time. Withdrawal will not affect the lawfulness of
+        processing
+        before the withdrawal.
+        <br>k) You may exercise any of your rights in relation to your personal data by written notice to us.
+      </p>
+      <p><strong>6) Third party services</strong><br>a) PACT partners with third party companies for purposes of
+        database
+        and storage management:
+        <br>i) File server (Amazon Web Services)
+        <br>ii) Decentralized storage (IOTA)
+        <br>We do not share with these partners any personal information.
+      </p><br>
+      <h2>Cookie Policy</h2>
+      <p><strong>1) Introduction</strong><br>a) Our website uses cookies. Insofar as those cookies are not
+        strictly
+        necessary for the provision of our website, we will ask you to consent to our use of cookies when you
+        first
+        visit our website.</p>
+      <p><strong>2) About cookies</strong><br>a) A cookie is a file containing an identifier (a string of letters
+        and
+        numbers) that is sent by a web server to a web browser and is stored by the browser. The identifier is
+        then
+        sent back to the server each time the browser requests a page from the server.
+        <br>b) Cookies may be either "persistent" cookies or "session" cookies: a persistent cookie will be
+        stored
+        by a web browser and will remain valid until its set expiry date, unless deleted by the user before the
+        expiry
+        date; a session cookie, on the other hand, will expire at the end of the user session, when the web
+        browser
+        is closed.
+        <br>c) Cookies do not typically contain any information that personally identifies a user, but personal
+        information
+        that we store about you may be linked to the information stored in and obtained from cookies.
+      </p>
+      <p><strong>3) Cookies that we use</strong><br>a) We use cookies to store your preferences in relation to
+        the use of cookies. Cookies used for this purpose are named “AgreeToTerms“ and are created by the
+        participating IPFS node.<br>
+        b) We use cookies to store your preferences in relation to the password-protection. Cookies used for
+        this purpose are named “Checkbox“ and are created by the participating IPFS node.<br>
+        c) If you open pact.online you are automatically redirected to one participating IPFS node, which hosts
+        our website. A cookie stores your redirect address so that you're always redirected to the same node.
+        Cookies used for this purpose are named: “website“.<br>
+        d)We use the local storage of your browser to keep track of your transfer history. The key of this
+        local storage is named "logs" and is and created by the participating IPFS node.<br>
+        d)We use the local storage of your browser to store your personal background image. The key of this
+        local storage is named "imgData" and is and created by the participating IPFS node.<br>
+      </p>
+      <p><strong>4) Cookies used by our service providers</strong><br>a) Our service providers use cookies and
+        those
+        cookies may be stored on your computer when you visit our website.
+        <br>b) We use Google Analytics to analyse the use of our website pact.online. We don’t use Google
+        Analytics on the participating IPFS nodes, only on the initial redirect page pact.online! Google
+        Analytics gathers
+        information
+        about
+        website use by means of cookies. The information gathered relating to our website is used to create
+        reports
+        about the use of our website. Google's privacy policy is available at:
+        https://www.google.com/policies/privacy/.
+        You can more about the cookies used by Google Analytics here
+        https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage
+      </p>
+      <p><strong>5) Managing cookies</strong><br>a) Most browsers allow you to refuse to accept cookies and to
+        delete
+        cookies. The methods for doing so vary from browser to browser, and from version to version. You can
+        however
+        obtain up-to-date information about blocking and deleting cookies via these links:
+        <br>i) https://support.google.com/chrome/answer/95647?hl=en (Chrome);
+        <br>ii) https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences (Firefox);
+        <br>iii) http://www.opera.com/help/tutorials/security/cookies/ (Opera);
+        <br>iv) https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies
+        (Internet
+        Explorer);
+        <br>v) https://support.apple.com/kb/PH21411 (Safari); and
+        <br>vi) https://privacy.microsoft.com/en-us/windows-10-microsoft-edge-and-privacy (Edge).
+        <br>b) Blocking all cookies will have a negative impact upon the usability of many websites.
+        <br>c) If you block cookies, you will not be able to use all the features on our website.
+      </p>
+      <p><strong>6) Our details</strong><br>a) This website is owned and operated by PACT Care BV.
+        <br>b) Our principal place of business is at Herengracht 420, 1017BZ, Amsterdam, Netherlands
+        <br>c) You can contact us:
+        <br>i) by post, to Herengracht 420, 1017BZ, Amsterdam, Netherlands;
+        <br>ii) by telephone, +31 20 893 4143;
+        <br>iii) by email, using info[at]pact[dot]care
+      </p>
     </div>
+  </div>
+
+  <div class="footer">
+    <a href=".">Transfer</a>
+    <a href="history.html">History</a>
+    <a href="about.html" id="currentPage">About</a>
+  </div>
+  <div id="right">
+    <i id="filtersubmit" class="far fa-image"></i>
+    <input id="backgroundUpload" type="file" name="filename" accept="image/gif, image/jpeg, image/png">
+    <i id="resetImage" class="fas fa-ban"></i>
+  </div>
 
 </body>
 
