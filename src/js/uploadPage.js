@@ -17,6 +17,7 @@ import '../css/alert.css';
 
 const SIZELIMIT = 1000; // In MB
 let filename;
+let isMobile;
 
 function progressBar(percent) {
   const elem = document.getElementById('loadBar');
@@ -54,8 +55,8 @@ function prepareStepsLayout() {
     .setAttribute('style', 'display:block !important');
 }
 
-function OpenOnMobile() {
-  let isMobile = false;
+function CheckIsMobile() {
+  isMobile = false;
   if (
     /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
       navigator.userAgent,
@@ -66,7 +67,6 @@ function OpenOnMobile() {
   ) {
     isMobile = true;
   }
-  return isMobile;
 }
 
 function errorMessage(errorMsg) {
@@ -82,7 +82,7 @@ function errorMessage(errorMsg) {
   document.getElementById('fileAvailable').style.color = '#db3e4d';
 }
 
-function unencryptedLayout(fingerPrint, isMobile) {
+function unencryptedLayout(fingerPrint) {
   document.getElementById('passwordStep').remove();
   document.getElementById('passwordTab').remove();
   document.getElementById('doneHeadline').innerHTML = 'Step 2: Done';
@@ -91,7 +91,7 @@ function unencryptedLayout(fingerPrint, isMobile) {
   }receive.html?id=${fingerPrint}&password=nopass`;
   document.getElementById('emailSharer').href = `mailto:?subject=Decentralized File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
     link,
-  )}%0D%0A %0D%0A` + 'Best Regards,';
+  )}%0D%0A %0D%0A Best Regards,`;
   if (isMobile) {
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
       document.getElementById(
@@ -109,14 +109,14 @@ function unencryptedLayout(fingerPrint, isMobile) {
   document.getElementById('ipfsHash').innerText = link;
 }
 
-function encryptedLayout(fingerPrint, isMobile) {
+function encryptedLayout(fingerPrint) {
   const link = `${window.location.href}receive.html?id=${fingerPrint}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').innerText = link;
   document.getElementById('emailSharer').href = `${'mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
     + '1. Open the link below %0D%0A'
     + "2. Enter the password I'll share with you via WhatsApp or Telegram %0D%0A %0D%0A"
-    + 'Link: '}${encodeURIComponent(link)}%0D%0A %0D%0A` + 'Best Regards,';
+    + 'Link: '}${encodeURIComponent(link)}%0D%0A %0D%0A Best Regards,`;
   if (isMobile) {
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
       document.getElementById(
@@ -145,7 +145,6 @@ function uploadToIPFS(buf, isEncrypted) {
   xhr.onreadystatechange = async function onreadystatechange() {
     if (this.readyState === this.HEADERS_RECEIVED) {
       const fingerPrint = xhr.getResponseHeader('ipfs-hash');
-      const isMobile = OpenOnMobile();
       if (fingerPrint == null || typeof fingerPrint === 'undefined') {
         prepareStepsLayout();
         errorMessage("The current IPFS gateway you are using  isn't writable!");
@@ -164,9 +163,9 @@ function uploadToIPFS(buf, isEncrypted) {
             isEncrypted,
           );
           if (isEncrypted) {
-            encryptedLayout(fingerPrint, isMobile);
+            encryptedLayout(fingerPrint);
           } else {
-            unencryptedLayout(fingerPrint, isMobile);
+            unencryptedLayout(fingerPrint);
           }
         });
       }
@@ -190,9 +189,14 @@ function encryptBeforeUpload(reader) {
     exportKeyPromise.then((keydata) => {
       const keyString = keydata.k;
       document.getElementById('password').innerText = keyString;
+      let whatsappLink = `https://api.whatsapp.com/send?text=${keyString}`;
+      if (!isMobile) {
+        whatsappLink = `https://web.whatsapp.com/send?text=${keyString}`;
+      }
+      // what
       document.getElementById(
         'whatsappSharer',
-      ).href = `https://api.whatsapp.com/send?text=${keyString}`;
+      ).href = whatsappLink;
       document.getElementById('telegramSharer').href = `https://telegram.me/share/url?url=${
         window.location.href
       }receive.html`
@@ -236,6 +240,7 @@ function readFile(e) {
 }
 
 function upload() {
+  CheckIsMobile();
   const fileSelect = document.getElementById('file-upload');
   const fileDrag = document.getElementById('file-drag');
   fileSelect.addEventListener('change', readFile, false);

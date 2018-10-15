@@ -65,3 +65,11 @@ document.getElementById('resetImage').addEventListener('click', () => {
 });
 
 document.getElementById('backgroundUpload').addEventListener('change', readBackgroundImage, false);
+
+// update vh on mobile
+const vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+window.addEventListener('resize', () => {
+  const vhResize = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vhResize}px`);
+});
