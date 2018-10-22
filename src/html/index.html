@@ -32,6 +32,15 @@
     </div>
   </div>
 
+  <!-- Video container -->
+  <div id='video-ovelay'>
+    <div id="videocontainer" data-layer="0">
+      <iframe id="htmlvideo" src="https://www.youtube.com/embed/d3odaUwQU2M?enablejsapi=1" allowscriptaccess="always"
+        frameborder="0" allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
   <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo"><br>
   <div id="passwordDiv">
     <span id="passwordProtected">Password-Protected</span>
@@ -55,7 +64,7 @@
         <img id="file-image" src="#" alt="Preview" class="hidden">
         <div id="start">
           <i class="fas fa-download" aria-hidden="true"></i>
-          <div>Select a file to start the transfer <br>(free up to 1GB)
+          <div>Select a file to start the free transfer <br>(up to 1GB)
           </div>
         </div>
         <div id="response" class="hidden">
@@ -88,8 +97,10 @@
       <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent" href="sms:?body=nachricht"><i class="fas fa-mobile-alt"></i></a>
       or
       <a class="share" onclick="nextPrev(1)" id="copyFirstLink"><i class="far fa-copy"></i></a>
+      <br>
+      <span id="explainText1">via Email, SMS or Copy Link</span>
       <pre class="longLink">
-      <a id="ipfsHash"  onclick="nextPrev(1)" target="_blank">Qmbeb1LwBrHuNyLXxLYH8SPpAaVNsZpS1kJ6mfvWxxh3YV</a>
+      <a id="ipfsHash"  target="_blank">Qmbeb1LwBrHuNyLXxLYH8SPpAaVNsZpS1kJ6mfvWxxh3YV</a>
       </pre>
     </div>
     <div class="tab" id="passwordTab">
@@ -100,6 +111,8 @@
       <a class="share" id="telegramSharer" onclick="nextPrev(1)" href="https:" target="_blank"><i class="fab fa-telegram-plane"></i></a>
       or
       <a class="share" onclick="nextPrev(1)" id="copySecondLink"><i class="far fa-copy"></i></a>
+      <br>
+      via WhatsApp, Telegram or Copy Link
       <pre class="longLink">
         <span id="password" target="_blank">AwesomePassword</span>
       </pre>
@@ -125,7 +138,8 @@
     </div>
   </div>
 
-  <p class="lead" id="headline">Secure file transfer that puts you in control of your data</p>
+  <p class="lead" id="headline">Next generation secure file transfer <br>
+    <span id="videoLink"><i class="fas fa-play-circle"></i> Watch the Video</span></p>
   <div id="adDoFrame">
     <pre class="donation"><a class="donation" id="donationLink" href="https://thetangle.org/address/SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUY" target="_blank">IOTA Donation address</a>
     </pre>

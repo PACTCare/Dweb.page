@@ -192,6 +192,7 @@ function encryptBeforeUpload(reader) {
       let whatsappLink = `https://api.whatsapp.com/send?text=${keyString}`;
       if (!isMobile) {
         whatsappLink = `https://web.whatsapp.com/send?text=${keyString}`;
+        document.getElementById('explainText1').innerHTML = 'via Email or Copy Link';
       }
       // what
       document.getElementById(
@@ -246,5 +247,14 @@ function upload() {
   fileSelect.addEventListener('change', readFile, false);
   fileDrag.addEventListener('drop', readFile, false);
 }
+
+document.getElementById('videoLink').addEventListener('click', () => {
+  document.getElementById('video-ovelay').style.display = 'block';
+});
+document.getElementById('video-ovelay').addEventListener('click', () => {
+  document.getElementById('video-ovelay').style.display = 'none';
+  const iframe = document.getElementById('htmlvideo').contentWindow;
+  iframe.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+});
 
 upload();
