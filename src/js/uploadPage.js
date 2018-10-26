@@ -93,6 +93,7 @@ function unencryptedLayout(fingerPrint) {
     link,
   )}%0D%0A %0D%0A Best Regards,`;
   if (isMobile) {
+    document.getElementById('explainText1').innerHTML = 'via Email or Copy Link';
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
       document.getElementById(
         'smsSharer',
