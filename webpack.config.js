@@ -16,25 +16,6 @@ const minifySettings = {
   removeStyleLinkTypeAttributes: true,
   useShortDoctype: true,
 };
-const obfuscatorSettings = {
-  compact: true,
-  controlFlowFlattening: false,
-  // controlFlowFlatteningThreshold: 0.5,
-  deadCodeInjection: false,
-  // debugProtection: true, // causes loading problems
-  // debugProtectionInterval: true, //caused issues on iphone
-  disableConsoleOutput: true,
-  // identifiersPrefix: "p",
-  identifierNamesGenerator: 'hexadecimal',
-  log: false,
-  renameGlobals: false,
-  rotateStringArray: true,
-  // selfDefending: true, // generaly causes problem
-  stringArray: true,
-  stringArrayEncoding: 'base64',
-  stringArrayThreshold: 1, //= 1 because of signature key
-  unicodeEscapeSequence: false,
-};
 
 module.exports = {
   mode: 'production',
@@ -105,17 +86,6 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-        },
-      },
-      {
-        test: /\.js$/,
-        include: [
-          path.resolve(__dirname, 'src/js/log'),
-        ],
-        enforce: 'post', // makes sure it's called after other loaders!
-        use: {
-          loader: 'obfuscator-loader',
-          options: obfuscatorSettings,
         },
       },
     ],

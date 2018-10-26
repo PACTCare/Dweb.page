@@ -16,7 +16,6 @@ export default class Iota {
     gateway,
     isEncrypted,
     signature,
-    pageSignature,
   ) {
     const params = {
       id: idNumber,
@@ -26,7 +25,6 @@ export default class Iota {
       upload: isUpload,
       encrypted: isEncrypted,
       signature,
-      pageSignature,
     };
 
     // not needed since the tangle as poWaas integrated!

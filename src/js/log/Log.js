@@ -30,9 +30,6 @@ export default class Log {
     const signature = sig.sign(
       idNumber + fileId + time + gateway + isUpload + isEncrypted,
     );
-    const pageSignature = sig.pageSign(
-      idNumber + fileId + time + gateway + isUpload + isEncrypted,
-    );
     new Iota().send(
       idNumber,
       fileId,
@@ -41,7 +38,6 @@ export default class Log {
       gateway,
       isEncrypted,
       signature,
-      pageSignature,
     );
   }
 }

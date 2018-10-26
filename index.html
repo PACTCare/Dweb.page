@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>IPFSnode Documentation</title>
+  <meta name="description" content="IPFSnode Documentation">
+  <meta name="author" content="David Hawig">
+  <meta name="format-detection" content="telephone=no">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=latin,cyrillic' rel='stylesheet'
+    type='text/css'>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/prettify.css">
+  <link rel="stylesheet" type="text/css" href="css/normalize.css">
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-2 col-xs-12 left">
+          <div id="logo">
+            <img src="images/logo.png" alt="vdoc">
+          </div>
+        </div>
+        <div class="col-lg-8 col-md-7 col-xs-12">
+          <div class="slogan">
+            IPFSnode Documentation
+          </div>
+        </div>
+        <!-- <div class="col-lg-2 col-md-3 col-xs-12 right">
+					<a class="btn" href="http://dev.valthemes.com/vdoc/Vdoc-Free-Documentation-HTML-template.rar">download now</a>
+				</div> -->
+      </div>
+    </div>
+  </header>
+  <section class="content">
+    <div class="container">
+      <div class="content-wrap">
+        <div class="row">
+          <aside>
+            <div class="menu-box">
+              <h4>Navigation</h4>
+              <nav>
+                <ul>
+                  <li><a href="#start" class="current">About IPFSnode</a></li>
+                  <li><a href="#ipfs">Why IPFS + IOTA?</a></li>
+                  <li><a href="#features">Gateway</a></li>
+                  <li><a href="#code">API (RPC)</a></li>
+                </ul>
+              </nav>
+            </div>
+          </aside>
+          <div class="content-info">
+            <div class="section-txt" id="start">
+              <h3>About IPFSnode</h3>
+              <p>We at <a href="https://pact.care/" target="_blank">PACT Care</a> set up this <a href="https://ipfs.io/"
+                  target="_blank">IPFS</a> test node mainly for our own IOTA project called <a href="https://ecosystem.iota.org/projects/untangle-care"
+                  traget="_blank">Untangle Care</a>.
+                But we believe that others might be interested in using IPFS for their projects as well and since there
+                are currently only a
+                limited number of IPFS nodes available (and almost none allows you to pin your content!), we made our
+                node public available.
+                However, keep in mind as soon as the demand gets too high, we might need to charge for it or shut down
+                the service entirely. </p>
+              <p>Until then feel free to make an IOTA donation to help us with our projects and keep this node running
+                for free as long as possible:</p>
+              <pre class="prettyprint">SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUYFZOTSAS9C</pre>
+              <p>❗ Don’t upload or request any illegal data from our IPFS node! If you find illegal data hosted on our
+                service let me know at david[dot]hawig[at]pact[dot]care and I will delete it! </p>
+            </div>
+            <div class="section-txt" id="ipfs">
+              <h3>Why IPFS + IOTA?</h3>
+              <p>Storing big files permanent on the tangle is a problem since you usually end up doing a huge number of
+                proof of works, which is quite
+                inefficient and takes a lot of time. Instead, you just want to store a link to the file on the tangle
+                and store the actual file with
+                an off-tangle solution. The problem with this is that links always point to the same location, so you
+                can not really decentralize
+                the off-tangle solution and you will always break the previously uploaded links if you decide to switch
+                your storage provider.
+                That is where IPFS (InterPlanetary File System) helps. With IPFS the files don’t get a unique address
+                which tells you where to
+                find something, but rather they simply get a unique fingerprint called a cryptographic hash, which is
+                similar to a unique name.
+                This way you can simply share the unique fingerprint of a file on the tangle and can change your
+                storage provider of the file
+                whenever you want. Furthermore, it’s easy to decentralize the system since multiple parties can store
+                your file with the same
+                unique hash</p>
+            </div>
+            <div class="section-txt" id="features">
+              <h3>Gateway</h3>
+              <h4>GET method:</h4>
+              <p>By default, an HTTP gateway for IPFS only supports the HTTP GET method. This allows you to fetch a
+                resource by its hash and, if the hash is a directory, by the path from that directory to a named file.</p>
+              <p>You can open files by accessing the IPFS gateway of this node under https://ipfsnode.de/ipfs/, for
+                example <a href="https://ipfsnode.de/ipfs/QmQzCQn4puG4qu8PVysxZmscmQ5vT1ZXpqo7f58Uh9QfyY" target="_blank">https://ipfsnode.de/ipfs/QmQzCQn4puG4qu8PVysxZmscmQ5vT1ZXpqo7f58Uh9QfyY</a></p>
+              <h4>POST method:</h4>
+              <p>The Gateway of this node is a writeable gateway. So, you can send POST requests to <a href="https://ipfsnode.de/ipfs/"
+                  target="_blank">https://ipfsnode.de/ipfs/</a> for example with <a href="https://www.getpostman.com/"
+                  target="_blank">Postman</a> </p>
+              <p>However, keep in mind that the gateway will not pin the resulting hashes of these operations. </p>
+            </div>
+            <div class="section-txt" id="code">
+              <h3>API (RPC)</h3>
+              <p>You can access the API of this node under <b><a href="https://ipfsnode.de:5002/" target="_blank">https://ipfsnode.de:5002/</a></b>
+                and you can find the complete documentation of the IPFS API under the following link: <a href="https://ipfs.io/docs/api/"
+                  target="_blank">https://ipfs.io/docs/api/</a></p>
+              <p>To integrate IPFS in your application I recommend using the appropriate client library (for example <a
+                  href="https://github.com/richardschneider/net-ipfs-api" target="_blank">net-ipfs-api</a> for c#).</p>
+              <p>At the moment, only the /api/v0/add endpoint is publicly available for security reasons. The great
+                thing about it is that this endpoint
+                actually allows you to store your content permanent on the node, so you don’t have to be scared that
+                it’s gone after a
+                couple of hours. If you need access to other parts of the API, feel free to reach out to me
+                (david[dot]hawig[at]pact[dot]care). </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="footer-area">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 center">
+          This template presents by <a href="http://dev.valthemes.com" target="_blank">valthemes.com</a>. This product
+          was created as free.<br>You can use this as you like in noncommercial purposes.
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 center">
+          Developed by valthemes.com © 2016. All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/prettify.min.js"></script>
+  <script src="js/scripts.min.js"></script>
+</body>
+
+</html>

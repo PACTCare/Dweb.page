@@ -95,18 +95,17 @@ function printLog(iotaLogArray, storageLogArray) {
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
           const ver = sig.verification(uploadArray[i], pubSigKey);
-          const pageVer = sig.pageVerification(uploadArray[i]);
           if (i === 0) {
-            if (ver && pageVer) {
+            if (ver) {
               cellUpload = uploadArray[i].time.replace(',', '')
                 + signedLinkPartOne
                 + pubSigKey
                 + signedLinkPartTwo;
               cellUploadSig = pubSigKey;
-            } else if (pageVer) {
+            } else {
               cellUpload = uploadArray[i].time.replace(',', '');
             }
-          } else if (ver && pageVer) {
+          } else if (ver) {
             cellUpload = `${cellUpload
             }\n ${
               uploadArray[i].time.replace(',', '')
@@ -114,7 +113,7 @@ function printLog(iotaLogArray, storageLogArray) {
             }${pubSigKey
             }${signedLinkPartTwo}`;
             cellUploadSig = `${cellUpload}\n ${pubSigKey}`;
-          } else if (pageVer) {
+          } else {
             cellUpload = `${cellUpload}\n ${uploadArray[i].time.replace(',', '')}`;
           }
         }
