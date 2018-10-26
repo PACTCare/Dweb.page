@@ -7,6 +7,9 @@ The most recent online version of Pact.online has the following hash:
 ```
 QmXtczzs71nXWYEgFUFUu5C1WMRUZQpo3h1AtR8LYHkoui
 ```
+## Hosting
+
+[Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
 
 ## Security
 For a detailed description of the security of Pact.online see the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Security%20Whitepaper_V0.1.pdf). 
