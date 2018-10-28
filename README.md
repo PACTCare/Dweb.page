@@ -14,7 +14,7 @@ QmdX9vAnqCcJfLSGFFS9c4fawNwwZsPR9pgZMdJYot9cs9
 [Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
 
 ## Security
-For a detailed description of the security of Pact.online see the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Security%20Whitepaper_V0.1.pdf).
+For a detailed description of the security of Pact.online see the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Secuirty%20Whitepaper_V0.11.pdf).
 
 ## Participate
 If you wish to participate you can simply set up your own IPFS node with a writeable gateway. You need to allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care so we then can integrate your side on our main page. Currently, we share the IOTA donations equally among all participants at the end of every month. For transparency, you can track all donations under the current IOTA donation address. In the future, we might set up an advertising model to make it more attractive for IPFS nodes to participate.
