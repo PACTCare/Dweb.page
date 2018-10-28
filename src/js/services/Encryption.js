@@ -1,11 +1,13 @@
-const ENCRYPTIONNAME = 'AES-GCM';
-const TAGLENGTH = 128;
-
 export default class Encryption {
+  constructor() {
+    this.encryptionName = 'AES-GCM';
+    this.tagLength = 128;
+  }
+
   generateKey() {
     return window.crypto.subtle.generateKey(
       {
-        name: ENCRYPTIONNAME,
+        name: this.encryptionName,
         length: 256,
       },
       true, // whether the key is extractable
@@ -23,9 +25,9 @@ export default class Encryption {
   encryption(initialVector, key, reader) {
     return window.crypto.subtle.encrypt(
       {
-        name: ENCRYPTIONNAME,
+        name: this.encryptionName,
         iv: initialVector,
-        tagLength: TAGLENGTH,
+        tagLength: this.tagLength,
       },
       key,
       reader.result,
@@ -35,9 +37,9 @@ export default class Encryption {
   decrypt(initialVector, key, fileArray) {
     return window.crypto.subtle.decrypt(
       {
-        name: ENCRYPTIONNAME,
+        name: this.encryptionName,
         iv: initialVector,
-        tagLength: TAGLENGTH,
+        tagLength: this.tagLength,
       },
       key,
       fileArray.buffer,
@@ -54,7 +56,7 @@ export default class Encryption {
         ext: true,
       },
       {
-        name: ENCRYPTIONNAME,
+        name: this.encryptionName,
         length: 256,
       },
       true, // whether the key is extractable (i.e. can be used in exportKey)

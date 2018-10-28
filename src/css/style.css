@@ -24,6 +24,9 @@ body,
   display: inline-flex;
   align-items: center;
 }
+#passwordField {
+  display: none;
+}
 
 #filtersubmit {
   color: #db3e4d;
@@ -153,6 +156,13 @@ a:active {
   color: #fff;
 }
 
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
 pre {
   margin-top: 0;
   margin-bottom: 0;
@@ -173,7 +183,7 @@ pre {
 }
 .receiveHeadline {
   margin-top: 0px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .boxInput {

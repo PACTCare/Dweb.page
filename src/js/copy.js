@@ -1,8 +1,3 @@
-document.getElementById('copyFirstLink').addEventListener('click', copyHash);
-document
-  .getElementById('copySecondLink')
-  .addEventListener('click', copyPassword);
-
 function copy(copyText) {
   const textArea = document.createElement('textarea');
   textArea.value = copyText.textContent;
@@ -43,3 +38,8 @@ function copyPassword() {
     document.getElementById('notification2').innerHTML = '';
   }, 5000);
 }
+
+document.getElementById('copyFirstLink').addEventListener('click', copyHash);
+document
+  .getElementById('copySecondLink')
+  .addEventListener('click', copyPassword);

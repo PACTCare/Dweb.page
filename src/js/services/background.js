@@ -8,8 +8,7 @@ function readBackgroundImage(event) {
     image.onload = function imageResized() {
       // Resize the image
       const canvas = document.createElement('canvas');
-      let width = image.width;
-      let height = image.height;
+      let { width, height } = image;
       if (width > height) {
         if (width > maxSize) {
           height *= maxSize / width;

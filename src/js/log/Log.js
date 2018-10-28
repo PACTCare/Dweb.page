@@ -4,6 +4,11 @@ import Signature from './Signature';
 const STORAGEKEY = 'logsv0.1';
 
 export default class Log {
+  constructor() {
+    this.time = new Date().toUTCString();
+    this.idNumber = 0;
+  }
+
   /**
    *
    * @param {string} fileId
@@ -13,31 +18,30 @@ export default class Log {
    * @param {boolean} isEncrypted
    */
   createLog(fileId, filename, isUpload, gateway, isEncrypted) {
-    const time = new Date().toUTCString();
-    let idNumber = 0;
     let logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
     if (logs == null) {
       logs = [];
     } else {
-      idNumber = logs.length;
+      this.idNumber = logs.length;
     }
     const sig = new Signature();
     const publicKey = sig.generateKeyPairHex();
 
     // log needs to be different
-    logs.push(`${idNumber}???${fileId}&&&${filename}===${publicKey}`);
+    logs.push(`${this.idNumber}???${fileId}&&&${filename}===${publicKey}`);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
     const signature = sig.sign(
-      idNumber + fileId + time + gateway + isUpload + isEncrypted,
+      this.idNumber + fileId + this.time + gateway + isUpload + isEncrypted,
     );
     new Iota().send(
-      idNumber,
+      this.idNumber,
       fileId,
-      time,
+      this.time,
       isUpload,
       gateway,
       isEncrypted,
       signature,
+      filename,
     );
   }
 }

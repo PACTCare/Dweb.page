@@ -8,6 +8,7 @@ import Log from './log/Log';
 import './services/background';
 import GetURLParameter from './services/urlParameter';
 import Encryption from './services/Encryption';
+import Iota from './log/Iota';
 import { saveAs } from './services/fileSaver';
 import Ping from './services/Ping';
 import GetGateway from './services/getGateway';
@@ -43,16 +44,31 @@ function progressBar(percent) {
   }
 }
 
-function load() {
-  const password = document.getElementById('passwordField').value;
-  const fileId = document.getElementById('firstField').value;
-  if (fileId.length !== 46) {
+async function load() {
+  const passwordInput = document.getElementById('passwordField').value;
+  let fileInput = document.getElementById('firstField').value;
+  if (fileInput.length !== 46 && typeof fileInput !== 'undefined') {
+    // means file names instead of file id
+    const iota = new Iota();
+    if (fileInput.includes('.')) {
+      const [fileIn] = fileInput.split('.');
+      fileInput = fileIn;
+    }
+    const [firstTransaction] = await iota.getTransactionByName(fileInput);
+    if (typeof (firstTransaction) !== 'undefined') {
+      fileInput = await iota.getAddress(firstTransaction);
+    } else {
+      fileInput = 'wrongName';
+    }
+  }
+  if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
+    // unencrypted files can be downloaded by name instead of file id!
     output('You have entered an invalid filename!');
-  } else if (password.length !== 43 && password !== 'nopass') {
+  } else if (passwordInput.length !== 43 && passwordInput !== '' && passwordInput !== 'nopass') {
     output('You have entered an invalid password!');
-  } else if (!/^[a-zA-Z0-9_.-]*$/.test(password)) {
+  } else if (!/^[a-zA-Z0-9_.-]*$/.test(passwordInput)) {
     output('You have entered an invalid password!');
-  } else if (!/^[a-zA-Z0-9]*$/.test(fileId)) {
+  } else if (!/^[a-zA-Z0-9]*$/.test(fileInput)) {
     output('You have entered an invalid filename!');
   } else {
     output('');
@@ -68,7 +84,7 @@ function load() {
         arrayBuffer.slice(4, fileNameLength + 4),
       );
       // encrypted
-      if (password !== 'nopass') {
+      if (passwordInput !== '' && passwordInput !== 'nopass') {
         const initialVector = new Uint8Array(
           arrayBuffer.slice(4 + fileNameLength, 16 + fileNameLength),
         );
@@ -76,7 +92,7 @@ function load() {
           arrayBuffer.slice(16 + fileNameLength),
         );
         const enc = new Encryption();
-        const keyPromise = enc.importKey(password);
+        const keyPromise = enc.importKey(passwordInput);
         keyPromise
           .then((key) => {
             const decryptPromise = enc.decrypt(initialVector, key, fileArray);
@@ -85,7 +101,7 @@ function load() {
                 const typeM = MIME.getType(fileName);
                 const blob = new Blob([decrypted], { type: typeM });
                 blob.name = fileName;
-                downloadFile(fileId, fileName, blob, true);
+                downloadFile(fileInput, fileName, blob, true);
               })
               .catch(() => {
                 output('You have entered an invalid password!');
@@ -95,13 +111,14 @@ function load() {
             output('You have entered an invalid password!');
           });
       } else {
+        // not encrypted
         const fileArray = new Uint8Array(
           arrayBuffer.slice(4 + fileNameLength),
         );
         const typeM = MIME.getType(fileName);
         const blob = new Blob([fileArray], { type: typeM });
         blob.name = fileName;
-        downloadFile(fileId, fileName, blob, false);
+        downloadFile(fileInput, fileName, blob, false);
       }
     };
     oReq.onprogress = function onprogress(e) {
@@ -119,35 +136,45 @@ function load() {
       }
     };
 
-    oReq.open('GET', gateway + fileId, true);
+    oReq.open('GET', gateway + fileInput, true);
     oReq.responseType = 'arraybuffer';
     oReq.send();
   }
 }
 
-document
-  .getElementById('passwordField')
-  .addEventListener('keyup', (event) => {
-    event.preventDefault();
-    if (event.keyCode === 13) {
-      document.getElementById('load').click();
-    }
-  });
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('load').onclick = load;
   const filename = GetURLParameter('id');
   const password = GetURLParameter('password');
+  // contains file name
   if (typeof filename !== 'undefined') {
     document.getElementById('firstField').value = filename;
     document.getElementById('firstField').style.display = 'none';
-  }
-  if (typeof password !== 'undefined') {
-    document.getElementById('passwordField').value = password;
-    if (password === 'nopass') {
-      document.getElementById('hideSpace1').style.display = 'none';
-      document.getElementById('hideSpace2').style.display = 'none';
+    if (typeof password !== 'undefined') {
+      document.getElementById('passwordField').value = password;
+    } else {
+      document.getElementById('passwordField').style.display = 'block';
+      document.getElementById('passwordField').focus();
+      document
+        .getElementById('passwordField')
+        .addEventListener('keyup', (event) => {
+          event.preventDefault();
+          if (event.keyCode === 13) {
+            document.getElementById('load').click();
+          }
+        });
     }
-    document.getElementById('passwordField').style.display = 'none';
+  } else {
+    // password input file should only open with the link
+    document.getElementById('firstField').focus();
+    document
+      .getElementById('firstField')
+      .addEventListener('keyup', (event) => {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+          document.getElementById('load').click();
+        }
+      });
   }
 });
