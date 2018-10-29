@@ -7,7 +7,7 @@ Pact.online is a new generation of simple and highly secure file transfer. It’
 ## Current version
 The most recent online version of Pact.online has the following hash:
 ```
-QmdX9vAnqCcJfLSGFFS9c4fawNwwZsPR9pgZMdJYot9cs9
+QmTLyjq2njbtUPr9TdNK7ZTr7aGL31J8RnN2wJDQuyWuZu
 ```
 ## Hosting
 

@@ -45,22 +45,39 @@ function progressBar(percent) {
   }
 }
 
+function compareTime(a, b) {
+  const da = new Date(a.time).getTime();
+  const db = new Date(b.time).getTime();
+  if (da > db) return -1;
+  if (da < db) return 1;
+  return 0;
+}
+
+async function searchFileIdBasedOnName(fileInput) {
+  const iota = new Iota();
+  if (fileInput.includes('.')) {
+    const [fileIn] = fileInput.split('.');
+    return fileIn;
+  }
+  const transactions = await iota.getTransactionByName(fileInput.trim());
+  const results = [];
+  if (typeof (transactions) !== 'undefined') {
+    for (let i = 0; i < transactions.length; i += 1) {
+      results.push(iota.getAddress(transactions[i]));
+    }
+    let transactionObjs = await Promise.all(results);
+    // returns only the most recent uploaded version!
+    transactionObjs = transactionObjs.sort(compareTime);
+    return transactionObjs[0].fileId;
+  }
+
+  return 'wrongName';
+}
 async function load() {
   const passwordInput = document.getElementById('passwordField').value;
   let fileInput = document.getElementById('firstField').value;
   if (fileInput.length !== 46 && typeof fileInput !== 'undefined') {
-    // means file names instead of file id
-    const iota = new Iota();
-    if (fileInput.includes('.')) {
-      const [fileIn] = fileInput.split('.');
-      fileInput = fileIn;
-    }
-    const [firstTransaction] = await iota.getTransactionByName(fileInput.trim());
-    if (typeof (firstTransaction) !== 'undefined') {
-      fileInput = await iota.getAddress(firstTransaction);
-    } else {
-      fileInput = 'wrongName';
-    }
+    fileInput = await searchFileIdBasedOnName(fileInput);
   }
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!

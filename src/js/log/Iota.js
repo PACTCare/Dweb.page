@@ -161,7 +161,7 @@ export default class Iota {
             '99999999999999999999999999999999999999999999999999',
           );
           const obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
-          resolve(obj.fileId);
+          resolve(obj);
         }
       });
     });
