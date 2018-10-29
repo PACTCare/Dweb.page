@@ -1,0 +1,119 @@
+.mobile-menu {
+  display:block;
+  font-family: "Quicksand", sans-serif;
+  width:100%;
+width:100%;
+text-align:center;
+	position: relative;
+  margin:0 auto;
+}
+/*Strip the ul of padding and list styling*/
+.mobile-menu ul {
+	list-style-type:none;
+  margin: 0 auto;
+  padding-left:0;
+  text-align:center;
+  width:100%;
+}
+
+.mobile-menu li {
+	display:inline-block;
+}
+
+/*Style for menu links*/
+.mobile-menu li a {
+	display:block;
+	min-width:140px;
+	text-align: center;
+	color: #fff;
+  /* text-transform:uppercase; */
+	/* background: #fff; */
+	text-decoration: none;
+  margin-left:-5px;
+  padding: 10px 0;
+-webkit-transition: all 0.4s ease 0s;
+-moz-transition: all 0.4s ease 0s;
+-ms-transition: all 0.4s ease 0s;
+-o-transition: all 0.4s ease 0s;
+transition: all 0.4s ease 0s;
+}
+
+/*Hover state for top level links*/
+.mobile-menu li:hover a {
+	color: #db3e4d;
+}
+
+/*Style for dropdown links*/
+.mobile-menu li:hover ul a {
+	background: #f3f3f3;
+	color: #2f3036;
+	height: 40px;
+	line-height: 40px;
+}
+
+/*Hover state for dropdown links*/
+.mobile-menu li:hover .mobile-menu ul a:hover {
+	color: #3157a7;
+}
+
+/*Hide dropdown links until they are needed*/
+.mobile-menu li ul {
+	display: none;
+}
+
+/*Make dropdown links vertical*/
+.mobile-menu li ul li {
+	display: block;
+	float: none;
+}
+
+.mobile-menu li ul li a {
+	width: auto;
+	min-width: 100px;
+	padding: 0 20px;
+}
+
+.mobile-menu .show-menu {
+	text-decoration: none;
+	color: #fff;
+	/* background: #fff; */
+	text-align: left;
+  padding-top: 15px;
+	display: none;
+  cursor: pointer;
+}
+
+.mobile-menu input[type=checkbox]{
+    display: none;
+}
+
+.mobile-menu input[type=checkbox]:checked ~ #menu{
+    display: block;
+}
+
+@media screen and (max-width : 800px){
+  .mobile-menu .lines {
+    border-bottom: 15px double #f8f8f8;
+    border-top: 5px solid #f8f8f8;
+    content:"";
+    height: 5px;
+    width:20px;
+    padding-right:15px;
+  float: right;
+}
+
+	.mobile-menu ul {
+		position: static;
+		display: none;
+	}
+
+	.mobile-menu li {
+		margin-bottom: 1px;
+	}
+	.mobile-menu ul li, .mobile-menu li a {
+		width: 100%;
+	}
+	.mobile-menu .show-menu {
+		display:block;
+	}
+}

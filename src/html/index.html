@@ -12,6 +12,17 @@
 </head>
 
 <body>
+  <nav class="mobile-menu">
+    <label for="show-menu" class="show-menu"><span><i class="fas fa-bars"></i> Menu</span>
+    </label>
+    <input type="checkbox" id="show-menu">
+    <ul id="menu">
+      <li><a href="." id="currentPage">Transfer</a></li>
+      <li> <a href="receive.html">Receive</a> </li>
+      <li> <a href="history.html">History</a> </li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
   <!-- Cookie Alert  -->
   <div id='dialog-ovelay'>
     <div class='dialog'>
@@ -42,28 +53,27 @@
   </div>
 
   <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo"><br>
-  <div id="passwordDiv">
-    <span id="passwordProtected">Password-Protected</span>
-    <label class="switch">
-      <input id="endToEndCheck" type="checkbox">
-      <span class="slider round"></span>
-    </label>
-    <span id="checkboxText">Off</span>
-  </div>
-
 
   <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our encryption
     tools.
     <br> Please update your browser or switch to another browser.</p>
   <!-- Upload  -->
   <div class="clearfix">
+    <div id="passwordDiv">
+      <span id="passwordProtected">Password-Protected</span>
+      <label class="switch">
+        <input id="endToEndCheck" type="checkbox">
+        <span class="slider round"></span>
+      </label>
+      <span id="checkboxText">Off</span>
+    </div>
     <form id="file-upload-form" class="uploader">
       <input id="file-upload" type="file" name="fileUpload" />
 
       <label for="file-upload" id="file-drag">
         <img id="file-image" src="#" alt="Preview" class="hidden">
         <div id="start">
-          <i class="fas fa-download" aria-hidden="true"></i>
+          <i class="fas fa-file-upload" aria-hidden="true"></i>
           <div>Select a file to start the free transfer <br>(up to 1GB)
           </div>
         </div>
@@ -138,18 +148,14 @@
     </div>
   </div>
 
-  <p class="lead" id="headline">Next generation secure file transfer <br>
+  <p class="lead" id="headline">
     <span id="videoLink"><i class="fas fa-play-circle"></i> Watch the Video</span></p>
   <div id="adDoFrame">
     <pre class="donation"><a class="donation" id="donationLink" href="https://thetangle.org/address/SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUY" target="_blank">IOTA Donation address</a>
     </pre>
   </div>
 
-  <div class="footer">
-    <a href="." id="currentPage">Transfer</a>
-    <a href="history.html">History</a>
-    <a href="about.html">About</a>
-  </div>
+
   <div id="right">
     <i id="filtersubmit" class="far fa-image"></i>
     <input id="backgroundUpload" type="file" name="filename" accept="image/gif, image/jpeg, image/png">

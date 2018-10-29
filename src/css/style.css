@@ -10,26 +10,42 @@
 html,
 body,
 * {
-  font-family: "Roboto", sans-serif;
   box-sizing: border-box;
   font-size: 16px;
   line-height: 1.4em;
+}
+#passwordDiv, .lead, .donation{
+  font-family: Quicksand,sans-serif;
+}
+.lead{
+  font-weight: 600;
+}
+.clearfix, .textBox, p, table{
+  font-family: Roboto,sans-serif;
+}
+.clearfix{
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#passwordField {
+  display: none;
 }
 
 #right {
   position: absolute;
   z-index: 43;
-  right: 3vw;
-  bottom: 1rem;
+  right: 1.5rem;
+  top: 1rem;
   display: inline-flex;
   align-items: center;
 }
-#passwordField {
-  display: none;
+#currentPage{
+  border-bottom: 1px solid #fff;
 }
-
 #filtersubmit {
-  color: #db3e4d;
+  color: #fff;
     cursor: pointer;
     font-size: 20px;
     margin-left: 1vw;
@@ -50,7 +66,7 @@ body {
 }
 
 body {
-  padding: 3vh 1.5rem 0% 1.5rem;
+  padding: 0vh 1.5rem 0% 1.5rem;
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
@@ -71,15 +87,13 @@ h2 {
   margin-bottom: 0;
   text-align: center;
 }
-#logHeadline{
-  color: #fff;
-}
+
 #historyButtons{
   text-align: center;
 }
 
 #resetImage {
-  color: #db3e4d;
+  color: #fff;
     cursor: pointer;
     margin-left: 1vw;
     margin-right: 1vw;
@@ -109,7 +123,7 @@ h2 {
 }
 
 p {
-  margin-top: 3vh;
+  margin-top: 2.5vh;
   margin-right: 1.5rem;
   margin-left: 1.5rem;
   font-size: 16px;
@@ -139,9 +153,6 @@ a:active {
   text-decoration: underline;
 }
 
-#currentPage {
-  color: #6f6f6f;
-}
 #adDoFrame {
   margin-top: 2vh;
   max-width: 480px;
@@ -201,27 +212,24 @@ pre {
 .longLink {
   display: none;
 }
+#historyLongText{
+  margin-top: 52px;
+}
 
 .longText {
   max-width: 700px;
-  width: 90%;
-  margin-top: 1rem;
-  padding-top: 3vh;
+  padding-top: 2vh;
   padding-left: 1.5vw;
   padding-right: 1.5vw;
   padding-bottom: 4vh;
   overflow: auto;
-  position: absolute;
-  top: 5rem;
-  bottom: 2.5rem;
-  left: 0px;
-  right: 0px;
+  height: 87vh;
   text-align: left;
-  border-radius: 0.7rem;
+  border-radius: .7rem;
   margin-left: auto;
   margin-right: auto;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
 }
 
 ::-webkit-scrollbar {
@@ -244,20 +252,6 @@ pre {
 }
 ::-webkit-scrollbar-corner {
   background-color: transparent;
-}
-
-.footer {
-  font-family: "Quicksand", sans-serif;
-  position: absolute;
-  z-index: 42;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 1rem;
-  background-color: #fff;
-  border-top: 1px solid #e4e4e4;
-  text-align: center;
-  overflow: hidden;
 }
 
 .boxButton {
@@ -283,16 +277,14 @@ pre {
 }
 
 .logo {
-  max-height: 9vh;
-  margin-bottom: 3vh;
+  max-height: 6vh;
+  margin-top: 8vh;
+  margin-bottom: 1vh;
 }
 
 .uploader {
   display: block;
   clear: both;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 480px;
 }
 #receiveTextBox{
   margin-top: 2vh;
@@ -422,7 +414,7 @@ a.share:hover {
   float: left;
   clear: both;
   width: 100%;
-  padding: 9vh;
+  padding: 7vh;
 }
 .uploader #start.hidden {
   display: none;

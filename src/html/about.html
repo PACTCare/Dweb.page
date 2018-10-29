@@ -14,6 +14,17 @@
 </head>
 
 <body>
+  <nav class="mobile-menu">
+    <label for="show-menu" class="show-menu"><span><i class="fas fa-bars"></i> Menu</span>
+    </label>
+    <input type="checkbox" id="show-menu">
+    <ul id="menu">
+      <li><a href=".">Transfer</a></li>
+      <li> <a href="receive.html">Receive</a> </li>
+      <li> <a href="history.html">History</a> </li>
+      <li><a href="about.html" id="currentPage">About</a></li>
+    </ul>
+  </nav>
   <div class="tab">
     <button class="tablinks" onclick="openCity(event, 'About')" id="defaultOpen">About</button>
     <button class="tablinks" onclick="openCity(event, 'Terms')" id="terms">Terms</button>
@@ -539,12 +550,6 @@
         <br>iii) by email, using info[at]pact[dot]care
       </p>
     </div>
-  </div>
-
-  <div class="footer">
-    <a href=".">Transfer</a>
-    <a href="history.html">History</a>
-    <a href="about.html" id="currentPage">About</a>
   </div>
   <div id="right">
     <i id="filtersubmit" class="far fa-image"></i>

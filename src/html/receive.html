@@ -14,6 +14,17 @@
 </head>
 
 <body>
+  <nav class="mobile-menu">
+    <label for="show-menu" class="show-menu"><span><i class="fas fa-bars"></i> Menu</span>
+    </label>
+    <input type="checkbox" id="show-menu">
+    <ul id="menu">
+      <li><a href=".">Transfer</a></li>
+      <li> <a href="receive.html" id="currentPage">Receive</a> </li>
+      <li> <a href="history.html">History</a> </li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
   <!-- Cookie Alert  -->
   <div id='dialog-ovelay'>
     <div class='dialog'>
@@ -49,12 +60,10 @@
       <input type="button" class="boxButton" value="Download" id="load">
     </form>
   </div>
+  <p class="lead" id="headline">
+    <span id="videoLink"><i class="fas fa-play-circle"></i> Watch the Video</span>
+  </p>
 
-  <div class="footer">
-    <a href=".">Transfer</a>
-    <a href="history.html">History</a>
-    <a href="about.html">About</a>
-  </div>
   <div id="right">
     <i id="filtersubmit" class="far fa-image"></i>
     <input id="backgroundUpload" type="file" name="filename" accept="image/gif, image/jpeg, image/png">

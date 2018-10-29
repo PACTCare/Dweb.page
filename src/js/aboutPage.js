@@ -1,5 +1,6 @@
 import '../css/style.css';
 import '../css/tab.css';
+import '../css/menu.css';
 import './services/background';
 import GetURLParameter from './services/urlParameter';
 

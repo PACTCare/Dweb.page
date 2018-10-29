@@ -14,6 +14,7 @@ import Ping from './services/Ping';
 import GetGateway from './services/getGateway';
 import '../css/style.css';
 import '../css/alert.css';
+import '../css/menu.css';
 
 const gateway = GetGateway();
 /**
@@ -54,7 +55,7 @@ async function load() {
       const [fileIn] = fileInput.split('.');
       fileInput = fileIn;
     }
-    const [firstTransaction] = await iota.getTransactionByName(fileInput);
+    const [firstTransaction] = await iota.getTransactionByName(fileInput.trim());
     if (typeof (firstTransaction) !== 'undefined') {
       fileInput = await iota.getAddress(firstTransaction);
     } else {

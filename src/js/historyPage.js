@@ -8,6 +8,7 @@ import Signature from './log/Signature';
 import '../css/style.css';
 import '../css/alert.css';
 import '../css/table.css';
+import '../css/menu.css';
 
 const STORAGEKEY = 'logsv0.1';
 

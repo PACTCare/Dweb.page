@@ -14,6 +14,7 @@ import '../css/style.css';
 import '../css/toggle.css';
 import '../css/steps.css';
 import '../css/alert.css';
+import '../css/menu.css';
 
 const SIZELIMIT = 1000; // In MB
 let filename;
