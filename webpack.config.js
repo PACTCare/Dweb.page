@@ -19,7 +19,7 @@ const minifySettings = {
 
 const metaTags = {
   // Content-Security-Policy needs a lot of improvement!
-  'Content-Security-Policy': { 'http-equiv': 'Content-Security-Policy', content: 'default-src self \'unsafe-inline\';connect-src *;style-src \'unsafe-inline\' https://fonts.googleapis.com; img-src * blob:; font-src https://fonts.gstatic.com use.fontawesome.com; frame-src https://www.youtube.com/' },
+  'Content-Security-Policy': { 'http-equiv': 'Content-Security-Policy', content: 'default-src \'self\' \'unsafe-inline\';connect-src *;style-src \'unsafe-inline\' https://fonts.googleapis.com https://use.fontawesome.com; img-src * blob: data:; font-src https://fonts.gstatic.com use.fontawesome.com; frame-src https://www.youtube.com/' },
   description: 'Next generation secure file transfer',
   author: 'PACT Care BV',
   viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',

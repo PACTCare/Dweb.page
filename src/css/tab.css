@@ -8,7 +8,7 @@
 
 /* Style the buttons inside the tab */
 .tab button {
-  background-color: inherit;
+  background-color: transparent;
   float: left;
   color: #fff;
   border: none;

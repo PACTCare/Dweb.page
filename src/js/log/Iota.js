@@ -75,7 +75,6 @@ export default class Iota {
     const filenameWithoutExtension = filename.split('.')[0].toUpperCase();
     const tryteFilenname = this.iotaNode.utils.toTrytes(filenameWithoutExtension);
     const tag = tryteFilenname.substring(0, this.tagLength);
-    console.log(tag);
     return tag;
   }
 

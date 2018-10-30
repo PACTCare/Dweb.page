@@ -26,6 +26,13 @@ function output(msg) {
   m.innerHTML = msg;
 }
 
+function isIE() {
+  const ua = window.navigator.userAgent;
+  const msie = ua.indexOf('MSIE '); // IE 10 or older
+  const trident = ua.indexOf('Trident/'); // IE 11
+  return (msie > 0 || trident > 0);
+}
+
 function downloadFile(fileId, fileName, blob, isEncrypted) {
   const p = new Ping();
   p.ping((err) => {
@@ -173,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('passwordField').value = password;
     } else {
       document.getElementById('passwordField').style.display = 'block';
-      document.getElementById('passwordField').focus();
+      if (!isIE()) { document.getElementById('passwordField').focus(); }
       document
         .getElementById('passwordField')
         .addEventListener('keyup', (event) => {
@@ -185,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } else {
     // password input file should only open with the link
-    document.getElementById('firstField').focus();
+    if (!isIE()) { document.getElementById('firstField').focus(); }
     document
       .getElementById('firstField')
       .addEventListener('keyup', (event) => {
