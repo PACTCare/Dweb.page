@@ -15,7 +15,10 @@ body,
   line-height: 1.4em;
 }
 #receivePage, #historyPage, #aboutPage{
-  display: none;
+  visibility: hidden;
+}
+#receivePage, #historyPage, #aboutPage, #index{
+  overflow: hidden;
 }
 
 #passwordDiv, .lead, .donation{
@@ -216,6 +219,7 @@ pre {
 .longLink {
   display: none;
 }
+
 #historyLongText{
   margin-top: 52px;
 }

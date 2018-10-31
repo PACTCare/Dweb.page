@@ -26,8 +26,6 @@
 	min-width:140px;
 	text-align: center;
 	color: #fff;
-  /* text-transform:uppercase; */
-	/* background: #fff; */
 	text-decoration: none;
   margin-left:-5px;
   padding: 10px 0;
@@ -38,7 +36,6 @@
 transition: all 0.4s ease 0s;
 }
 
-/*Hover state for top level links*/
 .mobile-menu li:hover span {
 	color: #db3e4d;
 }
@@ -51,17 +48,14 @@ transition: all 0.4s ease 0s;
 	line-height: 40px;
 }
 
-/*Hover state for dropdown links*/
 .mobile-menu li:hover .mobile-menu ul span:hover {
 	color: #3157a7;
 }
 
-/*Hide dropdown links until they are needed*/
 .mobile-menu li ul {
 	display: none;
 }
 
-/*Make dropdown links vertical*/
 .mobile-menu li ul li {
 	display: block;
 	float: none;
@@ -76,7 +70,6 @@ transition: all 0.4s ease 0s;
 .mobile-menu .show-menu {
 	text-decoration: none;
 	color: #fff;
-	/* background: #fff; */
 	text-align: left;
   padding-top: 15px;
 	display: none;
