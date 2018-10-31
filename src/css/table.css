@@ -1,7 +1,7 @@
 #loader,
 #csvDownload,
 #clearHistory {
-  display: none;
+  visibility: hidden;
   margin: 0.6rem;
 }
 #clearHistory {

@@ -1,9 +1,10 @@
 /* Style the tab */
 .tab {
   overflow: hidden;
-  display: inline-block;
   margin-left: auto;
   margin-right: auto;
+  display: inline-flex;
+  margin-bottom: 0.8px;
 }
 
 /* Style the buttons inside the tab */

@@ -2,10 +2,10 @@
   display:block;
   font-family: "Quicksand", sans-serif;
   width:100%;
-width:100%;
-text-align:center;
+  text-align:center;
 	position: relative;
   margin:0 auto;
+  cursor: pointer;
 }
 /*Strip the ul of padding and list styling*/
 .mobile-menu ul {
@@ -21,7 +21,7 @@ text-align:center;
 }
 
 /*Style for menu links*/
-.mobile-menu li a {
+.mobile-menu li span {
 	display:block;
 	min-width:140px;
 	text-align: center;
@@ -39,12 +39,12 @@ transition: all 0.4s ease 0s;
 }
 
 /*Hover state for top level links*/
-.mobile-menu li:hover a {
+.mobile-menu li:hover span {
 	color: #db3e4d;
 }
 
 /*Style for dropdown links*/
-.mobile-menu li:hover ul a {
+.mobile-menu li:hover ul span {
 	background: #f3f3f3;
 	color: #2f3036;
 	height: 40px;
@@ -52,7 +52,7 @@ transition: all 0.4s ease 0s;
 }
 
 /*Hover state for dropdown links*/
-.mobile-menu li:hover .mobile-menu ul a:hover {
+.mobile-menu li:hover .mobile-menu ul span:hover {
 	color: #3157a7;
 }
 
@@ -67,7 +67,7 @@ transition: all 0.4s ease 0s;
 	float: none;
 }
 
-.mobile-menu li ul li a {
+.mobile-menu li ul li span {
 	width: auto;
 	min-width: 100px;
 	padding: 0 20px;
@@ -110,7 +110,7 @@ transition: all 0.4s ease 0s;
 	.mobile-menu li {
 		margin-bottom: 1px;
 	}
-	.mobile-menu ul li, .mobile-menu li a {
+	.mobile-menu ul li, .mobile-menu li span {
 		width: 100%;
 	}
 	.mobile-menu .show-menu {

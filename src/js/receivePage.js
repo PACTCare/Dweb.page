@@ -1,20 +1,11 @@
-import '@babel/polyfill';
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
-import './alert';
-import './polyfill/webcrypto-shim';
-import './polyfill/remove';
-import Log from './log/Log';
-import './services/background';
-import GetURLParameter from './services/urlParameter';
-import Encryption from './services/Encryption';
 import Iota from './log/Iota';
-import { saveAs } from './services/fileSaver';
+import Encryption from './services/Encryption';
 import Ping from './services/Ping';
 import GetGateway from './services/getGateway';
-import '../css/style.css';
-import '../css/alert.css';
-import '../css/menu.css';
+import Log from './log/Log';
+import { saveAs } from './services/fileSaver';
 
 const gateway = GetGateway();
 /**
@@ -24,13 +15,6 @@ const gateway = GetGateway();
 function output(msg) {
   const m = document.getElementById('messages');
   m.innerHTML = msg;
-}
-
-function isIE() {
-  const ua = window.navigator.userAgent;
-  const msie = ua.indexOf('MSIE '); // IE 10 or older
-  const trident = ua.indexOf('Trident/'); // IE 11
-  return (msie > 0 || trident > 0);
 }
 
 function downloadFile(fileId, fileName, blob, isEncrypted) {
@@ -80,6 +64,7 @@ async function searchFileIdBasedOnName(fileInput) {
 
   return 'wrongName';
 }
+
 async function load() {
   const passwordInput = document.getElementById('passwordField').value;
   let fileInput = document.getElementById('firstField').value;
@@ -167,39 +152,6 @@ async function load() {
   }
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('load').onclick = load;
-  const filename = GetURLParameter('id');
-  const password = GetURLParameter('password');
-  // contains file name
-  if (typeof filename !== 'undefined') {
-    document.getElementById('firstField').value = filename;
-    document.getElementById('firstField').style.display = 'none';
-    if (typeof password !== 'undefined') {
-      document.getElementById('passwordField').value = password;
-    } else {
-      document.getElementById('passwordField').style.display = 'block';
-      if (!isIE()) { document.getElementById('passwordField').focus(); }
-      document
-        .getElementById('passwordField')
-        .addEventListener('keyup', (event) => {
-          event.preventDefault();
-          if (event.keyCode === 13) {
-            document.getElementById('load').click();
-          }
-        });
-    }
-  } else {
-    // password input file should only open with the link
-    if (!isIE()) { document.getElementById('firstField').focus(); }
-    document
-      .getElementById('firstField')
-      .addEventListener('keyup', (event) => {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-          document.getElementById('load').click();
-        }
-      });
-  }
+document.getElementById('load').addEventListener('click', () => {
+  load();
 });

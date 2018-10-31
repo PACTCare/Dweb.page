@@ -14,6 +14,10 @@ body,
   font-size: 16px;
   line-height: 1.4em;
 }
+#receivePage, #historyPage, #aboutPage{
+  display: none;
+}
+
 #passwordDiv, .lead, .donation{
   font-family: Quicksand,sans-serif;
 }
@@ -41,7 +45,7 @@ body,
   display: inline-flex;
   align-items: center;
 }
-#currentPage{
+.currentPage{
   border-bottom: 1px solid #fff;
 }
 #filtersubmit {
@@ -476,11 +480,10 @@ a.share:hover {
   }
 }
 
-
-#videoLink{
+#videoLink, #videoLink2{
   cursor: pointer;
 }
-#videoLink:hover{
+#videoLink:hover, #videoLink2:hover{
   color: #db3e4d;
 }
 

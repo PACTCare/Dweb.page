@@ -1,8 +1,4 @@
-import '../css/style.css';
 import '../css/tab.css';
-import '../css/menu.css';
-import './services/background';
-import GetURLParameter from './services/urlParameter';
 
 window.openCity = function openCity(evt, cityName) {
   let i;
@@ -17,14 +13,3 @@ window.openCity = function openCity(evt, cityName) {
   document.getElementById(cityName).style.display = 'block';
   evt.currentTarget.className += ' active';
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-  const urlParameter = GetURLParameter('par');
-  if (urlParameter === 'terms') {
-    document.getElementById('terms').click();
-  } else if (urlParameter == 'privacy') {
-    document.getElementById('privacy').click();
-  } else {
-    document.getElementById('defaultOpen').click();
-  }
-});

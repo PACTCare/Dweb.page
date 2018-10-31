@@ -3,13 +3,17 @@ import './fileupload';
 import './copy';
 import './alert';
 import './steps';
+import './receivePage';
+import './historyPage';
+import './aboutPage';
 import './polyfill/webcrypto-shim';
 import './polyfill/remove';
-import Log from './log/Log';
 import './services/background';
+import Log from './log/Log';
 import Encryption from './services/Encryption';
 import Ping from './services/Ping';
 import GetGateway from './services/getGateway';
+import GetURLParameter from './services/urlParameter';
 import '../css/style.css';
 import '../css/toggle.css';
 import '../css/steps.css';
@@ -89,7 +93,7 @@ function unencryptedLayout(fingerPrint) {
   document.getElementById('doneHeadline').innerHTML = 'Step 2: Done';
   const link = `${
     window.location.href
-  }receive.html?id=${fingerPrint}&password=nopass`;
+  }index.html?id=${fingerPrint}&password=nopass`;
   document.getElementById('emailSharer').href = `mailto:?subject=Decentralized File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
     link,
   )}%0D%0A %0D%0A Best Regards,`;
@@ -112,7 +116,7 @@ function unencryptedLayout(fingerPrint) {
 }
 
 function encryptedLayout(fingerPrint) {
-  const link = `${window.location.href}receive.html?id=${fingerPrint}`;
+  const link = `${window.location.href}index.html?id=${fingerPrint}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').innerText = link;
   document.getElementById('emailSharer').href = `${'mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
@@ -202,7 +206,7 @@ function encryptBeforeUpload(reader) {
       ).href = whatsappLink;
       document.getElementById('telegramSharer').href = `https://telegram.me/share/url?url=${
         window.location.href
-      }receive.html`
+      }index.html`
         + `&text=Hi, here is your password to access the file: ${keyString}`;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
@@ -253,10 +257,106 @@ function upload() {
 document.getElementById('videoLink').addEventListener('click', () => {
   document.getElementById('video-ovelay').style.display = 'block';
 });
+document.getElementById('videoLink2').addEventListener('click', () => {
+  document.getElementById('video-ovelay').style.display = 'block';
+});
 document.getElementById('video-ovelay').addEventListener('click', () => {
   document.getElementById('video-ovelay').style.display = 'none';
   const iframe = document.getElementById('htmlvideo').contentWindow;
   iframe.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+});
+
+function resetMenu(inputId) {
+  const ids = ['receivePage', 'historyPage', 'index', 'aboutPage'];
+  for (let i = 0; i < ids.length; i += 1) {
+    if (ids[i] === inputId) {
+      document.getElementById(ids[i]).style.display = 'block';
+    } else {
+      document.getElementById(ids[i]).style.display = 'none';
+    }
+  }
+}
+function currentPage(inputId) {
+  const ids = ['toIndex', 'toReceive', 'toHistory', 'toAbout'];
+  for (let i = 0; i < ids.length; i += 1) {
+    if (ids[i] === inputId) {
+      document.getElementById(ids[i]).classList.add('currentPage');
+    } else {
+      document.getElementById(ids[i]).classList.remove('currentPage');
+    }
+  }
+}
+
+function isIE() {
+  const ua = window.navigator.userAgent;
+  const msie = ua.indexOf('MSIE '); // IE 10 or older
+  const trident = ua.indexOf('Trident/'); // IE 11
+  return (msie > 0 || trident > 0);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParameter = GetURLParameter('par');
+  const filenamePar = GetURLParameter('id');
+  const passwordPar = GetURLParameter('password');
+  if (urlParameter === 'terms' || urlParameter === 'privacy') {
+    document.getElementById('dialog-ovelay').style.display = 'none';
+    resetMenu('aboutPage');
+    currentPage('toAbout');
+    if (urlParameter === 'terms') {
+      document.getElementById('terms').click();
+    } else if (urlParameter === 'privacy') {
+      document.getElementById('privacy').click();
+    }
+  } else if (typeof filenamePar !== 'undefined') {
+    resetMenu('receivePage');
+    currentPage('toReceive');
+    document.getElementById('defaultOpen').click();
+    document.getElementById('firstField').value = filenamePar;
+    document.getElementById('firstField').style.display = 'none';
+    if (typeof passwordPar !== 'undefined') {
+      document.getElementById('passwordField').value = passwordPar;
+    } else {
+      document.getElementById('passwordField').style.display = 'block';
+      if (!isIE()) { document.getElementById('passwordField').focus(); }
+      document
+        .getElementById('passwordField')
+        .addEventListener('keyup', (event) => {
+          event.preventDefault();
+          if (event.keyCode === 13) {
+            document.getElementById('load').click();
+          }
+        });
+    }
+  } else {
+    if (!isIE()) { document.getElementById('firstField').focus(); }
+    document
+      .getElementById('firstField')
+      .addEventListener('keyup', (event) => {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+          document.getElementById('load').click();
+        }
+      });
+    document.getElementById('toIndex').classList.add('currentPage');
+    document.getElementById('defaultOpen').click();
+  }
+});
+
+document.getElementById('toIndex').addEventListener('click', () => {
+  resetMenu('index');
+  currentPage('toIndex');
+});
+document.getElementById('toReceive').addEventListener('click', () => {
+  resetMenu('receivePage');
+  currentPage('toReceive');
+});
+document.getElementById('toHistory').addEventListener('click', () => {
+  resetMenu('historyPage');
+  currentPage('toHistory');
+});
+document.getElementById('toAbout').addEventListener('click', () => {
+  resetMenu('aboutPage');
+  currentPage('toAbout');
 });
 
 upload();

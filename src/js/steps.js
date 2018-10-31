@@ -4,9 +4,8 @@ function validateForm() {
   // This function deals with validation of the form fields
   let i;
   let valid = true;
-  const x = document.getElementsByClassName('tab');
+  const x = document.getElementsByClassName('tabSteps');
   const y = x[currentTab].getElementsByTagName('input');
-  // A loop that checks every input field in the current tab:
   for (i = 0; i < y.length; i += 1) {
     if (y[i].value === '') {
       y[i].className += ' invalid';
@@ -27,7 +26,7 @@ function fixStepIndicator(n) {
 }
 
 function showTab(n) {
-  const x = document.getElementsByClassName('tab');
+  const x = document.getElementsByClassName('tabSteps');
   x[n].style.display = 'block';
   // ... and fix the Previous/Next buttons:
   if (n === 0) {
@@ -52,10 +51,8 @@ function showTab(n) {
 
 showTab(currentTab);
 
-
 window.nextPrev = function nextPrev(n) {
-  // This function will figure out which tab to display
-  const x = document.getElementsByClassName('tab');
+  const x = document.getElementsByClassName('tabSteps');
   // Exit the function if any field in the current tab is invalid:
   if (n === 1 && !validateForm()) return false;
   // Hide the current tab:

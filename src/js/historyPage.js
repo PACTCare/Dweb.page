@@ -1,16 +1,12 @@
-import '@babel/polyfill';
-import './alert';
 import './services/tableToCsv';
-import './polyfill/remove';
-import './services/background';
 import Iota from './log/Iota';
 import Signature from './log/Signature';
-import '../css/style.css';
-import '../css/alert.css';
 import '../css/table.css';
-import '../css/menu.css';
+import './polyfill/remove';
 
 const STORAGEKEY = 'logsv0.1';
+const iotaFlags = {};
+
 
 function compareTime(a, b) {
   const da = new Date(a.time).getTime();
@@ -34,23 +30,15 @@ function hideColumns(col1, col2, col3) {
 
 function printLog(iotaLogArray, storageLogArray) {
   iotaLogArray.sort(compareTime);
-  document
-    .getElementById('loader')
-    .setAttribute('style', 'display:none !important');
-  document
-    .getElementById('csvDownload')
-    .setAttribute('style', 'display:inline-block !important');
-  document
-    .getElementById('clearHistory')
-    .setAttribute('style', 'display:inline-block !important');
-  const flags = {};
+  document.getElementById('csvDownload').style.visibility = 'visible';
+  document.getElementById('clearHistory').style.visibility = 'visible';
   const sig = new Signature();
   // remove fake double entries,
   // iotaLogArray = Array.from(new Set(iotaLogArray));
   // for (const obj of iotaLogArray)
   for (let j = 0; j < iotaLogArray.length; j += 1) {
-    if (!flags[iotaLogArray[j].fileId]) {
-      flags[iotaLogArray[j].fileId] = true;
+    if (!iotaFlags[iotaLogArray[j].fileId]) {
+      iotaFlags[iotaLogArray[j].fileId] = true;
       const table = document.getElementById('table');
       const row = table.insertRow(-1);
       const cell1 = row.insertCell(0);
@@ -160,7 +148,9 @@ function printLog(iotaLogArray, storageLogArray) {
     }
   }
   hideColumns(1, 5, 6);
-  document.getElementById('firstRow').remove();
+  if (document.getElementById('firstRow') !== null) {
+    document.getElementById('firstRow').remove();
+  }
 }
 
 async function createListOfLogs(logs) {
@@ -174,12 +164,12 @@ async function createListOfLogs(logs) {
     });
   }
   const iotaLogArray = [];
-  const flags = {};
   const iota = new Iota();
+  const logFlags = {};
   await Promise.all(
     storageLogArray.map(async (logObject) => {
-      if (!flags[logObject.hash]) {
-        flags[logObject.hash] = true;
+      if (!logFlags[logObject.hash]) {
+        logFlags[logObject.hash] = true;
         const transactions = await iota.getTransaction(logObject.hash);
         await Promise.all(
           transactions.map(async (transaction) => {
@@ -190,31 +180,28 @@ async function createListOfLogs(logs) {
       }
     }),
   );
-
+  document.getElementById('loader').style.visibility = 'hidden';
   if (iotaLogArray.length > 0) {
     printLog(iotaLogArray, storageLogArray);
-  } else {
-    document.getElementById('csvDownload').remove();
-    document.getElementById('clearHistory').remove();
   }
 }
 
+document.getElementById('clearHistory').addEventListener('click', () => {
+  window.localStorage.removeItem(STORAGEKEY);
+  window.location.reload();
+});
 // Check browser support
-if (typeof Storage !== 'undefined') {
-  const logs = JSON.parse(localStorage.getItem(STORAGEKEY));
-  if (logs == null) {
-    document.getElementById('csvDownload').remove();
-    document.getElementById('clearHistory').remove();
+document.getElementById('toHistory').addEventListener('click', () => {
+  if (typeof Storage !== 'undefined') {
+    const logs = JSON.parse(localStorage.getItem(STORAGEKEY));
+    if (logs == null) {
+      document.getElementById('csvDownload').style.visibility = 'hidden';
+      document.getElementById('clearHistory').style.visibility = 'hidden';
+    } else {
+      document.getElementById('loader').style.visibility = 'visible';
+      createListOfLogs(logs);
+    }
   } else {
-    document
-      .getElementById('loader')
-      .setAttribute('style', 'display:inherit !important');
-    document.getElementById('clearHistory').addEventListener('click', () => {
-      window.localStorage.removeItem(STORAGEKEY);
-      window.location.reload();
-    });
-    createListOfLogs(logs);
+    document.getElementById('logResult').innerHTML = 'Sorry, your browser does not support Web Storage.';
   }
-} else {
-  document.getElementById('logResult').innerHTML = 'Sorry, your browser does not support Web Storage.';
-}
+});
