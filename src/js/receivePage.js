@@ -24,6 +24,7 @@ function downloadFile(fileId, fileName, blob, isEncrypted) {
       output('Something is blocking the log entry!');
     }
     new Log().createLog(fileId, fileName, false, gateway, isEncrypted);
+    window.history.replaceState(null, null, window.location.pathname);
     saveAs(blob, fileName);
   });
 }

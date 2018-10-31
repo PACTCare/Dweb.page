@@ -7,7 +7,7 @@
 ## Current version
 The most recent online version of [Pact.online](http://www.pact.online) has the following hash:
 ```
-QmTLyjq2njbtUPr9TdNK7ZTr7aGL31J8RnN2wJDQuyWuZu
+QmXTtTf5jnB2XH1hmfVAqpXwnYfwsQFfiEyyYSweBC7CfY
 ```
 ## Hosting
 
