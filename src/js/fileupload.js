@@ -20,6 +20,45 @@ checkbox.addEventListener('change', function checkBox() {
 });
 
 function ekUpload() {
+  function fileDragHover(e) {
+    const fileDrag = document.getElementById('file-drag');
+    e.stopPropagation();
+    e.preventDefault();
+    fileDrag.className = e.type === 'dragover' ? 'hover' : 'modal-body file-upload';
+  }
+
+  function output(msg) {
+    const m = document.getElementById('messages');
+    m.innerHTML = msg;
+  }
+
+  function parseFile(file) {
+    output(`<strong>${encodeURI(file.name)}</strong>`);
+    document.getElementsByClassName('switch')[0].style.display = 'none';
+    document.getElementById('checkboxText').style.display = 'none';
+    document.getElementById('passwordProtected').style.display = 'none';
+    document.getElementById('start').classList.add('hidden');
+    document.getElementById('response').classList.remove('hidden');
+    const imageName = file.name;
+    const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(imageName);
+    if (isImage) {
+      document.getElementById('file-image').classList.remove('hidden');
+      document.getElementById('file-image').src = URL.createObjectURL(file);
+    }
+    if (file.size > fileSizeLimit * 1024 * 1024) {
+      output(`Please upload a smaller file (< ${fileSizeLimit} MB).`);
+      document.getElementById('loadingAnimation').style.display = 'none';
+    }
+  }
+
+  function fileSelectHandler(e) {
+    const files = e.target.files || e.dataTransfer.files;
+    fileDragHover(e);
+    for (var i = 0, f; (f = files[i]); i += 1) {
+      parseFile(f);
+    }
+  }
+
   function Init() {
     const checkboxCookie = checkBoxCookie.getCookie();
     if (checkboxCookie !== 'off') {
@@ -43,45 +82,6 @@ function ekUpload() {
     }
   }
 
-  function fileDragHover(e) {
-    const fileDrag = document.getElementById('file-drag');
-    e.stopPropagation();
-    e.preventDefault();
-    fileDrag.className = e.type === 'dragover' ? 'hover' : 'modal-body file-upload';
-  }
-
-  function fileSelectHandler(e) {
-    const files = e.target.files || e.dataTransfer.files;
-    fileDragHover(e);
-    for (var i = 0, f; (f = files[i]); i += 1) {
-      parseFile(f);
-    }
-  }
-
-  function output(msg) {
-    const m = document.getElementById('messages');
-    m.innerHTML = msg;
-  }
-
-  function parseFile(file) {
-    output(`<strong>${encodeURI(file.name)}</strong>`);
-    document.getElementsByClassName('switch')[0].style.display = 'none';
-    document.getElementById('checkboxText').style.display = 'none';
-    document.getElementById('passwordProtected').style.display = 'none';
-    document.getElementById('start').classList.add('hidden');
-    document.getElementById('response').classList.remove('hidden');
-    // Thumbnail Preview
-    const imageName = file.name;
-    const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(imageName);
-    if (isImage) {
-      document.getElementById('file-image').classList.remove('hidden');
-      document.getElementById('file-image').src = URL.createObjectURL(file);
-    }
-    if (file.size > fileSizeLimit * 1024 * 1024) {
-      output(`Please upload a smaller file (< ${fileSizeLimit} MB).`);
-      document.getElementById('loadingAnimation').style.display = 'none';
-    }
-  }
   // supportsCrypto() &&
   if (supportsFileread()) {
     Init();

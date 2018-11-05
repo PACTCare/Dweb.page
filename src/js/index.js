@@ -237,7 +237,8 @@ function readFile(e) {
     }
   };
 
-  const file = e.target.files[0] || e.dataTransfer.files[0];
+  const files = e.target.files || e.dataTransfer.files;
+  const file = files[0];
   if (file) {
     if (file.size <= SIZELIMIT * 1024 * 1024) {
       filename = file.name.replace(/[^A-Za-z0-9. _\-]/g, ''); // ä causes problems
@@ -248,10 +249,8 @@ function readFile(e) {
 
 function upload() {
   CheckIsMobile();
-  const fileSelect = document.getElementById('file-upload');
-  const fileDrag = document.getElementById('file-drag');
-  fileSelect.addEventListener('change', readFile, false);
-  fileDrag.addEventListener('drop', readFile, false);
+  document.getElementById('file-upload').addEventListener('change', readFile, false);
+  document.getElementById('file-drag').addEventListener('drop', readFile, false);
 }
 
 document.getElementById('videoLink').addEventListener('click', () => {
