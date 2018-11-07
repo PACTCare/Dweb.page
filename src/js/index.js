@@ -20,6 +20,8 @@ import '../css/steps.css';
 import '../css/alert.css';
 import '../css/menu.css';
 
+const JSZip = require('jszip');
+
 const SIZELIMIT = 1000; // In MB
 let filename;
 let isMobile;
@@ -238,11 +240,25 @@ function readFile(e) {
   };
 
   const files = e.target.files || e.dataTransfer.files;
-  const file = files[0];
-  if (file) {
-    if (file.size <= SIZELIMIT * 1024 * 1024) {
-      filename = file.name.replace(/[^A-Za-z0-9. _\-]/g, ''); // ä causes problems
-      reader.readAsArrayBuffer(file); // Read Provided File
+  if (files.length > 1) {
+    // zip it
+    const zip = new JSZip();
+    for (let i = 0; i < files.length; i += 1) {
+      zip.file(files[i].name.replace(/[^A-Za-z0-9. _\-]/g, ''), files[i]);
+    }
+    zip.generateAsync({ type: 'blob' }).then((data) => {
+      if (data.size <= SIZELIMIT * 1024 * 1024) {
+        filename = 'pact.zip';
+        reader.readAsArrayBuffer(data); // Read Provided File
+      }
+    });
+  } else {
+    const file = files[0];
+    if (file) {
+      if (file.size <= SIZELIMIT * 1024 * 1024) {
+        filename = file.name.replace(/[^A-Za-z0-9. _\-]/g, ''); // ä causes problems
+        reader.readAsArrayBuffer(file); // Read Provided File
+      }
     }
   }
 }
