@@ -43,12 +43,14 @@ export default class Iota {
 
     // not needed since the tangle as poWaas integrated!
     // poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
-    const trytes = this.iotaNode.utils.toTrytes(fileId).slice(0, 81);
-    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(params));
+
     let tag = 'PACTDOTONLINE';
     if (!isEncrypted) {
       tag = this.filenameToTag(filename);
+      params.fullFileName = filename;
     }
+    const trytes = this.iotaNode.utils.toTrytes(fileId).slice(0, 81);
+    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(params));
     const transfers = [
       {
         value: 0,

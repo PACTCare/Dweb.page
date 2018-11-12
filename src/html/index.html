@@ -14,8 +14,8 @@
     </label>
     <input type="checkbox" id="show-menu">
     <ul id="menu">
-      <li><span id="toIndex">Transfer</span></li>
-      <li><span id="toReceive">Receive</span> </li>
+      <li><span id="toIndex">Share</span></li>
+      <li><span id="toReceive">Search</span> </li>
       <li><span id="toHistory">History</span> </li>
       <li><span id="toAbout">About</span></li>
     </ul>
@@ -29,7 +29,7 @@
       <div class='dialog-msg'>
         <p>Pact is a distributed, <a href='https://github.com/PACTCare/Pact.online' target='_blank'>open source</a>
           and GDPR compliant
-          file transfer service. The developers of Pact do not have any access to your data! <br> To continue, please
+          file sharing service. The developers of Pact do not have any access to your data! <br> To continue, please
           agree to our <a href='index.html?par=terms' target='_blank'>Terms</a> and <a href='index.html?par=privacy'
             target='_blank'>Policies</a>.</p>
       </div>
@@ -68,12 +68,12 @@
       <br> Please update your browser or switch to another browser.</p>
     <div class="clearfix">
       <div id="passwordDiv">
-        <span id="passwordProtected">Password-Protected</span>
+        <span id="passwordProtected">Sharing Mode</span>
         <label class="switch">
           <input id="endToEndCheck" type="checkbox">
           <span class="slider round"></span>
         </label>
-        <span id="checkboxText">Off</span>
+        <span id="checkboxText">Public</span>
       </div>
       <form id="file-upload-form" class="uploader">
         <input id="file-upload" type="file" name="fileUpload" multiple="" />
@@ -81,8 +81,8 @@
         <label for="file-upload" id="file-drag">
           <img id="file-image" src="#" alt="Preview" class="hidden">
           <div id="start">
-            <i class="fas fa-file-upload" aria-hidden="true"></i>
-            <div>Select a file to start the free transfer <br>(up to 1GB)
+            <i class="fas fa-file-upload" aria-hidden=" true"></i>
+            <div id="addFileText">Add file(s) to start the free sharing<br> Up to 1GB
             </div>
           </div>
           <div id="response" class="hidden">
@@ -101,7 +101,7 @@
 
     <div id="afterUpload" class="textBox">
       <div id="stepsDiv">
-        <span class="step">File Link > </span> <span class="step" id="passwordStep">Password > </span>
+        <span class="step" id="fileLink">File Link > </span> <span class="step" id="passwordStep">Password > </span>
         <span class="step">Done</span><br>
       </div>
       <span id="notification1"></span>
@@ -109,7 +109,7 @@
 
       <div class="tabSteps" id="fileTab">
         <pre>
-        <span class="steps">Step 1: Share File Link</span>
+        <span class="steps" id="fileLinkHeadline">Step 1: Share File Link</span>
       </pre>
         <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent" href="mailto:"><i class="fas fa-envelope"></i></a>
         <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent" href="sms:?body=nachricht"><i class="fas fa-mobile-alt"></i></a>
@@ -138,7 +138,7 @@
       <div class="tabSteps" id="lastTab">
         <pre><span class="steps" id="doneHeadline">Step 3: Done</span>
       <span id="fileAvailable">Your file is available for 3 days.
-        You can find your transfer history <a id="logLink" href="history.html">here</a>.
+        You can find your sharing history <a id="logLink" href="history.html">here</a>.
       </span>
     </pre>
 
@@ -157,6 +157,7 @@
     </div>
 
     <p class="lead" id="headline">
+      Your Gateway to the Distributed Web<br>
       <span id="videoLink"><i class="fas fa-play-circle"></i> Watch the Video</span></p>
     <div id="adDoFrame">
       <pre class="donation"><a class="donation" id="donationLink" href="https://thetangle.org/address/SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUY" target="_blank">IOTA Donation address</a>
@@ -172,9 +173,9 @@
       tools.
       <br> Please update your browser or switch to another browser.</p>
     <div id="receiveTextBox" class="textBox">
-      <h2 class="receiveHeadline">Receive File</h2>
+      <h2 class="receiveHeadline" id="searchHeadline">Search Files</h2>
       <form id="inputForm">
-        <input type="text" name="EmailFrom" id="firstField" placeholder="Enter your File Id or Name" class="boxInput">
+        <input type="text" name="EmailFrom" id="firstField" placeholder="Enter File Id or Name" class="boxInput">
         <input type="text" name="EmailTo" id="passwordField" placeholder="Enter your Password" class="boxInput">
         <div id="messages"></div>
         <div id="response" class="hidden">
@@ -186,6 +187,7 @@
       </form>
     </div>
     <p class="lead" id="headline">
+      Your Gateway to the Distributed Web<br>
       <span id="videoLink2"><i class="fas fa-play-circle"></i> Watch the Video</span>
     </p>
   </div>
@@ -193,8 +195,8 @@
   <!-- History Page  -->
   <div id="historyPage">
     <div class="longText" id="historyLongText">
-      <h2>Transfer History</h2>
-      <p>Your transfer history is stored inside your browser and will be deleted once you clear your browser
+      <h2>Sharing History</h2>
+      <p>Your history is stored inside your browser and will be deleted once you clear your browser
         history. You can publicly claim the ownership of a transaction on Twitter by clicking on the
         following icons below <i style='color: #6f6f6f;' class='fas fa-file-signature'></i></p>
       <br>
@@ -241,13 +243,13 @@
 
       <div id="About" class="tabcontent">
         <h2>About Pact</h2>
-        <p>Pact is a new generation of simple and highly secure file transfer. It’s one of the first distributed
+        <p>Pact is a new generation of simple and highly secure file sharing service. It’s one of the first distributed
           websites running in your browser, meaning you are in complete control of your own data. We
           neither have access to your encrypted data nor can we prevent you from sharing and receiving this data. By
-          design, it’s impossible to alter your data during the transfer process. Additionally, the
-          integrated transfer history allows you to claim the ownership of your data and provides a transparent
+          design, it’s impossible to alter your data after the upload. Additionally, the
+          integrated sharing history allows you to claim the ownership of your data and provides a transparent
           logging system. </p>
-        <p>Currently, the service allows for the transfer of files up to 1GB. The recipient can download the
+        <p>Currently, the service allows for the sharing of files up to 1GB. The recipient can download the
           file for 3 days. </p>
         <p>If you choose password protection, we recommend using two separate channels: <br>
           1) for sharing the file link and <br>
@@ -255,11 +257,11 @@
           To maximize security, consider using a channel you are confident only the intended receiver has access to.
           Usually, using email for the file link and WhatsApp for the password link works fine. </p>
         <h2>The Technology</h2>
-        <p>We are using the latest advantages in the field of the distributed ledger technology for our file transfer
+        <p>We are using the latest advantages in the field of the distributed ledger technology for our file sharing
           service. The files
           are uploaded on a distributed file system named <a href="https://ipfs.io/" target="_blank">IPFS</a> and
           uploads, as well as downloads, are logged on an immutable distributed ledger named <a href="https://www.iota.org/"
-            target="_blank">IOTA</a>. This way files are transfered
+            target="_blank">IOTA</a>. This way files are shared
           immutable
           and distributed on IPFS. IOTA makes sure that nobody can delete or alter the logs. Furthermore, we
           implemented the <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank">Web Crypto API</a>
@@ -292,9 +294,8 @@
       </div>
       <div id="Terms" class="tabcontent">
         <h2>Terms of Service</h2>
-        <p><strong>1) Introduction</strong><br> a) Pact provides a simple way to transfer confidential and
-          end-to-end
-          encrypted digital files up to a maximum total size of 1 GB (“Service”)<br> b) Pact is free from
+        <p><strong>1) Introduction</strong><br> a) Pact provides a simple way to share digital files up to a maximum
+          total size of 1 GB (“Service”)<br> b) Pact is free from
           registration
           and charge.<br> c) In this policy, “We”, “Us” and “Our” refer to PACT Care BV. For more information
           about
@@ -314,7 +315,7 @@
           password should be fine.
           <br> g) Pact will permanently delete the uploaded files after the expiry
           period
-          mentioned in Section 1e. However, since the file transfer is based on a distributed storage network
+          mentioned in Section 1e. However, since the file sharing is based on a distributed storage network
           named
           IPFS, in rare cases other servers could copy the end-to-end files and thus provide the files even after
           the
@@ -328,7 +329,7 @@
         <p><strong>3) Confidentiality</strong>
           <br>a) You acknowledge that download links and passwords can be forwarded and whoever is passed on or
           has
-          access to a download link can download the files contained in that transfer. It's the responsibility of
+          access to a download link can download the files contained in that link. It's the responsibility of
           the
           uploader to share and take the right precautions to keep password safe.
           <br>b) Pact provides a public log of transactions that is stored on a distributed ledger
@@ -340,17 +341,17 @@
           responsible
           and accountable for all materials and information that you upload, post or otherwise transmit via the
           Service.
-          PACT Care BV does not claim any ownership of the contents of the files you transfer through our Service.
+          PACT Care BV does not claim any ownership of the contents of the files you share through our Service.
           <br>b) By using our Service you guarantee that you have, for each file, all required permissions to
           distribute,
-          transfer, store and/or make available online as part of our Service, including copyrights, intellectual
+          share, store and/or make available online as part of our Service, including copyrights, intellectual
           property
           rights and personal data processing consents.
         </p>
         <p><strong>5) Restrictions</strong><br>a) PACT Care BV trusts you to use our Service responsibly. Therefore,
           you
           agree
-          not to transfer, distribute or store any files that:
+          not to share, distribute or store any files that:
           <br>i) be libelous or maliciously false;
           <br>ii) be obscene or indecent;
           <br>iii) infringe any copyright, moral right, database right, trademark right, design right, right in
@@ -384,7 +385,7 @@
           "spoofing" or "phishing"), unsolicited communications, promotions or advertisements to any part of the
           Service;
           <br>ix) sell, promote or advertise the Service unless specifically authorized to do so;
-          <br>x) circumvent transfer or storage space limits;
+          <br>x) circumvent sharing or storage space limits;
           <br>xi) decipher, decompile, disassemble, reverse engineer or otherwise attempt to derive any source
           code
           or underlying ideas or algorithms of any part of the Service
@@ -401,7 +402,7 @@
           any damages to your computer system or the computer system of any third party that result from the use
           of
           the Service.
-          <br>d) PACT is not responsible for any failure of the Service to transfer, store or delete a file or
+          <br>d) PACT is not responsible for any failure of the Service to share, store or delete a file or
           for
           the corruption or loss of any data, information or content contained in a file.
         </p>
@@ -502,7 +503,7 @@
           participating IPFS node.<br>
           b) We use cookies to store your preferences in relation to the password-protection. Cookies used for
           this purpose are named “Checkbox“ and are created by the participating IPFS node.<br>
-          c)We use the local storage of your browser to keep track of your transfer history. The key of this
+          c)We use the local storage of your browser to keep track of your sharing history. The key of this
           local storage is named "logs" and is and created by the participating IPFS node.<br>
           d)We use the local storage of your browser to store your personal background image. The key of this
           local storage is named "imgData" and is and created by the participating IPFS node.<br>

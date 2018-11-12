@@ -22,6 +22,8 @@ import '../css/menu.css';
 
 const JSZip = require('jszip');
 
+const GATEWAY = GetGateway();
+
 const SIZELIMIT = 1000; // In MB
 let filename;
 let isMobile;
@@ -33,13 +35,6 @@ function progressBar(percent) {
     document.getElementById('loadProgress').style.display = 'none';
   }
 }
-
-const appendBuffer2 = function appendBuffer2(buffer1, buffer2) {
-  const tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
-  tmp.set(new Uint8Array(buffer1), 0);
-  tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
-  return tmp.buffer;
-};
 
 const appendBuffer3 = function appendBuffer3(buffer1, buffer2, buffer3) {
   const tmp = new Uint8Array(
@@ -89,28 +84,42 @@ function errorMessage(errorMsg) {
   document.getElementById('fileAvailable').style.color = '#db3e4d';
 }
 
+/**
+ * Creates the unencrypted Layout, difference between html or not
+ * @param {string} fingerPrint
+ */
 function unencryptedLayout(fingerPrint) {
   document.getElementById('passwordStep').remove();
   document.getElementById('passwordTab').remove();
   document.getElementById('doneHeadline').innerHTML = 'Step 2: Done';
-  const link = `${
-    window.location.href
+  let link = `${
+    window.location.href.replace('index.html', '')
   }index.html?id=${fingerPrint}&password=nopass`;
-  document.getElementById('emailSharer').href = `mailto:?subject=Decentralized File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
-    link,
-  )}%0D%0A %0D%0A Best Regards,`;
-  if (isMobile) {
-    document.getElementById('explainText1').innerHTML = 'via Email or Copy Link';
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-      document.getElementById(
-        'smsSharer',
-      ).href = `sms:&body=Hi, I shared a file on: ${encodeURIComponent(link)}`;
-    } else {
-      document.getElementById(
-        'smsSharer',
-      ).href = `sms:?body=Hi, I shared a file on: ${encodeURIComponent(link)}`;
-    }
+  if (filename.includes('.html')) {
+    link = GATEWAY + fingerPrint;
+    document.getElementById('fileLink').innerText = 'Web Link  > ';
+    document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share Web Link';
+    document.getElementById('emailSharer').href = `mailto:?subject=Distributed Website created with Pact.online&body=Hi, %0D%0A %0D%0A I just created a distributed website with pact.online. You can access it here: %0D%0A ${encodeURIComponent(
+      link,
+    )}%0D%0A %0D%0A Best Regards,`;
   } else {
+    document.getElementById('emailSharer').href = `mailto:?subject=Distributed File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
+      link,
+    )}%0D%0A %0D%0A Best Regards,`;
+    if (isMobile) {
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+        document.getElementById(
+          'smsSharer',
+        ).href = `sms:&body=Hi, I shared a file on: ${encodeURIComponent(link)}`;
+      } else {
+        document.getElementById(
+          'smsSharer',
+        ).href = `sms:?body=Hi, I shared a file on: ${encodeURIComponent(link)}`;
+      }
+    }
+  }
+  if (!isMobile) {
+    document.getElementById('explainText1').innerHTML = 'via Email or Copy Link';
     document.getElementById('smsSharer').style.display = 'none';
   }
   document.getElementById('ipfsHash').href = link;
@@ -118,10 +127,10 @@ function unencryptedLayout(fingerPrint) {
 }
 
 function encryptedLayout(fingerPrint) {
-  const link = `${window.location.href}index.html?id=${fingerPrint}`;
+  const link = `${window.location.href.replace('index.html', '')}index.html?id=${fingerPrint}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').innerText = link;
-  document.getElementById('emailSharer').href = `${'mailto:?subject=Decentralized and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
+  document.getElementById('emailSharer').href = `${'mailto:?subject=Distributed and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
     + '1. Open the link below %0D%0A'
     + "2. Enter the password I'll share with you via WhatsApp or Telegram %0D%0A %0D%0A"
     + 'Link: '}${encodeURIComponent(link)}%0D%0A %0D%0A Best Regards,`;
@@ -145,9 +154,8 @@ function encryptedLayout(fingerPrint) {
 }
 
 function uploadToIPFS(buf, isEncrypted) {
-  const gateway = GetGateway();
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', gateway, true);
+  xhr.open('POST', GATEWAY, true);
   xhr.responseType = 'arraybuffer';
   xhr.timeout = 3600000;
   xhr.onreadystatechange = async function onreadystatechange() {
@@ -167,13 +175,13 @@ function uploadToIPFS(buf, isEncrypted) {
             fingerPrint,
             filename,
             true,
-            gateway,
+            GATEWAY,
             isEncrypted,
           );
           if (isEncrypted) {
             encryptedLayout(fingerPrint);
           } else {
-            unencryptedLayout(fingerPrint);
+            unencryptedLayout(fingerPrint, filename);
           }
         });
       }
@@ -207,7 +215,7 @@ function encryptBeforeUpload(reader) {
         'whatsappSharer',
       ).href = whatsappLink;
       document.getElementById('telegramSharer').href = `https://telegram.me/share/url?url=${
-        window.location.href
+        window.location.href.replace('index.html', '')
       }index.html`
         + `&text=Hi, here is your password to access the file: ${keyString}`;
     });
@@ -232,10 +240,8 @@ function readFile(e) {
     if (document.getElementById('endToEndCheck').checked) {
       encryptBeforeUpload(reader);
     } else {
-      const lenNumber = filename.length + 1000;
-      const fileNameArray = Buffer.from(lenNumber + filename);
-      const bufArray = appendBuffer2(fileNameArray, reader.result);
-      uploadToIPFS(bufArray, false);
+      // unencrypted upload, files don't contain filename!
+      uploadToIPFS(reader.result, false);
     }
   };
 
@@ -248,7 +254,7 @@ function readFile(e) {
     }
     zip.generateAsync({ type: 'blob' }).then((data) => {
       if (data.size <= SIZELIMIT * 1024 * 1024) {
-        filename = 'pact.zip';
+        filename = `${files[0].name.replace(/[^A-Za-z0-9. _\-]/g, '').split('.')[0]}.zip`; // named after first file
         reader.readAsArrayBuffer(data); // Read Provided File
       }
     });
@@ -302,22 +308,30 @@ function resetMenu(inputId) {
     }
   }
 }
-function currentPage(inputId) {
-  const ids = ['toIndex', 'toReceive', 'toHistory', 'toAbout'];
-  for (let i = 0; i < ids.length; i += 1) {
-    if (ids[i] === inputId) {
-      document.getElementById(ids[i]).classList.add('currentPage');
-    } else {
-      document.getElementById(ids[i]).classList.remove('currentPage');
-    }
-  }
-}
 
 function isIE() {
   const ua = window.navigator.userAgent;
   const msie = ua.indexOf('MSIE '); // IE 10 or older
   const trident = ua.indexOf('Trident/'); // IE 11
   return (msie > 0 || trident > 0);
+}
+
+function currentPage(inputId) {
+  const ids = ['toIndex', 'toReceive', 'toHistory', 'toAbout'];
+  for (let i = 0; i < ids.length; i += 1) {
+    if (ids[i] === inputId) {
+      document.getElementById(ids[i]).classList.add('currentPage');
+      if (ids[i] === 'toReceive') {
+        if (!isIE()) {
+          window.setTimeout(() => {
+            document.getElementById('firstField').focus();
+          }, 100);
+        }
+      }
+    } else {
+      document.getElementById(ids[i]).classList.remove('currentPage');
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -334,9 +348,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('privacy').click();
     }
   } else if (typeof filenamePar !== 'undefined') {
+    document.getElementById('searchHeadline').innerText = 'Receive File';
     resetMenu('receivePage');
-    currentPage('toReceive');
-    document.getElementById('defaultOpen').click();
+    currentPage('');
     document.getElementById('firstField').value = filenamePar;
     document.getElementById('firstField').style.display = 'none';
     if (typeof passwordPar !== 'undefined') {
@@ -354,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
   } else {
-    if (!isIE()) { document.getElementById('firstField').focus(); }
     document
       .getElementById('firstField')
       .addEventListener('keyup', (event) => {

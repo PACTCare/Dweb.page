@@ -88,14 +88,14 @@ async function load() {
     oReq.onloadstart = function onloadstart() {
       document.getElementById('loadProgress').style.display = 'block';
     };
-    oReq.onload = function onload() {
+    oReq.onload = async function onload() {
       const arrayBuffer = oReq.response;
-      const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
-      const fileName = new TextDecoder('utf-8').decode(
-        arrayBuffer.slice(4, fileNameLength + 4),
-      );
       // encrypted
       if (passwordInput !== '' && passwordInput !== 'nopass') {
+        const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
+        const fileName = new TextDecoder('utf-8').decode(
+          arrayBuffer.slice(4, fileNameLength + 4),
+        );
         const initialVector = new Uint8Array(
           arrayBuffer.slice(4 + fileNameLength, 16 + fileNameLength),
         );
@@ -122,14 +122,14 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        // not encrypted
-        const fileArray = new Uint8Array(
-          arrayBuffer.slice(4 + fileNameLength),
-        );
-        const typeM = MIME.getType(fileName);
-        const blob = new Blob([fileArray], { type: typeM });
-        blob.name = fileName;
-        downloadFile(fileInput, fileName, blob, false);
+        // not encrypted, get information from IOTA
+        const iota = new Iota();
+        const transactions = await iota.getTransaction(fileInput);
+        const logObj = await iota.getLog(transactions[0]);
+        const typeM = MIME.getType(logObj.fullFileName);
+        const blob = new Blob([arrayBuffer], { type: typeM });
+        blob.name = logObj.fullFileName;
+        downloadFile(fileInput, logObj.fullFileName, blob, false);
       }
     };
     oReq.onprogress = function onprogress(e) {

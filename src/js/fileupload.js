@@ -11,10 +11,10 @@ const checkbox = document.getElementById('endToEndCheck');
 
 checkbox.addEventListener('change', function checkBox() {
   if (this.checked) {
-    document.getElementById('checkboxText').innerText = 'On';
+    document.getElementById('checkboxText').innerText = 'Private';
     checkBoxCookie.setCookie('on', 365);
   } else {
-    document.getElementById('checkboxText').innerText = 'Off';
+    document.getElementById('checkboxText').innerText = 'Public';
     checkBoxCookie.setCookie('off', 365);
   }
 });
@@ -63,7 +63,7 @@ function ekUpload() {
     const checkboxCookie = checkBoxCookie.getCookie();
     if (checkboxCookie !== 'off') {
       document.getElementById('endToEndCheck').checked = true;
-      document.getElementById('checkboxText').innerText = 'On';
+      document.getElementById('checkboxText').innerText = 'Private';
     }
     const fileSelect = document.getElementById('file-upload');
 
