@@ -288,6 +288,7 @@ document.getElementById('video-ovelay').addEventListener('click', () => {
 });
 
 function resetMenu(inputId) {
+  // reset upload page, receive etc.
   document.getElementById('show-menu').checked = false;
   const ids = ['receivePage', 'historyPage', 'index', 'aboutPage'];
   for (let i = 0; i < ids.length; i += 1) {
@@ -301,10 +302,10 @@ function resetMenu(inputId) {
     } else {
       document.getElementById(ids[i]).style.transition = 'none';
       document.getElementById(ids[i]).style.visibility = 'hidden';
-      document.getElementById(ids[i]).style.height = '0';
-      document.getElementById(ids[i]).style.width = '0';
+      document.getElementById(ids[i]).style.height = '0%';
+      document.getElementById(ids[i]).style.width = '0%';
       document.getElementById(ids[i]).style.transform = 'scale(0.9)';
-      document.getElementById(ids[i]).style.opacity = '0';
+      document.getElementById(ids[i]).style.opacity = '0%';
     }
   }
 }

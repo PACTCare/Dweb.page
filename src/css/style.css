@@ -15,7 +15,12 @@ body,
   line-height: 1.4em;
 }
 #receivePage, #historyPage, #aboutPage{
+  transition: none;
   visibility: hidden;
+  transform: scale(0.9);
+  height: 0%;
+  width: 0%;
+  opacity: 0%;
 }
 #receivePage, #historyPage, #aboutPage, #index{
   overflow: hidden;
