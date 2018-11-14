@@ -254,7 +254,6 @@ function readFile(e) {
   };
 
   const files = e.target.files || e.dataTransfer.files;
-  console.log('inside index.js file upload');
   if (files.length > 1) {
     // zip it
     const zip = new JSZip();
@@ -328,7 +327,6 @@ function isIE() {
 
 
 function indexInit() {
-  console.log('index init');
   document.getElementById('fileLink').innerText = 'File Link > ';
   document.getElementById('passwordDiv').style.display = 'block';
   document.getElementById('passwordStep').innerText = 'Password > ';
@@ -352,8 +350,30 @@ function indexInit() {
 }
 
 function receiveInit() {
-  console.log('receive init');
+  document
+    .getElementById('firstField')
+    .addEventListener('keyup', (event) => {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        document.getElementById('load').click();
+      }
+    });
+  document.getElementById('searchHeadline').innerText = 'Search Files';
+  document.getElementById('firstField').style.display = 'block';
   document.getElementById('receiveResponse').style.display = 'none';
+  document.getElementById('firstField').value = '';
+  document.getElementById('passwordField').style.display = 'none';
+  window.history.replaceState(null, null, window.location.pathname);
+}
+
+function linkInit() {
+  document.getElementById('searchHeadline').innerText = 'Receive File';
+  document.getElementById('firstField').style.display = 'none';
+  document.getElementById('receiveResponse').style.display = 'none';
+}
+
+function aboutInit() {
+  document.getElementById('defaultOpen').click();
 }
 
 function currentPage(inputId) {
@@ -370,6 +390,8 @@ function currentPage(inputId) {
         }
       } else if (ids[i] === 'toIndex') {
         indexInit();
+      } else if (ids[i] === 'toAbout') {
+        aboutInit();
       }
     } else {
       document.getElementById(ids[i]).classList.remove('currentPage');
@@ -393,11 +415,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('privacy').click();
     }
   } else if (typeof filenamePar !== 'undefined') {
-    document.getElementById('searchHeadline').innerText = 'Receive File';
     menuAnimation('receivePage');
     currentPage('');
+    linkInit();
     document.getElementById('firstField').value = filenamePar;
-    document.getElementById('firstField').style.display = 'none';
     if (typeof passwordPar !== 'undefined') {
       document.getElementById('passwordField').value = passwordPar;
     } else {
@@ -413,16 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
   } else {
-    document
-      .getElementById('firstField')
-      .addEventListener('keyup', (event) => {
-        event.preventDefault();
-        if (event.keyCode === 13) {
-          document.getElementById('load').click();
-        }
-      });
     document.getElementById('toIndex').classList.add('currentPage');
-    document.getElementById('defaultOpen').click();
   }
 });
 

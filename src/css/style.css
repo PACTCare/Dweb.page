@@ -41,10 +41,6 @@ body,
   margin: 0 auto;
 }
 
-#passwordField {
-  display: none;
-}
-
 #right {
   position: absolute;
   z-index: 43;
