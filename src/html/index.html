@@ -167,8 +167,10 @@
       <br> Please update your browser or switch to another browser.</p>
     <div id="receiveTextBox" class="textBox">
       <h2 class="receiveHeadline" id="searchHeadline"></h2>
-      <form id="inputForm">
-        <input type="text" name="EmailFrom" id="firstField" placeholder="Enter File Id or Name" class="boxInput">
+      <form autocomplete="nope" id="inputForm">
+        <div class="autocomplete">
+          <input type="text" name="EmailFrom" id="firstField" placeholder="Enter File Id or Name" class="boxInput">
+        </div>
         <input type="text" name="EmailTo" id="passwordField" placeholder="Enter your Password" class="boxInput">
         <div id="messages"></div>
         <div id="receiveResponse" class="hidden">

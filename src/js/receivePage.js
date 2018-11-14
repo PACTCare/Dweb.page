@@ -6,6 +6,7 @@ import Ping from './services/Ping';
 import GetGateway from './services/getGateway';
 import Log from './log/Log';
 import { saveAs } from './services/fileSaver';
+import './search/autocomplete';
 
 const gateway = GetGateway();
 /**

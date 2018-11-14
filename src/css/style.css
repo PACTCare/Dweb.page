@@ -1,12 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand");
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 
-/* @media (max-width: 768px) {
-  body {
-      height:100%;
-  }
-} */
-
 html,
 body,
 * {
@@ -40,6 +34,37 @@ body,
   width: 100%;
   margin: 0 auto;
 }
+
+.autocomplete {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.autocomplete-items {
+  font-family: Quicksand,sans-serif;
+  position: absolute;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  margin-top: -1rem;
+  top: 100%;
+  left: 0;
+  right: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+}
+.autocomplete-items div {
+  padding: 4px 15px;
+  cursor: pointer;
+  background-color: #fff;
+  text-align: left;
+}
+.autocomplete-items div:hover {
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  background-color: #e9e9e9 !important;
+}
+
 
 #right {
   position: absolute;
