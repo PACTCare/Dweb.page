@@ -34,25 +34,23 @@ function ekUpload() {
 
   function parseFile(file) {
     output(`<strong>${encodeURI(file.name)}</strong>`);
-    document.getElementsByClassName('switch')[0].style.display = 'none';
-    document.getElementById('checkboxText').style.display = 'none';
-    document.getElementById('passwordProtected').style.display = 'none';
-    document.getElementById('start').classList.add('hidden');
-    document.getElementById('response').classList.remove('hidden');
+    document.getElementById('passwordDiv').style.display = 'none';
+    document.getElementById('start').style.display = 'none';
+    document.getElementById('response').style.display = 'block';
     const imageName = file.name;
     const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(imageName);
     if (isImage) {
-      document.getElementById('file-image').classList.remove('hidden');
+      document.getElementById('file-image').style.display = 'inline-block';
       document.getElementById('file-image').src = URL.createObjectURL(file);
     }
     if (file.size > fileSizeLimit * 1024 * 1024) {
       output(`Please upload a smaller file (< ${fileSizeLimit} MB).`);
-      document.getElementById('loadingAnimation').style.display = 'none';
     }
   }
 
   function fileSelectHandler(e) {
     const files = e.target.files || e.dataTransfer.files;
+    console.log(files);
     fileDragHover(e);
     for (var i = 0, f; (f = files[i]); i += 1) {
       parseFile(f);
@@ -66,13 +64,8 @@ function ekUpload() {
       document.getElementById('checkboxText').innerText = 'Private';
     }
     const fileSelect = document.getElementById('file-upload');
-
-
     const fileDrag = document.getElementById('file-drag');
-
     fileSelect.addEventListener('change', fileSelectHandler, false);
-
-    // Is XHR2 available?
     const xhr = new XMLHttpRequest();
     if (xhr.upload) {
       // File Drop

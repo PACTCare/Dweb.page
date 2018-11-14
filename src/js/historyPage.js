@@ -59,8 +59,7 @@ function printLog(iotaLogArray, storageLogArray) {
       let link = `${window.location.href.replace('history', 'receive')
       }?id=${
         iotaLogArray[j].fileId
-      }&gate=${
-        iotaLogArray[j].gateway}`;
+      }`;
       if (!iotaLogArray[j].encrypted) {
         link += '&password=nopass';
       }

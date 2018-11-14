@@ -47,11 +47,12 @@ function compareTime(a, b) {
 
 async function searchFileIdBasedOnName(fileInput) {
   const iota = new Iota();
-  if (fileInput.includes('.')) {
-    const [fileIn] = fileInput.split('.');
-    return fileIn;
+  let fileIn = fileInput;
+  if (fileIn.includes('.')) {
+    const [firstPartOfInput] = fileInput.split('.');
+    fileIn = firstPartOfInput;
   }
-  const transactions = await iota.getTransactionByName(fileInput.trim());
+  const transactions = await iota.getTransactionByName(fileIn.trim());
   const results = [];
   if (typeof (transactions) !== 'undefined') {
     for (let i = 0; i < transactions.length; i += 1) {
@@ -84,7 +85,7 @@ async function load() {
   } else {
     output('');
     const oReq = new XMLHttpRequest();
-    document.getElementById('response').classList.remove('hidden');
+    document.getElementById('receiveResponse').style.display = 'none';
     oReq.onloadstart = function onloadstart() {
       document.getElementById('loadProgress').style.display = 'block';
     };

@@ -27,7 +27,13 @@ function fixStepIndicator(n) {
 
 function showTab(n) {
   const x = document.getElementsByClassName('tabSteps');
-  x[n].style.display = 'block';
+  for (let i = 0; i < x.length; i += 1) {
+    if (i === n) {
+      x[i].style.display = 'block';
+    } else {
+      x[i].style.display = 'none';
+    }
+  }
   // ... and fix the Previous/Next buttons:
   if (n === 0) {
     document.getElementById('prevBtn').style.display = 'none';
@@ -62,3 +68,13 @@ window.nextPrev = function nextPrev(n) {
   // Otherwise, display the correct tab:
   showTab(currentTab);
 };
+
+document.getElementById('toIndex').addEventListener('click', () => {
+  currentTab = 0;
+  showTab(currentTab);
+});
+
+document.getElementById('newUpload').addEventListener('click', () => {
+  currentTab = 0;
+  showTab(currentTab);
+});

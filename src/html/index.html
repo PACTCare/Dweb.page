@@ -57,8 +57,6 @@
     <i id="resetImage" class="fas fa-ban"></i>
   </div>
 
-
-
   <!-- Upload Page  -->
   <div id="index">
     <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo"><br>
@@ -77,7 +75,6 @@
       </div>
       <form id="file-upload-form" class="uploader">
         <input id="file-upload" type="file" name="fileUpload" multiple="" />
-
         <label for="file-upload" id="file-drag">
           <img id="file-image" src="#" alt="Preview" class="hidden">
           <div id="start">
@@ -93,53 +90,49 @@
               <div id="loadBar"></div>
             </div>
           </div>
-
         </label>
       </form>
-
     </div>
 
     <div id="afterUpload" class="textBox">
       <div id="stepsDiv">
-        <span class="step" id="fileLink">File Link > </span> <span class="step" id="passwordStep">Password > </span>
+        <span class="step" id="fileLink"></span>
+        <span id="passwordStep"></span>
         <span class="step">Done</span><br>
       </div>
       <span id="notification1"></span>
       <span id="notification2"></span>
-
       <div class="tabSteps" id="fileTab">
         <pre>
-        <span class="steps" id="fileLinkHeadline">Step 1: Share File Link</span>
+        <span class="steps" id="fileLinkHeadline"></span>
       </pre>
-        <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent" href="mailto:"><i class="fas fa-envelope"></i></a>
-        <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent" href="sms:?body=nachricht"><i class="fas fa-mobile-alt"></i></a>
+        <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent"><i class="fas fa-envelope"></i></a>
+        <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent"><i class="fas fa-mobile-alt"></i></a>
         or
         <a class="share" onclick="nextPrev(1)" id="copyFirstLink"><i class="far fa-copy"></i></a>
         <br>
-        <span id="explainText1">via Email, SMS or Copy Link</span>
+        <span id="explainText1"></span>
         <pre class="longLink">
-      <a id="ipfsHash"  target="_blank">Qmbeb1LwBrHuNyLXxLYH8SPpAaVNsZpS1kJ6mfvWxxh3YV</a>
+      <a id="ipfsHash"  target="_blank"></a>
       </pre>
       </div>
-      <div class="tabSteps" id="passwordTab">
+      <div id="passwordTab">
         <pre>
-        <span class="steps">Step 2: Share Password</span>
+        <span class="steps" id="secondStepHeadline"></span>
       </pre>
-        <a class="share" id="whatsappSharer" onclick="nextPrev(1)" href="https:" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <a class="share" id="telegramSharer" onclick="nextPrev(1)" href="https:" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+        <a class="share" id="whatsappSharer" onclick="nextPrev(1)" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a class="share" id="telegramSharer" onclick="nextPrev(1)" target="_blank"><i class="fab fa-telegram-plane"></i></a>
         or
         <a class="share" onclick="nextPrev(1)" id="copySecondLink"><i class="far fa-copy"></i></a>
         <br>
         via WhatsApp, Telegram or Copy Link
         <pre class="longLink">
-        <span id="password" target="_blank">AwesomePassword</span>
+        <span id="password" target="_blank"></span>
       </pre>
       </div>
       <div class="tabSteps" id="lastTab">
-        <pre><span class="steps" id="doneHeadline">Step 3: Done</span>
-      <span id="fileAvailable">Your file is available for 3 days.
-        You can find your sharing history <a id="logLink" href="history.html">here</a>.
-      </span>
+        <pre><span class="steps" id="doneHeadline"></span>
+      <span id="fileAvailable"></span>
     </pre>
 
       </div>
@@ -151,7 +144,7 @@
           <div id="nextAtEnd">
             <button class="stepButton" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
           </div>
-          <button class="stepButton" type="button" id="newUpload" onclick="window.open('.','_parent')">Restart</button>
+          <button class="stepButton" type="button" id="newUpload">Restart</button>
         </div>
       </div>
     </div>
@@ -178,7 +171,7 @@
         <input type="text" name="EmailFrom" id="firstField" placeholder="Enter File Id or Name" class="boxInput">
         <input type="text" name="EmailTo" id="passwordField" placeholder="Enter your Password" class="boxInput">
         <div id="messages"></div>
-        <div id="response" class="hidden">
+        <div id="receiveResponse" class="hidden">
           <div id="loadProgress">
             <div id="loadBar"></div>
           </div>

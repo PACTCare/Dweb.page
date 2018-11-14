@@ -33,6 +33,8 @@ function progressBar(percent) {
   elem.style.width = `${percent}%`;
   if (percent >= 100) {
     document.getElementById('loadProgress').style.display = 'none';
+  } else {
+    document.getElementById('loadProgress').style.display = 'block';
   }
 }
 
@@ -49,12 +51,8 @@ const appendBuffer3 = function appendBuffer3(buffer1, buffer2, buffer3) {
 function prepareStepsLayout() {
   document.getElementById('file-upload-form').style.display = 'none';
   document.getElementById('headline').style.display = 'none';
-  document
-    .getElementById('adDoFrame')
-    .setAttribute('style', 'display:inline-block !important');
-  document
-    .getElementById('afterUpload')
-    .setAttribute('style', 'display:block !important');
+  document.getElementById('adDoFrame').style.display = 'inline-block';
+  document.getElementById('afterUpload').style.display = 'block';
 }
 
 function CheckIsMobile() {
@@ -72,16 +70,27 @@ function CheckIsMobile() {
 }
 
 function errorMessage(errorMsg) {
-  document.getElementById('fileTab').remove();
-  document.getElementById('passwordTab').remove();
-  document.getElementById('stepsDiv').remove();
+  // remove
+  document.getElementById('fileTab').classList.remove('tabSteps');
+  document.getElementById('passwordTab').classList.remove('tabSteps');
+  document.getElementById('stepsDiv').style.display = 'none';
   document
     .getElementById('lastTab')
     .setAttribute('style', 'display:block !important');
-  document.getElementById('doneHeadline').innerHTML = 'Error';
+  document.getElementById('doneHeadline').innerText = 'Error';
   document.getElementById('doneHeadline').style.color = '#db3e4d';
-  document.getElementById('fileAvailable').innerHTML = errorMsg;
+  document.getElementById('fileAvailable').innerText = errorMsg;
   document.getElementById('fileAvailable').style.color = '#db3e4d';
+}
+
+function mobileLayout() {
+  if (!isMobile || filename.includes('.html')) {
+    document.getElementById('explainText1').innerText = 'via Email or Copy Link';
+    document.getElementById('smsSharer').style.display = 'none';
+  } else {
+    document.getElementById('explainText1').innerText = 'via Email, SMS or Copy Link';
+    document.getElementById('smsSharer').style.display = 'block';
+  }
 }
 
 /**
@@ -89,17 +98,20 @@ function errorMessage(errorMsg) {
  * @param {string} fingerPrint
  */
 function unencryptedLayout(fingerPrint) {
-  document.getElementById('passwordStep').remove();
-  document.getElementById('passwordTab').remove();
-  document.getElementById('doneHeadline').innerHTML = 'Step 2: Done';
+  document.getElementById('passwordStep').classList.remove('step');
+  document.getElementById('passwordStep').style.display = 'none';
+  document.getElementById('passwordTab').classList.remove('tabSteps');
+  document.getElementById('passwordTab').style.display = 'none';
+  document.getElementById('doneHeadline').innerText = 'Step 2: Done';
   let link = `${
     window.location.href.replace('index.html', '')
   }index.html?id=${fingerPrint}&password=nopass`;
   if (filename.includes('.html')) {
     link = GATEWAY + fingerPrint;
-    document.getElementById('fileLink').innerText = 'Web Link  > ';
-    document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share Web Link';
-    document.getElementById('emailSharer').href = `mailto:?subject=Distributed Website created with Pact.online&body=Hi, %0D%0A %0D%0A I just created a distributed website with pact.online. You can access it here: %0D%0A ${encodeURIComponent(
+    document.getElementById('fileLink').innerText = 'Share Page  > ';
+    document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share your Webpage';
+    document.getElementById('fileAvailable').innerHTML = `Your distributed webpage is now available on IPFS. <br> Send us your hash (plus feedback) via <a href="mailto:info@pact.online?subject=Keep hash online&body=Hi, %0D%0A %0D%0A Please keep the following hash online (called pinning): ${fingerPrint}  %0D%0A Here are my feedback/ideas regarding pact.online: %0D%0A %0D%0A %0D%0A Regards,">mail</a> to keep it online.`;
+    document.getElementById('emailSharer').href = `mailto:?subject=Distributed Webpage created with Pact.online&body=Hi, %0D%0A %0D%0A I just created a distributed webpage with pact.online. You can access it here: %0D%0A ${encodeURIComponent(
       link,
     )}%0D%0A %0D%0A Best Regards,`;
   } else {
@@ -118,13 +130,11 @@ function unencryptedLayout(fingerPrint) {
       }
     }
   }
-  if (!isMobile) {
-    document.getElementById('explainText1').innerHTML = 'via Email or Copy Link';
-    document.getElementById('smsSharer').style.display = 'none';
-  }
+  mobileLayout();
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').innerText = link;
 }
+
 
 function encryptedLayout(fingerPrint) {
   const link = `${window.location.href.replace('index.html', '')}index.html?id=${fingerPrint}`;
@@ -148,8 +158,6 @@ function encryptedLayout(fingerPrint) {
         link,
       )} I'll send you the password on WhatsApp.`;
     }
-  } else {
-    document.getElementById('smsSharer').style.display = 'none';
   }
 }
 
@@ -208,7 +216,6 @@ function encryptBeforeUpload(reader) {
       let whatsappLink = `https://api.whatsapp.com/send?text=${keyString}`;
       if (!isMobile) {
         whatsappLink = `https://web.whatsapp.com/send?text=${keyString}`;
-        document.getElementById('explainText1').innerHTML = 'via Email or Copy Link';
       }
       // what
       document.getElementById(
@@ -237,6 +244,7 @@ function encryptBeforeUpload(reader) {
 function readFile(e) {
   const reader = new FileReader();
   reader.onloadend = function onloadend() {
+    mobileLayout();
     if (document.getElementById('endToEndCheck').checked) {
       encryptBeforeUpload(reader);
     } else {
@@ -246,6 +254,7 @@ function readFile(e) {
   };
 
   const files = e.target.files || e.dataTransfer.files;
+  console.log('inside index.js file upload');
   if (files.length > 1) {
     // zip it
     const zip = new JSZip();
@@ -287,7 +296,7 @@ document.getElementById('video-ovelay').addEventListener('click', () => {
   iframe.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
 });
 
-function resetMenu(inputId) {
+function menuAnimation(inputId) {
   // reset upload page, receive etc.
   document.getElementById('show-menu').checked = false;
   const ids = ['receivePage', 'historyPage', 'index', 'aboutPage'];
@@ -317,17 +326,50 @@ function isIE() {
   return (msie > 0 || trident > 0);
 }
 
+
+function indexInit() {
+  console.log('index init');
+  document.getElementById('fileLink').innerText = 'File Link > ';
+  document.getElementById('passwordDiv').style.display = 'block';
+  document.getElementById('passwordStep').innerText = 'Password > ';
+  document.getElementById('passwordStep').style.display = 'inline-block';
+  document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share File Link';
+  document.getElementById('secondStepHeadline').innerText = 'Step 2: Share Password';
+  document.getElementById('doneHeadline').innerText = 'Step 3: Done';
+  document.getElementById('fileAvailable').innerHTML = 'Your file is available for 3 days.<br> You can find your sharing history <a onclick="openHistory()" style="color: #6d91c7;cursor: pointer;">here</a>.';
+  document.getElementById('file-upload-form').style.display = 'block';
+  document.getElementById('headline').style.display = 'block';
+  document.getElementById('afterUpload').style.display = 'none';
+  document.getElementById('adDoFrame').style.display = 'none';
+  document.getElementById('start').style.display = 'block';
+  document.getElementById('response').style.display = 'none';
+  document.getElementById('file-image').style.display = 'none';
+  document.getElementById('file-upload').value = '';
+  document.getElementById('stepsDiv').style.display = 'block';
+  document.getElementById('fileTab').classList.add('tabSteps');
+  document.getElementById('passwordTab').classList.add('tabSteps');
+  document.getElementById('passwordStep').classList.add('step');
+}
+
+function receiveInit() {
+  console.log('receive init');
+  document.getElementById('receiveResponse').style.display = 'none';
+}
+
 function currentPage(inputId) {
   const ids = ['toIndex', 'toReceive', 'toHistory', 'toAbout'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       document.getElementById(ids[i]).classList.add('currentPage');
       if (ids[i] === 'toReceive') {
+        receiveInit();
         if (!isIE()) {
           window.setTimeout(() => {
             document.getElementById('firstField').focus();
           }, 100);
         }
+      } else if (ids[i] === 'toIndex') {
+        indexInit();
       }
     } else {
       document.getElementById(ids[i]).classList.remove('currentPage');
@@ -336,12 +378,14 @@ function currentPage(inputId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialization
+  indexInit();
   const urlParameter = GetURLParameter('par');
   const filenamePar = GetURLParameter('id');
   const passwordPar = GetURLParameter('password');
   if (urlParameter === 'terms' || urlParameter === 'privacy') {
     document.getElementById('dialog-ovelay').style.display = 'none';
-    resetMenu('aboutPage');
+    menuAnimation('aboutPage');
     currentPage('toAbout');
     if (urlParameter === 'terms') {
       document.getElementById('terms').click();
@@ -350,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } else if (typeof filenamePar !== 'undefined') {
     document.getElementById('searchHeadline').innerText = 'Receive File';
-    resetMenu('receivePage');
+    menuAnimation('receivePage');
     currentPage('');
     document.getElementById('firstField').value = filenamePar;
     document.getElementById('firstField').style.display = 'none';
@@ -382,20 +426,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+window.openHistory = function openHistory() {
+  menuAnimation('historyPage');
+  currentPage('toHistory');
+};
+
 document.getElementById('toIndex').addEventListener('click', () => {
-  resetMenu('index');
+  menuAnimation('index');
   currentPage('toIndex');
 });
+
+document.getElementById('newUpload').addEventListener('click', () => {
+  menuAnimation('index');
+  currentPage('toIndex');
+});
+
 document.getElementById('toReceive').addEventListener('click', () => {
-  resetMenu('receivePage');
+  menuAnimation('receivePage');
   currentPage('toReceive');
 });
 document.getElementById('toHistory').addEventListener('click', () => {
-  resetMenu('historyPage');
-  currentPage('toHistory');
+  window.openHistory();
 });
 document.getElementById('toAbout').addEventListener('click', () => {
-  resetMenu('aboutPage');
+  menuAnimation('aboutPage');
   currentPage('toAbout');
 });
 
