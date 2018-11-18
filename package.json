@@ -16,8 +16,8 @@
     "iota.lib.js": "^0.5.0",
     "jsrsasign": "^8.0.12",
     "jszip": "^3.1.5",
-    "lunr": "^2.3.5",
-    "mime": "^2.3.1"
+    "mime": "^2.3.1",
+    "minisearch": "^0.1.18"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",

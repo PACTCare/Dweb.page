@@ -1,47 +1,70 @@
-import LUNR from 'lunr';
+
+import MiniSearch from 'minisearch';
 import Iota from '../log/Iota';
 
 const storeNames = 'SearchStore';
 const request = indexedDB.open('SearchDB', 1);
 
-const iotaLogArray = [];
-let idx;
+let metadata;
+let miniSearch;
+let db;
 
-async function startLunr() {
+async function updateDatabase() {
+  console.time('updateDatabase');
   const iota = new Iota();
   const time = new Date().toUTCString();
   const timeTag = iota.createTimeTag(time);
   const logFlags = {};
-  console.time('load');
   const transactions = await iota.getTransactionByTag(`PACTPUU${timeTag}`);
-  await Promise.all(
-    transactions.map(async (transaction) => {
-      const logObj = await iota.getLog(transaction);
-      if (!logFlags[logObj.fileId]) {
-        logFlags[logObj.fileId] = true;
-        iotaLogArray.push(logObj);
-      }
-    }),
-  );
-  console.timeEnd('load');
-  idx = LUNR(async function index() {
-    this.ref('id');
-    this.field('fileName'); // , { boost: 10 }
-    this.field('fileType');
-    this.field('fileId');
-    this.field('description');
-
-    for (let i = 0; i < iotaLogArray.length; i += 1) {
-      this.add({
-        id: i,
-        fileName: iotaLogArray[i].fileName,
-        fileType: iotaLogArray[i].fileType,
-        fileId: iotaLogArray[i].fileId,
-        description: iotaLogArray[i].description,
-      });
+  transactions.map(async (transaction) => {
+    const logObj = await iota.getLog(transaction);
+    if (!logFlags[logObj.fileId]) {
+      logFlags[logObj.fileId] = true;
+      const tx = db.transaction([storeNames], 'readwrite');
+      const store = tx.objectStore(storeNames);
+      const countRequest = store.count(logObj.fileId);
+      countRequest.onsuccess = function checkExistens() {
+        if (countRequest.result === 0) {
+          tx.objectStore(storeNames).put(logObj, logObj.fileId);
+          // if it's new immidiatly update search engine
+          metadata.push(logObj);
+          miniSearch.add({
+            fileId: logObj.fileId,
+            fileName: logObj.fileName,
+            fileType: logObj.fileType,
+            description: logObj.description,
+          });
+          console.log('new');
+        }
+      };
     }
   });
+  console.timeEnd('updateDatabase');
 }
+
+request.onupgradeneeded = function databaseUpgrade(e) {
+  const dbLocal = e.target.result;
+  dbLocal.createObjectStore(storeNames);
+};
+
+request.onsuccess = async function startSearch(event) {
+  db = event.target.result;
+  const tx = db.transaction([storeNames]);
+  const metadataTx = tx.objectStore(storeNames).getAll();
+  metadataTx.onsuccess = function addMetaDataToSearch() {
+    metadata = metadataTx.result;
+    miniSearch = new MiniSearch({
+      idField: 'fileId',
+      fields: ['fileName', 'fileType', 'description'],
+      searchOptions: {
+        boost: { fileName: 2 },
+        fuzzy: 0.2,
+      },
+    });
+    miniSearch.addAll(metadata);
+    updateDatabase();
+  };
+};
 
 function capFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -74,7 +97,6 @@ function autocomplete(inp) {
     }
   }
 
-
   inp.addEventListener('input', async function inputFunction(e) {
     let b; let i;
     let maxAddedWordCount = 0;
@@ -84,7 +106,7 @@ function autocomplete(inp) {
       document.getElementById('currentSelectedHiddenHash').innerText = 'nix';
       return false;
     }
-    const searchResults = idx.search(val.replace('.', ' '));
+    const searchResults = miniSearch.search(val.replace('.', ' '));
     currentFocus = -1;
     const a = document.createElement('DIV');
     a.setAttribute('id', `${this.id}autocomplete-list`);
@@ -93,7 +115,7 @@ function autocomplete(inp) {
     this.parentNode.appendChild(a);
     for (i = 0; i < searchResults.length; i += 1) {
       if (maxAddedWordCount < 6) {
-        const item = iotaLogArray[searchResults[i].ref];
+        const item = metadata.find(o => o.fileId === searchResults[i].id);
         if (maxAddedWordCount === 0) {
           document.getElementById('currentSelectedHiddenHash').innerText = item.fileId;
         }
@@ -128,4 +150,3 @@ function autocomplete(inp) {
 }
 
 autocomplete(document.getElementById('firstField'));
-startLunr();
