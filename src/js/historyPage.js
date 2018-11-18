@@ -1,20 +1,12 @@
 import './services/tableToCsv';
 import Iota from './log/Iota';
 import Signature from './log/Signature';
+import compareTime from './helperFunctions/compareTime';
 import '../css/table.css';
 import './polyfill/remove';
 
 const STORAGEKEY = 'logsv0.1';
 const iotaFlags = {};
-
-
-function compareTime(a, b) {
-  const da = new Date(a.time).getTime();
-  const db = new Date(b.time).getTime();
-  if (da > db) return -1;
-  if (da < db) return 1;
-  return 0;
-}
 
 function hideColumns(col1, col2, col3) {
   const tbl = document.getElementById('table');
@@ -60,12 +52,15 @@ function printLog(iotaLogArray, storageLogArray) {
       }?id=${
         iotaLogArray[j].fileId
       }`;
-      if (!iotaLogArray[j].encrypted) {
+      // see Iota.js for the setup of the log
+      // public = PU
+      if (iotaLogArray[j].tag.substring(4, 6) === 'PU') {
         link += '&password=nopass';
       }
       cell1.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
       cell2.innerHTML = iotaLogArray[j].fileId;
-      if (iotaLogArray[j].encrypted) {
+      // private = PR
+      if (iotaLogArray[j].tag.substring(4, 6) === 'PR') {
         cell3.innerHTML = 'Yes';
       } else {
         cell3.innerHTML = 'No';
@@ -76,7 +71,7 @@ function printLog(iotaLogArray, storageLogArray) {
       let cellUpload = 'n/a';
       let cellUploadSig = 'n/a';
       const uploadArray = iotaLogArray.filter(
-        x => x.fileId === iotaLogArray[j].fileId && x.upload,
+        x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'U', // U = Upload
       );
       for (let i = 0; i < uploadArray.length; i += 1) {
         const idPart = storageLogArray.find(x => x.id == uploadArray[i].id);
@@ -112,7 +107,7 @@ function printLog(iotaLogArray, storageLogArray) {
       let cellDownload = 'n/a';
       let cellDownloadSig = 'n/a';
       const downloadArray = iotaLogArray.filter(
-        x => x.fileId === iotaLogArray[j].fileId && !x.upload,
+        x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D', // D = Download
       );
       for (let i = 0; i < downloadArray.length; i += 1) {
         const idPart = storageLogArray.find(x => x.id == downloadArray[i].id);

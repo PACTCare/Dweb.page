@@ -10,14 +10,15 @@ export default class Log {
   }
 
   /**
-   *
+   * Creates log entries on IOTA
    * @param {string} fileId
    * @param {string} filename
    * @param {boolean} isUpload
    * @param {string} gateway
    * @param {boolean} isEncrypted
+   * @param {string} description
    */
-  createLog(fileId, filename, isUpload, gateway, isEncrypted) {
+  createLog(fileId, filename, isUpload, gateway, isEncrypted, description) {
     let logs = JSON.parse(window.localStorage.getItem(STORAGEKEY));
     if (logs == null) {
       logs = [];
@@ -27,21 +28,26 @@ export default class Log {
     const sig = new Signature();
     const publicKey = sig.generateKeyPairHex();
 
-    // log needs to be different
+    // log needs to be different, probably better integrate into indexdb
     logs.push(`${this.idNumber}???${fileId}&&&${filename}===${publicKey}`);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
     const signature = sig.sign(
       this.idNumber + fileId + this.time + gateway + isUpload + isEncrypted,
     );
-    new Iota().send(
-      this.idNumber,
+    // Tag contains information about encryption and upload, no need to integrate this here!
+    const minLog = {
+      id: this.idNumber,
       fileId,
-      this.time,
-      isUpload,
+      time: this.time,
       gateway,
-      isEncrypted,
       signature,
+    };
+    new Iota().send(
+      minLog,
+      isUpload,
+      isEncrypted,
       filename,
+      description,
     );
   }
 }

@@ -11,46 +11,34 @@ export default class Iota {
     this.minWeight = 14;
   }
 
-  /**
-   *
-   * @param {number} idNumber
-   * @param {string} fileId
-   * @param {string} time
-   * @param {boolean} isUpload
-   * @param {string} gateway
-   * @param {boolean} isEncrypted
-   * @param {string} signature
-   */
   send(
-    idNumber,
-    fileId,
-    time,
+    minLog,
     isUpload,
-    gateway,
     isEncrypted,
-    signature,
     filename,
+    description,
   ) {
-    const params = {
-      id: idNumber,
-      fileId,
-      time,
-      gateway,
-      upload: isUpload,
-      encrypted: isEncrypted,
-      signature,
-    };
-
     // not needed since the tangle as poWaas integrated!
     // poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
 
-    let tag = 'PACTDOTONLINE';
-    if (!isEncrypted) {
-      tag = this.filenameToTag(filename);
-      params.fullFileName = filename;
+    const maxLog = minLog;
+    // timeTag changes every month. If more users change more frequent
+    const timeTag = this.createTimeTag(minLog.time);
+    const [fileNamePart, fileTypePart] = filename.split('.');
+    let uploadTag = 'U'; // U = Upload, D = Download
+    if (!isUpload) {
+      uploadTag = 'D';
     }
-    const trytes = this.iotaNode.utils.toTrytes(fileId).slice(0, 81);
-    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(params));
+    let tag = `PACTPR${uploadTag}`; // PR = private, PU = Public
+    if (!isEncrypted) {
+      tag = `PACTPU${uploadTag + timeTag}`; // unencrypted + DATE
+      console.log(tag);
+      maxLog.fileName = fileNamePart.substring(0, 100);
+      maxLog.fileType = fileTypePart.substring(0, 15);
+      maxLog.description = description.substring(0, 500);
+    }
+    const trytes = this.iotaNode.utils.toTrytes(minLog.fileId).slice(0, 81);
+    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(minLog));
     const transfers = [
       {
         value: 0,
@@ -67,6 +55,14 @@ export default class Iota {
         return reject(err);
       });
     });
+  }
+
+  /**
+   *
+   * @param {string} time
+   */
+  createTimeTag(time) {
+    return this.iotaNode.utils.toTrytes(time.split(' ')[2] + time.split(' ')[3]);
   }
 
   /**
@@ -104,11 +100,10 @@ export default class Iota {
   }
 
   /**
-   *
+   * Gets transactions on IOTA by name
    * @param {string} filename
    */
-  getTransactionByName(filename) {
-    const tag = this.filenameToTag(filename);
+  getTransactionByTag(tag) {
     const searchVarsAddress = {
       tags: [tag], // 'BILDPNG99999999999999999999'
     };
@@ -141,6 +136,7 @@ export default class Iota {
             '99999999999999999999999999999999999999999999999999',
           );
           const obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
+          obj.tag = sucess2[0].tag;
           resolve(obj);
         }
       });

@@ -1,4 +1,4 @@
-export default function GetGateway() {
+export default function getGateway() {
   const HOST = window.location.hostname;
   const PROTOCOL = window.location.protocol;
   let gateway = 'http://localhost:8080/ipfs/';

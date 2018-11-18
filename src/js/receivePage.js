@@ -3,19 +3,19 @@ import 'fast-text-encoding';
 import Iota from './log/Iota';
 import Encryption from './services/Encryption';
 import Ping from './services/Ping';
-import GetGateway from './services/getGateway';
+import getGateway from './helperFunctions/getGateway';
 import Log from './log/Log';
 import { saveAs } from './services/fileSaver';
-import './search/autocomplete';
+import './search/search';
 
-const gateway = GetGateway();
+const GATEWAY = getGateway();
+
 /**
- *
+ * Outputs error messages
  * @param {string} msg
  */
 function output(msg) {
-  const m = document.getElementById('messages');
-  m.innerHTML = msg;
+  document.getElementById('messagesReceivePage').innerText = msg;
 }
 
 function downloadFile(fileId, fileName, blob, isEncrypted) {
@@ -24,7 +24,7 @@ function downloadFile(fileId, fileName, blob, isEncrypted) {
     if (err) {
       output('Something is blocking the log entry!');
     }
-    new Log().createLog(fileId, fileName, false, gateway, isEncrypted);
+    new Log().createLog(fileId, fileName, false, GATEWAY, isEncrypted, 'Not yet available');
     window.history.replaceState(null, null, window.location.pathname);
     saveAs(blob, fileName);
   });
@@ -38,41 +38,11 @@ function progressBar(percent) {
   }
 }
 
-function compareTime(a, b) {
-  const da = new Date(a.time).getTime();
-  const db = new Date(b.time).getTime();
-  if (da > db) return -1;
-  if (da < db) return 1;
-  return 0;
-}
-
-async function searchFileIdBasedOnName(fileInput) {
-  const iota = new Iota();
-  let fileIn = fileInput;
-  if (fileIn.includes('.')) {
-    const [firstPartOfInput] = fileInput.split('.');
-    fileIn = firstPartOfInput;
-  }
-  const transactions = await iota.getTransactionByName(fileIn.trim());
-  const results = [];
-  if (typeof (transactions) !== 'undefined') {
-    for (let i = 0; i < transactions.length; i += 1) {
-      results.push(iota.getAddress(transactions[i]));
-    }
-    let transactionObjs = await Promise.all(results);
-    // returns only the most recent uploaded version!
-    transactionObjs = transactionObjs.sort(compareTime);
-    return transactionObjs[0].fileId;
-  }
-
-  return 'wrongName';
-}
-
 async function load() {
   const passwordInput = document.getElementById('passwordField').value;
   let fileInput = document.getElementById('firstField').value;
-  if (fileInput.length !== 46 && typeof fileInput !== 'undefined') {
-    fileInput = await searchFileIdBasedOnName(fileInput);
+  if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && document.getElementById('currentSelectedHiddenHash').innerText !== 'nix') {
+    fileInput = document.getElementById('currentSelectedHiddenHash').innerText;
   }
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!
@@ -128,10 +98,15 @@ async function load() {
         const iota = new Iota();
         const transactions = await iota.getTransaction(fileInput);
         const logObj = await iota.getLog(transactions[0]);
-        const typeM = MIME.getType(logObj.fullFileName);
-        const blob = new Blob([arrayBuffer], { type: typeM });
-        blob.name = logObj.fullFileName;
-        downloadFile(fileInput, logObj.fullFileName, blob, false);
+        const name = `${logObj.fileName}.${logObj.fileType}`;
+        if (name.includes('.html')) {
+          window.open(GATEWAY + fileInput, '_self');
+        } else {
+          const typeM = MIME.getType(name);
+          const blob = new Blob([arrayBuffer], { type: typeM });
+          blob.name = name;
+          downloadFile(fileInput, name, blob, false);
+        }
       }
     };
     oReq.onprogress = function onprogress(e) {
@@ -149,7 +124,7 @@ async function load() {
       }
     };
 
-    oReq.open('GET', gateway + fileInput, true);
+    oReq.open('GET', GATEWAY + fileInput, true);
     oReq.responseType = 'arraybuffer';
     oReq.send();
   }

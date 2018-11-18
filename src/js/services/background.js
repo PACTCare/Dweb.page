@@ -1,5 +1,8 @@
-const localStorageKey = 'imgData';
-const maxSize = 1200;
+const maxSize = 1600;
+const key = 'backgroundImage';
+const storeNames = 'ImageStore';
+const request = indexedDB.open('ImageDB', 1);
+let db;
 
 function readBackgroundImage(event) {
   const reader = new FileReader();
@@ -23,12 +26,18 @@ function readBackgroundImage(event) {
       canvas.getContext('2d').drawImage(image, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/png');
       const imageUrl = dataUrl.replace(/(\r\n|\n|\r)/gm, '');
-      window.localStorage.setItem(localStorageKey, imageUrl);
-      document.getElementById('resetImage').style.display = 'inherit';
-      document
-        .getElementsByTagName('body')[0]
-        .style
-        .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${imageUrl}")`;
+
+      // safe in indexDB instead
+      const tx = db.transaction([storeNames], 'readwrite');
+      tx.objectStore(storeNames).put(imageUrl, key);
+      tx.oncomplete = function imageStored(e) {
+        console.log('data stored');
+        document.getElementById('resetImage').style.display = 'inherit';
+        document
+          .getElementsByTagName('body')[0]
+          .style
+          .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${imageUrl}")`;
+      };
     };
     image.src = readerEvent.target.result;
   };
@@ -39,31 +48,49 @@ function readBackgroundImage(event) {
 }
 
 function setBackgroundImage() {
-  let imageUrl = window.localStorage.getItem(localStorageKey);
-  if (imageUrl == null) {
-    imageUrl = 'https://pact.online/background.jpeg';
-    document.getElementById('resetImage').style.display = 'none';
-  } else {
-    document.getElementById('resetImage').style.display = 'inherit';
-  }
-  document
-    .getElementsByTagName('body')[0]
-    .style
-    .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${imageUrl}")`;
+  const tx = db.transaction([storeNames]);
+  const getStoredImage = tx.objectStore(storeNames).get(key);
+  getStoredImage.onsuccess = function presentStoredImage() {
+    if (typeof getStoredImage.result === 'undefined') {
+      document.getElementById('resetImage').style.display = 'none';
+      document
+        .getElementsByTagName('body')[0]
+        .style
+        .backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("https://pact.online/background.jpeg")';
+    } else {
+      document.getElementById('resetImage').style.display = 'inherit';
+      document
+        .getElementsByTagName('body')[0]
+        .style
+        .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${getStoredImage.result}")`;
+    }
+  };
 }
 
-setBackgroundImage();
+function startDatabase() {
+  request.onupgradeneeded = function databaseUpgrade(e) {
+    const dbLocal = e.target.result;
+    dbLocal.createObjectStore(storeNames);
+  };
 
-document.getElementById('filtersubmit').addEventListener('click', () => {
-  document.getElementById('backgroundUpload').click();
-});
+  request.onsuccess = function databaseLoaded(e) {
+    db = e.target.result;
+    setBackgroundImage();
+    document.getElementById('backgroundUpload').addEventListener('change', readBackgroundImage, false);
+    document.getElementById('filtersubmit').addEventListener('click', () => {
+      document.getElementById('backgroundUpload').click();
+    });
+    document.getElementById('resetImage').addEventListener('click', () => {
+      const tx = db.transaction([storeNames], 'readwrite');
+      tx.objectStore(storeNames).delete(key);
+      setBackgroundImage();
+    });
+  };
 
-document.getElementById('resetImage').addEventListener('click', () => {
-  window.localStorage.removeItem(localStorageKey);
-  setBackgroundImage();
-});
-
-document.getElementById('backgroundUpload').addEventListener('change', readBackgroundImage, false);
+  request.onerror = function databaseError(e) {
+    console.error('Unable to open database.');
+  };
+}
 
 // update vh on mobile
 const vh = window.innerHeight * 0.01;
@@ -72,3 +99,5 @@ window.addEventListener('resize', () => {
   const vhResize = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vhResize}px`);
 });
+
+startDatabase();

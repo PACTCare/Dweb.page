@@ -1,6 +1,5 @@
 import Cookie from './services/Cookie';
 
-const fileSizeLimit = 1000; // In MB
 const checkBoxCookie = new Cookie('Checkbox');
 
 function supportsFileread() {
@@ -28,8 +27,7 @@ function ekUpload() {
   }
 
   function output(msg) {
-    const m = document.getElementById('messages');
-    m.innerHTML = msg;
+    document.getElementById('messages').innerHTML = msg;
   }
 
   function parseFile(file) {
@@ -43,14 +41,10 @@ function ekUpload() {
       document.getElementById('file-image').style.display = 'inline-block';
       document.getElementById('file-image').src = URL.createObjectURL(file);
     }
-    if (file.size > fileSizeLimit * 1024 * 1024) {
-      output(`Please upload a smaller file (< ${fileSizeLimit} MB).`);
-    }
   }
 
   function fileSelectHandler(e) {
     const files = e.target.files || e.dataTransfer.files;
-    console.log(files);
     fileDragHover(e);
     for (var i = 0, f; (f = files[i]); i += 1) {
       parseFile(f);

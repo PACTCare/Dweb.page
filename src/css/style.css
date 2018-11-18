@@ -53,7 +53,8 @@ body,
   box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
 }
 .autocomplete-items div {
-  padding: 4px 15px;
+  word-break: break-all;
+  padding: 7px 15px;
   cursor: pointer;
   background-color: #fff;
   text-align: left;
@@ -88,6 +89,7 @@ body,
   opacity: 0.6;
 }
 
+#currentSelectedHiddenHash,
 #backgroundUpload {
   display: none;
 }
@@ -226,7 +228,6 @@ pre {
 }
 .receiveHeadline {
   margin-top: 0px;
-  margin-bottom: 1.5rem;
 }
 
 .boxInput {
@@ -310,7 +311,7 @@ pre {
 }
 
 .logo {
-  max-height: 6vh;
+  max-height: 5vh;
   margin-top: 8vh;
   margin-bottom: 1vh;
 }
@@ -558,6 +559,7 @@ a.share:hover {
 
 #ipfsHash:hover,
 #messages,
+#messagesReceivePage,
 .uploader div {
   color: #db3e4d;
 }

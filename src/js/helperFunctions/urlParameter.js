@@ -2,7 +2,7 @@
  *
  * @param {string} sParam
  */
-export default function GetURLParameter(sParam) {
+export default function getURLParameter(sParam) {
   const sPageURL = window.location.search.substring(1);
   const sURLVariables = sPageURL.split('&');
   for (let i = 0; i < sURLVariables.length; i += 1) {

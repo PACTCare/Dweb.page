@@ -59,7 +59,7 @@
 
   <!-- Upload Page  -->
   <div id="index">
-    <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo"><br>
+    <img src="https://pact.online/dist/img/dweb2.png" alt="Logo" class="logo"><br>
     <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our
       encryption
       tools.
@@ -79,7 +79,7 @@
           <img id="file-image" src="#" alt="Preview" class="hidden">
           <div id="start">
             <i class="fas fa-file-upload" aria-hidden=" true"></i>
-            <div id="addFileText">Add file(s) to start the free sharing<br> Up to 1GB
+            <div id="addFileText">Add file(s) to start the free sharing<br> <span id='limitText'>Up to 1GB</span>
             </div>
           </div>
           <div id="response" class="hidden">
@@ -160,19 +160,21 @@
 
   <!-- Receive Page  -->
   <div id="receivePage">
-    <img src="https://pact.online/dist/img/pactlogo.png" alt="Logo" id="logo" class="logo"><br>
+    <img src="https://pact.online/dist/img/dweb2.png" alt="Logo" class="logo"><br>
     <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our
       encryption
       tools.
       <br> Please update your browser or switch to another browser.</p>
     <div id="receiveTextBox" class="textBox">
       <h2 class="receiveHeadline" id="searchHeadline"></h2>
-      <form autocomplete="nope" id="inputForm">
+      <form id="inputForm">
         <div class="autocomplete">
-          <input type="text" name="EmailFrom" id="firstField" placeholder="Enter File Id or Name" class="boxInput">
+          <span id="currentSelectedHiddenHash"></span>
+          <input autocomplete="user-password" type="text" name="EmailFrom" id="firstField" placeholder="Enter File Id or Name"
+            class="boxInput">
         </div>
         <input type="text" name="EmailTo" id="passwordField" placeholder="Enter your Password" class="boxInput">
-        <div id="messages"></div>
+        <div id="messagesReceivePage"></div>
         <div id="receiveResponse" class="hidden">
           <div id="loadProgress">
             <div id="loadBar"></div>
