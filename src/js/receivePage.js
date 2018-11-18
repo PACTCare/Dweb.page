@@ -97,8 +97,9 @@ async function load() {
         // not encrypted, get information from IOTA
         const iota = new Iota();
         const transactions = await iota.getTransaction(fileInput);
-        const logObj = await iota.getLog(transactions[0]);
+        const logObj = await iota.getLog(transactions[transactions.length - 1]);
         const name = `${logObj.fileName}.${logObj.fileType}`;
+        document.getElementById('firstField').value = '';
         if (name.includes('.html')) {
           window.open(GATEWAY + fileInput, '_self');
         } else {

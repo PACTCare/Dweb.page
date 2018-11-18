@@ -1,9 +1,11 @@
 
 import MiniSearch from 'minisearch';
 import Iota from '../log/Iota';
+import createDayNumber from '../helperFunctions/createDayNumber';
 
 const storeNames = 'SearchStore';
 const request = indexedDB.open('SearchDB', 1);
+const STORAGEKEY = 'loadedMetadataNumber';
 
 let metadata;
 let miniSearch;
@@ -12,10 +14,22 @@ let db;
 async function updateDatabase() {
   console.time('updateDatabase');
   const iota = new Iota();
-  const time = new Date().toUTCString();
-  const timeTag = iota.createTimeTag(time);
   const logFlags = {};
-  const transactions = await iota.getTransactionByTag(`PACTPUU${timeTag}`);
+  let nrSofar = window.localStorage.getItem(STORAGEKEY);
+  if (nrSofar === null) {
+    nrSofar = 0;
+  }
+  // returns the highest number!
+  const mostRecentDayNumber = createDayNumber();
+  let dayNumber = mostRecentDayNumber;
+  const awaitTransactions = [];
+  while (dayNumber >= nrSofar) {
+    const dayTag = iota.createTimeTag(dayNumber);
+    awaitTransactions.push(iota.getTransactionByTag(`DWEBPUU${dayTag}`));
+    dayNumber -= 1;
+  }
+  const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
+  const transactions = [].concat(...transactionsArrays);
   transactions.map(async (transaction) => {
     const logObj = await iota.getLog(transaction);
     if (!logFlags[logObj.fileId]) {
@@ -39,6 +53,7 @@ async function updateDatabase() {
       };
     }
   });
+  window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
   console.timeEnd('updateDatabase');
 }
 
@@ -85,7 +100,7 @@ function autocomplete(inp) {
     if (currentFocus >= x.length) currentFocus = 0;
     if (currentFocus < 0) currentFocus = (x.length - 1);
     x[currentFocus].classList.add('autocomplete-active');
-    document.getElementById('firstField').value = x[currentFocus].children[2].value;
+    document.getElementById('firstField').value = x[currentFocus].children[3].value;
   }
 
   function closeAllLists(elmnt) {
@@ -121,7 +136,7 @@ function autocomplete(inp) {
         }
         maxAddedWordCount += 1;
         b = document.createElement('DIV');
-        b.innerHTML = `[${item.fileType}] <strong>${capFirstLetter(item.fileName)}</strong> <span style='font-size: 12px;'>${item.time}<br>${item.fileId}</span>`;
+        b.innerHTML = `<span style='color:#db3e4d'>[${item.fileType}]</span> <strong>${capFirstLetter(item.fileName)}</strong> <span style='font-size: 12px;'>${item.time}<br>${item.fileId}</span>`;
         b.innerHTML += `<input type='hidden' value='${item.fileId}'>`;
         b.addEventListener('click', function valueToInput(e) {
           inp.value = this.getElementsByTagName('input')[0].value;

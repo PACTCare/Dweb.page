@@ -1,4 +1,5 @@
 import IOTA from 'iota.lib.js';
+import createDayNumber from '../helperFunctions/createDayNumber';
 // import poWaaS from './powaas';
 
 const NODE = 'https://nodes.thetangle.org:443';
@@ -23,15 +24,15 @@ export default class Iota {
 
     const maxLog = minLog;
     // timeTag changes every month. If more users change more frequent
-    const timeTag = this.createTimeTag(minLog.time);
+    const timeTag = this.createTimeTag(createDayNumber());
     const [fileNamePart, fileTypePart] = filename.split('.');
     let uploadTag = 'U'; // U = Upload, D = Download
     if (!isUpload) {
       uploadTag = 'D';
     }
-    let tag = `PACTPR${uploadTag}`; // PR = private, PU = Public
+    let tag = `DWEBPR${uploadTag}`; // PR = private, PU = Public
     if (!isEncrypted) {
-      tag = `PACTPU${uploadTag + timeTag}`; // unencrypted + DATE
+      tag = `DWEBPU${uploadTag + timeTag}`; // unencrypted + DATE
       console.log(tag);
       maxLog.fileName = fileNamePart.substring(0, 100);
       maxLog.fileType = fileTypePart.substring(0, 15);
@@ -57,12 +58,8 @@ export default class Iota {
     });
   }
 
-  /**
-   *
-   * @param {string} time
-   */
-  createTimeTag(time) {
-    return this.iotaNode.utils.toTrytes(time.split(' ')[2] + time.split(' ')[3]);
+  createTimeTag(number) {
+    return this.iotaNode.utils.toTrytes(number.toString());
   }
 
   /**
