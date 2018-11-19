@@ -28,15 +28,14 @@ const GATEWAY = getGateway();
 const ISMOBILE = checkIsMobile();
 
 let sizeLimit = 1000; // In MB
+let describtion = 'Not yet available';
+let filename;
 
 // no upload limit if it's running local
 if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
   sizeLimit = 10000000;
   document.getElementById('limitText').style.display = 'none';
 }
-
-let filename;
-
 
 function progressBar(percent) {
   const elem = document.getElementById('loadBar');
@@ -174,7 +173,7 @@ function uploadToIPFS(buf, isEncrypted) {
             true,
             GATEWAY,
             isEncrypted,
-            'Not yet available',
+            describtion,
           );
           if (isEncrypted) {
             encryptedLayout(fileId);
@@ -231,6 +230,19 @@ function encryptBeforeUpload(reader) {
     });
   });
 }
+function extractMetadata(readerResult) {
+  // unencrypted upload, metadata stored on IOTA!
+  const enc = new TextDecoder('utf-8');
+  const htmlText = enc.decode(readerResult);
+  if (htmlText.toUpperCase().includes('!DOCTYPE HTML')) {
+    describtion = (new DOMParser()).parseFromString(htmlText, 'text/html').documentElement.textContent.trim();
+    if (htmlText.includes('<title>') && htmlText.includes('</title>')) {
+      filename = htmlText.match(new RegExp('<title>(.*)</title>'));
+      filename = `${filename[1]}.html`;
+    }
+  }
+}
+
 function readFile(e) {
   const reader = new FileReader();
   reader.onloadend = function onloadend() {
@@ -238,7 +250,7 @@ function readFile(e) {
     if (document.getElementById('endToEndCheck').checked) {
       encryptBeforeUpload(reader);
     } else {
-      // unencrypted upload, metadata stored on IOTA!
+      extractMetadata(reader.result);
       uploadToIPFS(reader.result, false);
     }
   };

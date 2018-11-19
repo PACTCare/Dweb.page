@@ -1,6 +1,8 @@
 import Iota from './Iota';
 import Signature from './Signature';
 
+const storeNames = 'SearchStore';
+const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'logsv0.1';
 
 export default class Log {
@@ -49,5 +51,6 @@ export default class Log {
       filename,
       description,
     );
+    // store direct in database!
   }
 }
