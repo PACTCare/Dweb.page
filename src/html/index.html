@@ -193,10 +193,8 @@
   <div id="historyPage">
     <div class="longText" id="historyLongText">
       <h2>Sharing History</h2>
-      <p>Your history is stored inside your browser and will be deleted once you clear your browser
-        history. You can publicly claim the ownership of a transaction on Twitter by clicking on the
+      <p>You can publicly claim the ownership of a transaction on Twitter by clicking on the
         following icons below <i style='color: #6f6f6f;' class='fas fa-file-signature'></i></p>
-      <br>
       <div class="table-responsive-vertical shadow-z-1">
         <!-- Table starts here -->
         <table id="table" class="table table-hover table-mc-light-blue">
@@ -239,15 +237,17 @@
     <div class="longText">
 
       <div id="About" class="tabcontent">
-        <h2>About Pact</h2>
-        <p>Dweb.page is a new generation of simple and highly secure file sharing service. It’s one of the first
+        <h2>About Dweb.page</h2>
+        <p>Dweb.page is an open source webpage that lets you share and search content on the distributed web. It’s one
+          of the first
           distributed
           websites running in your browser, meaning you are in complete control of your own data. We
           neither have access to your encrypted data nor can we prevent you from sharing and receiving this data. By
           design, it’s impossible to alter your data after the upload. Additionally, the
           integrated sharing history allows you to claim the ownership of your data and provides a transparent
           logging system. </p>
-        <p>Currently, the service allows for the sharing of files up to 1GB. The recipient can download the
+        <p>Currently, the service allows for the sharing of files up to 1GB. If you <a href='https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362'
+            target='_blank'>host it locally</a>, there won’t be an upload limit. The recipient can download the
           file for 3 days. </p>
         <p>If you choose password protection, we recommend using two separate channels: <br>
           1) for sharing the file link and <br>
@@ -255,13 +255,13 @@
           To maximize security, consider using a channel you are confident only the intended receiver has access to.
           Usually, using email for the file link and WhatsApp for the password link works fine. </p>
         <h2>The Technology</h2>
-        <p>We are using the latest advantages in the field of the distributed ledger technology for our file sharing
-          service. The files
+        <p>The files
           are uploaded on a distributed file system named <a href="https://ipfs.io/" target="_blank">IPFS</a> and
-          uploads, as well as downloads, are logged on an immutable distributed ledger named <a href="https://www.iota.org/"
+          logs as well as metadata are stored on an immutable distributed ledger named <a href="https://www.iota.org/"
             target="_blank">IOTA</a>. This way files are shared
           immutable
-          and distributed on IPFS. IOTA makes sure that nobody can delete or alter the logs. Furthermore, we
+          and distributed on IPFS. IOTA makes sure that nobody can delete or alter the logs and metadata. Furthermore,
+          we
           implemented the <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank">Web Crypto API</a>
           (AES256-GCM) to fully encrypt the files inside your browser before they get even uploaded. The same
           encryption
@@ -283,7 +283,7 @@
           to make it more attractive for IPFS nodes to participate.
         </p>
         <h2>Who We Are</h2>
-        <p>Dweb.page was developed by <a href="https://pact.care/" target="_blank">Pact Care BV</a>, a young startup
+        <p>Dweb.page is developed by <a href="https://pact.care/" target="_blank">Pact Care BV</a>, a young startup
           based
           in Amsterdam. We would love you supporting
           us in our efforts, for example, by reaching out or simply reading more about our initiatives on our <a href="https://blog.florence.chat/"
@@ -304,37 +304,20 @@
           disagree
           with these terms and conditions or any part of these terms and conditions, you must not use our
           Service.
-          <br> e) Your file will be automatically encrypted in your browser (AES256-GCM) before the upload. After
-          that,
-          you receive a unique file id (hash) as well as a password. The file is available for at least 3 days.
-          <br>f)
-          It’s recommended to use two different channels to send the file id and password. At least to one
-          channel
-          only the intended receiver should have access. In most cases, email for the file id and WhatsApp for
-          the
-          password should be fine.
-          <br> g) Dweb.page will permanently delete the uploaded files after the expiry
-          period
-          mentioned in Section 1e. However, since the file sharing is based on a distributed storage network
-          named
-          IPFS, in rare cases other servers could copy the end-to-end files and thus provide the files even after
-          the
-          expiry period.
-          <br>h) Please keep that in mind that this Service is still in beta phase.
+          <br>e) Please keep that in mind that this Service is still in an experimental phase.
         </p>
         <p><strong>2) License</strong>
           <br>You can find the full license of Dweb.page on our <a href="https://github.com/PACTCare/Pact/blob/master/LICENSE">GitHub
             page</a>.
         </p>
-        <p><strong>3) Confidentiality</strong>
-          <br>a) You acknowledge that download links and passwords can be forwarded and whoever is passed on or
-          has
-          access to a download link can download the files contained in that link. It's the responsibility of
-          the
-          uploader to share and take the right precautions to keep password safe.
+        <p><strong>3) Confidentiality of the private mode</strong>
+          <br>a) You acknowledge when using the private mode that download links and passwords can be forwarded and
+          whoever has access to both can download the files contained in that link. It's the responsibility of the
+          uploader to share and take the right precautions to keep the password safe.
           <br>b) Dweb.page provides a public log of transactions that is stored on a distributed ledger
           named
-          IOTA. This log includes the file id, gateway, encryption status, signature as well as the date and time of
+          IOTA. This log includes in the case of the private mode the file id, gateway, encryption status, signature as
+          well as the date and time of
           uploading and downloading of the file transmitted.
         </p>
         <p><strong>4) File ownership, permissions, and responsibility</strong><br>a) You are fully and solely
@@ -397,12 +380,12 @@
           on an “AS-IS” basis.
           <br>b) We disclaim any warranties of merchantability, fitness for a particular purpose, and
           non-infringement.
-          <br>c) The use of Dweb.page is at your own risk and you acknowledge and agree that PACT is not responsible
+          <br>c) The use of Dweb.page is at your own risk and you acknowledge and agree that we are not responsible
           for
           any damages to your computer system or the computer system of any third party that result from the use
           of
           the Service.
-          <br>d) PACT is not responsible for any failure of the Service to share, store or delete a file or
+          <br>d) We are not responsible for any failure of the Service to share, store or delete a file or
           for
           the corruption or loss of any data, information or content contained in a file.
         </p>
@@ -440,7 +423,8 @@
           exclude
           the liability of the limited liability entity itself for the acts and omissions of our officers and
           employees).
-          <br>f) In the event PACT is liable for damage under mandatory law, PACT’s aggregate liability to you
+          <br>f) In the event PACT Care BV is liable for damage under mandatory law, PACT Care BV’s aggregate liability
+          to you
           for
           any and all claims arising out of or in connection with the use of the Service will in no event exceed
           ten
@@ -477,7 +461,8 @@
         <h2>Privacy Policy</h2>
         <p>We, the developers of Dweb.page, do not have any access to your data! However, Dweb.page is running on the
           distributed
-          IPFS network. If you don’t encrypt your files everyone participating in this network can in theory access
+          IPFS network. If you don’t encrypt your files (private sharing mode) everyone participating in this network
+          can in access
           your
           data. Therefore it's highly recommended to encrypt data you don’t want to share publicly.
         </p><br>
@@ -499,14 +484,15 @@
           is closed.
         </p>
         <p><strong>3) Cookies that we use</strong><br>a) We use cookies to store your preferences in relation to
-          the use of cookies. Cookies used for this purpose are named “AgreeToTerms“ and are created by the
-          participating IPFS node.<br>
-          b) We use cookies to store your preferences in relation to the password-protection. Cookies used for
-          this purpose are named “Checkbox“ and are created by the participating IPFS node.<br>
+          the use of cookies. Cookies used for this purpose are named “AgreeToTerms“.<br>
+          b) We use cookies to store your preferences in relation to the sharing mode. Cookies used for
+          this purpose are named “Checkbox“.<br>
           c)We use the local storage of your browser to keep track of your sharing history. The key of this
-          local storage is named "logs" and is and created by the participating IPFS node.<br>
-          d)We use the local storage of your browser to store your personal background image. The key of this
-          local storage is named "imgData" and is and created by the participating IPFS node.<br>
+          local storage is named "logs".<br>
+          d)We use the indexeddb database of your browser to store your personal background image. The database is
+          named "ImageDB".<br>
+          d)We use the indexeddb database of your browser to store the metadata. The database is
+          named "SearchDB".<br>
         </p>
         <p><strong>4) Managing cookies</strong><br>a) Most browsers allow you to refuse to accept cookies and to
           delete
