@@ -1,8 +1,7 @@
 import Iota from './Iota';
 import Signature from './Signature';
+import addMetaData from '../search/addMetaData';
 
-const storeNames = 'SearchStore';
-const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'logsv0.1';
 
 export default class Log {
@@ -52,5 +51,7 @@ export default class Log {
       description,
     );
     // store direct in database!
+    const [fileNamePart, fileTypePart] = filename.split('.');
+    addMetaData(minLog.fileId, fileNamePart, fileTypePart, description, minLog.time, minLog.gateway);
   }
 }

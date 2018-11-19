@@ -45,6 +45,8 @@ body,
   position: absolute;
   border-bottom: none;
   border-top: none;
+  max-height: 54vh;
+  overflow: auto;
   z-index: 99;
   margin-top: -1rem;
   top: 100%;
@@ -120,7 +122,7 @@ body {
 
 h2 {
   font-family: "Quicksand", sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1;
   color: #000000;
   margin-bottom: 0;

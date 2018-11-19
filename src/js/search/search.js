@@ -2,13 +2,12 @@
 import MiniSearch from 'minisearch';
 import Iota from '../log/Iota';
 import createDayNumber from '../helperFunctions/createDayNumber';
+import addMetaData from './addMetaData';
 
 const storeNames = 'SearchStore';
 const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'loadedMetadataNumber';
 
-let metadata;
-let miniSearch;
 let db;
 
 async function updateDatabase() {
@@ -41,13 +40,7 @@ async function updateDatabase() {
         if (countRequest.result === 0) {
           tx.objectStore(storeNames).put(logObj, logObj.fileId);
           // if it's new immidiatly update search engine
-          metadata.push(logObj);
-          miniSearch.add({
-            fileId: logObj.fileId,
-            fileName: logObj.fileName,
-            fileType: logObj.fileType,
-            description: logObj.description,
-          });
+          addMetaData(logObj.fileId, logObj.fileName, logObj.fileType, logObj.description, logObj.time, logObj.gateway);
           console.log('new');
         }
       };
@@ -67,8 +60,8 @@ request.onsuccess = async function startSearch(event) {
   const tx = db.transaction([storeNames]);
   const metadataTx = tx.objectStore(storeNames).getAll();
   metadataTx.onsuccess = function addMetaDataToSearch() {
-    metadata = metadataTx.result;
-    miniSearch = new MiniSearch({
+    window.metadata = metadataTx.result;
+    window.miniSearch = new MiniSearch({
       idField: 'fileId',
       fields: ['fileName', 'fileType', 'description'],
       searchOptions: {
@@ -76,7 +69,7 @@ request.onsuccess = async function startSearch(event) {
         fuzzy: 0.2,
       },
     });
-    miniSearch.addAll(metadata);
+    window.miniSearch.addAll(window.metadata);
     updateDatabase();
   };
 };
@@ -121,7 +114,7 @@ function autocomplete(inp) {
       document.getElementById('currentSelectedHiddenHash').innerText = 'nix';
       return false;
     }
-    const searchResults = miniSearch.search(val.replace('.', ' '));
+    const searchResults = window.miniSearch.search(val.replace('.', ' '));
     currentFocus = -1;
     const a = document.createElement('DIV');
     a.setAttribute('id', `${this.id}autocomplete-list`);
@@ -130,7 +123,7 @@ function autocomplete(inp) {
     this.parentNode.appendChild(a);
     for (i = 0; i < searchResults.length; i += 1) {
       if (maxAddedWordCount < 6) {
-        const item = metadata.find(o => o.fileId === searchResults[i].id);
+        const item = window.metadata.find(o => o.fileId === searchResults[i].id);
         if (maxAddedWordCount === 0) {
           document.getElementById('currentSelectedHiddenHash').innerText = item.fileId;
         }
