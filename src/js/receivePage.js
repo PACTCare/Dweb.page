@@ -2,7 +2,6 @@ import MIME from 'mime/lite';
 import 'fast-text-encoding';
 import Iota from './log/Iota';
 import Encryption from './services/Encryption';
-import Ping from './services/Ping';
 import getGateway from './helperFunctions/getGateway';
 import Log from './log/Log';
 import { saveAs } from './services/fileSaver';
@@ -19,15 +18,9 @@ function output(msg) {
 }
 
 function downloadFile(fileId, fileName, blob, isEncrypted) {
-  const p = new Ping();
-  p.ping((err) => {
-    if (err) {
-      output('Something is blocking the log entry!');
-    }
-    new Log().createLog(fileId, fileName, false, GATEWAY, isEncrypted, 'Not yet available');
-    window.history.replaceState(null, null, window.location.pathname);
-    saveAs(blob, fileName);
-  });
+  new Log().createLog(fileId, fileName, false, GATEWAY, isEncrypted, 'Not yet available');
+  window.history.replaceState(null, null, window.location.pathname);
+  saveAs(blob, fileName);
 }
 
 function progressBar(percent) {

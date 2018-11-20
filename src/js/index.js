@@ -11,11 +11,11 @@ import './polyfill/remove';
 import './services/background';
 import Log from './log/Log';
 import Encryption from './services/Encryption';
-import Ping from './services/Ping';
 import getGateway from './helperFunctions/getGateway';
 import getURLParameter from './helperFunctions/urlParameter';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
+import keepIPFSStuffOnline from './helperFunctions/keepIPFSStuffOnline';
 import '../css/style.css';
 import '../css/toggle.css';
 import '../css/steps.css';
@@ -95,6 +95,7 @@ function unencryptedLayout(fileId) {
   let link = `${
     window.location.href.replace('index.html', '')
   }index.html?id=${fileId}&password=nopass`;
+  keepIPFSStuffOnline(fileId);
   if (filename.includes('.html')) {
     link = GATEWAY + fileId;
     document.getElementById('fileLink').innerText = 'Share Page  > ';
@@ -161,26 +162,20 @@ function uploadToIPFS(buf, isEncrypted) {
         prepareStepsLayout();
         errorMessage("The current IPFS gateway you are using  isn't writable!");
       } else {
-        const p = new Ping();
-        p.ping((err) => {
-          prepareStepsLayout();
-          if (err) {
-            errorMessage('Something is blocking the log entry!');
-          }
-          new Log().createLog(
-            fileId,
-            filename,
-            true,
-            GATEWAY,
-            isEncrypted,
-            describtion,
-          );
-          if (isEncrypted) {
-            encryptedLayout(fileId);
-          } else {
-            unencryptedLayout(fileId, filename);
-          }
-        });
+        prepareStepsLayout();
+        new Log().createLog(
+          fileId,
+          filename,
+          true,
+          GATEWAY,
+          isEncrypted,
+          describtion,
+        );
+        if (isEncrypted) {
+          encryptedLayout(fileId);
+        } else {
+          unencryptedLayout(fileId, filename);
+        }
       }
     }
   };
