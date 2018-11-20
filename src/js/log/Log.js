@@ -33,7 +33,7 @@ export default class Log {
     logs.push(`${this.idNumber}???${fileId}&&&${filename}===${publicKey}`);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
     const signature = sig.sign(
-      this.idNumber + fileId + this.time + gateway + isUpload + isEncrypted,
+      this.idNumber + fileId + this.time + gateway,
     );
     // Tag contains information about encryption and upload, no need to integrate this here!
     const minLog = {

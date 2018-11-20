@@ -75,9 +75,11 @@ function printLog(iotaLogArray, storageLogArray) {
       );
       for (let i = 0; i < uploadArray.length; i += 1) {
         const idPart = storageLogArray.find(x => x.id == uploadArray[i].id);
+        console.log(idPart);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
           const ver = sig.verification(uploadArray[i], pubSigKey);
+          console.log(ver);
           if (i === 0) {
             if (ver) {
               cellUpload = uploadArray[i].time.replace(',', '')
@@ -110,6 +112,7 @@ function printLog(iotaLogArray, storageLogArray) {
         x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D', // D = Download
       );
       for (let i = 0; i < downloadArray.length; i += 1) {
+        console.log(storageLogArray);
         const idPart = storageLogArray.find(x => x.id == downloadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;

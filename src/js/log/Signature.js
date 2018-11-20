@@ -35,7 +35,7 @@ export default class Signature {
 
   verification(obj, pub64) {
     const pubHex = this.tohex(pub64);
-    const msg = obj.id + obj.fileId + obj.time + obj.gateway + obj.upload + obj.encrypted;
+    const msg = obj.id + obj.fileId + obj.time + obj.gateway;
     const sigValueHex = this.tohex(obj.signature);
     const sig = new jsrsasign.KJUR.crypto.Signature({
       alg: SIGALG,
