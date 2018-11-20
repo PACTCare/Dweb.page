@@ -3,20 +3,24 @@ import MiniSearch from 'minisearch';
 import Iota from '../log/Iota';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
+import sortByScoreAndTime from './sortByScoreAndTime';
 
 const storeNames = 'SearchStore';
 const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'loadedMetadataNumber';
 
+// first search metadata was stored at day zero
+// the lower the number the more search data is loaded
+// later change to x days befor current day
+const STARTNUMBER = 0;
 let db;
 
 async function updateDatabase() {
-  console.time('updateDatabase');
   const iota = new Iota();
   const logFlags = {};
   let nrSofar = window.localStorage.getItem(STORAGEKEY);
   if (nrSofar === null) {
-    nrSofar = 0;
+    nrSofar = STARTNUMBER;
   }
   // returns the highest number!
   const mostRecentDayNumber = createDayNumber();
@@ -41,13 +45,11 @@ async function updateDatabase() {
           tx.objectStore(storeNames).put(logObj, logObj.fileId);
           // if it's new immidiatly update search engine
           addMetaData(logObj.fileId, logObj.fileName, logObj.fileType, logObj.description, logObj.time, logObj.gateway);
-          console.log('new');
         }
       };
     }
   });
   window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
-  console.timeEnd('updateDatabase');
 }
 
 request.onupgradeneeded = function databaseUpgrade(e) {
@@ -115,22 +117,27 @@ function autocomplete(inp) {
       return false;
     }
     const searchResults = window.miniSearch.search(val.replace('.', ' '));
+    const searchItems = [];
+    for (let i = 0; i < searchResults.length; i += 1) {
+      const item = window.metadata.find(o => o.fileId === searchResults[i].id);
+      item.score = searchResults[i].score;
+      searchItems.push(item);
+    }
+    searchItems.sort(sortByScoreAndTime);
     currentFocus = -1;
     const a = document.createElement('DIV');
     a.setAttribute('id', `${this.id}autocomplete-list`);
     a.setAttribute('class', 'autocomplete-items');
-    /* append the DIV element as a child of the autocomplete container: */
     this.parentNode.appendChild(a);
-    for (i = 0; i < searchResults.length; i += 1) {
+    for (i = 0; i < searchItems.length; i += 1) {
       if (maxAddedWordCount < 6) {
-        const item = window.metadata.find(o => o.fileId === searchResults[i].id);
         if (maxAddedWordCount === 0) {
-          document.getElementById('currentSelectedHiddenHash').innerText = item.fileId;
+          document.getElementById('currentSelectedHiddenHash').innerText = searchItems[i].fileId;
         }
         maxAddedWordCount += 1;
         b = document.createElement('DIV');
-        b.innerHTML = `<span style='color:#db3e4d'>[${item.fileType}]</span> <strong>${capFirstLetter(item.fileName)}</strong> <span style='font-size: 12px;'>${item.time}<br>${item.fileId}</span>`;
-        b.innerHTML += `<input type='hidden' value='${item.fileId}'>`;
+        b.innerHTML = `<span style='color:#db3e4d'>[${searchItems[i].fileType}]</span> <strong>${capFirstLetter(searchItems[i].fileName)}</strong> <span style='font-size: 12px;'>${searchItems[i].time}<br>${searchItems[i].fileId}</span>`;
+        b.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
         b.addEventListener('click', function valueToInput(e) {
           inp.value = this.getElementsByTagName('input')[0].value;
           closeAllLists();

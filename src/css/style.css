@@ -318,6 +318,7 @@ pre {
 
 .logo {
   max-height: 5vh;
+  min-height: 32px;
   margin-top: 8vh;
   margin-bottom: 1vh;
 }
