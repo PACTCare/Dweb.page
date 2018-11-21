@@ -10,6 +10,7 @@ The most recent online version of [Pact.online](http://www.pact.online) has the 
 QmQBYPKETe3zrmxQhCyDPhSh1GyLJvjsSQPBBm7Gni5EBK
 ```
 ## Hosting
+Dweb.page simply needs to be hosted on a writable IPFS gateway. You can easily run Dweb.page local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and also works for example on the Internet Explorer. 
 
 [Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
 
