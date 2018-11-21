@@ -1,4 +1,4 @@
-import Cookie from './services/Cookie';
+import Cookie from '../services/Cookie';
 
 const checkBoxCookie = new Cookie('Checkbox');
 

@@ -1,4 +1,4 @@
-import Cookie from './services/Cookie';
+import Cookie from '../services/Cookie';
 
 const agreeCookie = new Cookie('AgreeToTerms');
 

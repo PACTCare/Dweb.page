@@ -1,9 +1,9 @@
-import './services/tableToCsv';
-import Iota from './log/Iota';
-import Signature from './log/Signature';
-import compareTime from './helperFunctions/compareTime';
-import '../css/table.css';
-import './polyfill/remove';
+import '../services/tableToCsv';
+import Iota from '../log/Iota';
+import Signature from '../log/Signature';
+import compareTime from '../helperFunctions/compareTime';
+import '../../css/table.css';
+import '../polyfill/remove';
 
 const STORAGEKEY = 'logsv0.1';
 const iotaFlags = {};

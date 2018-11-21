@@ -1,4 +1,4 @@
-import '../css/tab.css';
+import '../../css/tab.css';
 
 window.openCity = function openCity(evt, cityName) {
   let i;
