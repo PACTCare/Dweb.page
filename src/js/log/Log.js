@@ -1,6 +1,7 @@
 import Iota from './Iota';
 import Signature from './Signature';
 import addMetaData from '../search/addMetaData';
+import prepMetaData from '../search/prepMetaData';
 
 const STORAGEKEY = 'logsv0.1';
 
@@ -36,27 +37,24 @@ export default class Log {
       this.idNumber + fileId + this.time + gateway,
     );
     // Tag contains information about encryption and upload, no need to integrate this here!
-    const minLog = {
-      id: this.idNumber,
+    const [fileNamePart, fileTypePart] = filename.split('.');
+    let metadata = {
       fileId,
+      fileName: fileNamePart,
+      fileType: fileTypePart,
+      description,
       time: this.time,
       gateway,
-      signature,
     };
+    metadata = prepMetaData(metadata);
     new Iota().send(
-      minLog,
+      metadata,
+      this.idNumber,
+      signature,
       isUpload,
       isEncrypted,
-      filename,
-      description,
     );
     // store direct in database!
-    const [fileNamePart, fileTypePart] = filename.split('.');
-    addMetaData(minLog.fileId,
-      fileNamePart,
-      fileTypePart,
-      description,
-      minLog.time,
-      minLog.gateway);
+    addMetaData(metadata);
   }
 }

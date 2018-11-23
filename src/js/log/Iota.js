@@ -13,19 +13,23 @@ export default class Iota {
   }
 
   send(
-    minLog,
+    metadata,
+    id,
+    signature,
     isUpload,
     isEncrypted,
-    filename,
-    description,
   ) {
     // not needed since the tangle as poWaas integrated!
     // poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
-
-    const maxLog = minLog;
+    const log = {
+      id,
+      fileId: metadata.fileId,
+      time: metadata.time,
+      gateway: metadata.gateway,
+      signature,
+    };
     // timeTag changes every month. If more users change more frequent
     const timeTag = this.createTimeTag(createDayNumber());
-    const [fileNamePart, fileTypePart] = filename.split('.');
     let uploadTag = 'U'; // U = Upload, D = Download
     if (!isUpload) {
       uploadTag = 'D';
@@ -33,12 +37,12 @@ export default class Iota {
     let tag = `DWEBPR${uploadTag}`; // PR = private, PU = Public
     if (!isEncrypted) {
       tag = `DWEBPU${uploadTag + timeTag}`; // unencrypted + DATE
-      maxLog.fileName = fileNamePart.substring(0, 100);
-      maxLog.fileType = fileTypePart.substring(0, 15);
-      maxLog.description = description.substring(0, 500);
+      log.fileName = metadata.fileName;
+      log.fileType = metadata.fileType;
+      log.description = metadata.description;
     }
-    const trytes = this.iotaNode.utils.toTrytes(minLog.fileId).slice(0, 81);
-    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(minLog));
+    const trytes = this.iotaNode.utils.toTrytes(log.fileId).slice(0, 81);
+    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(log));
     const transfers = [
       {
         value: 0,

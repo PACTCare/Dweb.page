@@ -44,7 +44,7 @@ async function updateDatabase() {
         if (countRequest.result === 0) {
           tx.objectStore(storeNames).put(logObj, logObj.fileId);
           // if it's new immidiatly update search engine
-          addMetaData(logObj.fileId, logObj.fileName, logObj.fileType, logObj.description, logObj.time, logObj.gateway);
+          addMetaData(logObj);
         }
       };
     }

@@ -1,16 +1,13 @@
-export default function addMetaData(fileId, fileName, fileType, description, time, gateway) {
-  window.metadata.push({
-    fileId,
-    fileName,
-    fileType,
-    description,
-    time,
-    gateway,
-  });
+/**
+ * Adds the metadata object to the search engine
+ * @param {object} metadata
+ */
+export default function addMetaData(metadata) {
+  window.metadata.push(metadata);
   window.miniSearch.add({
-    fileId,
-    fileName,
-    fileType,
-    description,
+    fileId: metadata.fileId,
+    fileName: metadata.fileName,
+    fileType: metadata.fileType,
+    description: metadata.description,
   });
 }
