@@ -31,6 +31,7 @@ function isIE() {
 }
 
 function indexInit() {
+  document.getElementById('nextAtEnd').style.display = 'none';
   document.getElementById('fileLink').innerText = 'File Link > ';
   document.getElementById('passwordDiv').style.display = 'block';
   document.getElementById('passwordStep').innerText = 'Password > ';
@@ -49,8 +50,11 @@ function indexInit() {
   document.getElementById('file-upload').value = '';
   document.getElementById('stepsDiv').style.display = 'block';
   document.getElementById('fileTab').classList.add('tabSteps');
+  document.getElementById('fileTab').style.display = 'block';
   document.getElementById('passwordTab').classList.add('tabSteps');
   document.getElementById('passwordStep').classList.add('step');
+  document.getElementById('lastTab').style.display = 'none';
+  document.getElementById('newUpload').style.display = 'none';
 }
 
 function receiveInit() {

@@ -64,9 +64,7 @@ function onlyLastTab() {
   document.getElementById('passwordTab').classList.remove('tabSteps');
   document.getElementById('passwordTab').style.display = 'none';
   document.getElementById('stepsDiv').style.display = 'none';
-  document
-    .getElementById('lastTab')
-    .setAttribute('style', 'display:block !important');
+  document.getElementById('lastTab').style.display = 'block';
 }
 
 function errorMessage(errorMsg) {

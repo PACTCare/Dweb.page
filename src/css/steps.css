@@ -24,10 +24,6 @@
   display: inline-block;
 }
 
-#nextAtEnd {
-  display: none;
-}
-
 #canvas {
   margin-bottom: -6vh;
 }

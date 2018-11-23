@@ -11,7 +11,7 @@ Click below to learn more in a video:
 ## Current version
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-Qmab7RUfsy5GXVNf5PXfpdAoCEaWYtknVZMpN5zdAYszY4
+QmSk3HSaUDfgQwtTunrHjPQiTJrtQCXRWom7G7MEbSMEm1
 ```
 ## Hosting
 [Dweb.page](https://dweb.page) simply needs to be hosted on a writable IPFS gateway. You can easily run [Dweb.page](https://dweb.page) local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and also works for example on the Internet Explorer.
