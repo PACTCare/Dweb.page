@@ -83,7 +83,7 @@ function mobileLayout() {
     document.getElementById('smsSharer').style.display = 'none';
   } else {
     document.getElementById('explainText1').innerText = 'via Email, SMS or Copy Link';
-    document.getElementById('smsSharer').style.display = 'block';
+    document.getElementById('smsSharer').style.display = 'inline-block';
   }
 }
 
