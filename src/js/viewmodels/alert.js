@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .getElementById('dialog-ovelay')
       .setAttribute('style', 'display:block !important');
     document.getElementById('declineButton').addEventListener('click', () => {
-      window.open('https://www.google.com', '_self');
+      window.open('https://www.wikipedia.org/', '_self');
     });
     document.getElementById('agreeButton').addEventListener('click', () => {
       agreeCookie.setCookie('alreadyAgreed', 365);

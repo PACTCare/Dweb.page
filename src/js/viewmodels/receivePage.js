@@ -32,8 +32,8 @@ function progressBar(percent) {
 }
 
 async function load() {
-  const passwordInput = document.getElementById('passwordField').value;
-  let fileInput = document.getElementById('firstField').value;
+  const passwordInput = document.getElementById('passwordField').value.trim();
+  let fileInput = document.getElementById('firstField').value.trim();
   if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && document.getElementById('currentSelectedHiddenHash').innerText !== 'nix') {
     fileInput = document.getElementById('currentSelectedHiddenHash').innerText;
   }

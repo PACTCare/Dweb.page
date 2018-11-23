@@ -33,7 +33,6 @@ export default class Iota {
     let tag = `DWEBPR${uploadTag}`; // PR = private, PU = Public
     if (!isEncrypted) {
       tag = `DWEBPU${uploadTag + timeTag}`; // unencrypted + DATE
-      console.log(tag);
       maxLog.fileName = fileNamePart.substring(0, 100);
       maxLog.fileType = fileTypePart.substring(0, 15);
       maxLog.description = description.substring(0, 500);

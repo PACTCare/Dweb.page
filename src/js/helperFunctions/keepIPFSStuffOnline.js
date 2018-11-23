@@ -17,7 +17,6 @@ export default function keepIPFSStuffOnline(fileId) {
   }
   shuffle(listOfIPFSGateways);
   const randomList = listOfIPFSGateways.slice(0, 2);
-  console.log(randomList);
   for (let i = 0; i < randomList.length; i += 1) {
     const url = randomList[i] + fileId;
     const imageObject = new Image();

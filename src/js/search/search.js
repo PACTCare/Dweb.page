@@ -12,7 +12,7 @@ const STORAGEKEY = 'loadedMetadataNumber';
 // first search metadata was stored at day zero
 // the lower the number the more search data is loaded
 // later change to x days befor current day
-const STARTNUMBER = 0;
+const STARTNUMBER = 4;
 let db;
 
 async function updateDatabase() {

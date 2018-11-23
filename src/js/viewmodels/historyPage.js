@@ -54,13 +54,14 @@ function printLog(iotaLogArray, storageLogArray) {
       }`;
       // see Iota.js for the setup of the log
       // public = PU
-      if (iotaLogArray[j].tag.substring(4, 7) === 'PU') {
+      if (iotaLogArray[j].tag.substring(4, 6) === 'PU') {
         link += '&password=nopass';
       }
       cell1.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
       cell2.innerHTML = iotaLogArray[j].fileId;
       // private = PR
-      if (iotaLogArray[j].tag.substring(4, 7) === 'PR') {
+      console.log(iotaLogArray[j].tag.substring(4, 6));
+      if (iotaLogArray[j].tag.substring(4, 6) === 'PR') {
         cell3.innerHTML = 'Yes';
       } else {
         cell3.innerHTML = 'No';
