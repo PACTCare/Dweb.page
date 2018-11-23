@@ -52,6 +52,11 @@ export default class Log {
     );
     // store direct in database!
     const [fileNamePart, fileTypePart] = filename.split('.');
-    addMetaData(minLog.fileId, fileNamePart, fileTypePart, description, minLog.time, minLog.gateway);
+    addMetaData(minLog.fileId,
+      fileNamePart,
+      fileTypePart,
+      description,
+      minLog.time,
+      minLog.gateway);
   }
 }
