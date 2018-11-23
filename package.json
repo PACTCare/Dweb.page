@@ -1,7 +1,7 @@
 {
-  "name": "pact",
-  "version": "0.4.0",
-  "description": "Secure Decentralized Filesharing",
+  "name": "dweb.page",
+  "version": "0.4.1",
+  "description": "Your Gateway to the Distributed Web",
   "private": true,
   "scripts": {
     "test": "mocha --require @babel/register -r jsdom-global/register",

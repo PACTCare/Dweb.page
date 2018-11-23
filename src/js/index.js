@@ -58,8 +58,7 @@ function prepareStepsLayout() {
   document.getElementById('afterUpload').style.display = 'block';
 }
 
-function errorMessage(errorMsg) {
-  // remove
+function onlyLastTab() {
   document.getElementById('fileTab').classList.remove('tabSteps');
   document.getElementById('fileTab').style.display = 'none';
   document.getElementById('passwordTab').classList.remove('tabSteps');
@@ -68,6 +67,10 @@ function errorMessage(errorMsg) {
   document
     .getElementById('lastTab')
     .setAttribute('style', 'display:block !important');
+}
+
+function errorMessage(errorMsg) {
+  onlyLastTab();
   document.getElementById('doneHeadline').innerText = 'Error';
   document.getElementById('doneHeadline').style.color = '#db3e4d';
   document.getElementById('fileAvailable').innerText = errorMsg;
@@ -75,8 +78,7 @@ function errorMessage(errorMsg) {
 }
 
 function mobileLayout() {
-  // .htm and .html are exactly the same
-  if (!ISMOBILE || filename.includes('.htm')) {
+  if (!ISMOBILE) {
     document.getElementById('explainText1').innerText = 'via Email or Copy Link';
     document.getElementById('smsSharer').style.display = 'none';
   } else {
@@ -94,20 +96,17 @@ function unencryptedLayout(fileId) {
   document.getElementById('passwordStep').style.display = 'none';
   document.getElementById('passwordTab').classList.remove('tabSteps');
   document.getElementById('passwordTab').style.display = 'none';
-  document.getElementById('doneHeadline').innerText = 'Step 2: Done';
   let link = `${
     window.location.href.replace('index.html', '')
   }index.html?id=${fileId}&password=nopass`;
   keepIPFSStuffOnline(fileId);
   if (filename.includes('.htm')) {
     link = GATEWAY + fileId;
-    document.getElementById('fileLink').innerText = 'Share Page  > ';
-    document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share your Webpage';
-    document.getElementById('fileAvailable').innerHTML = `Your distributed webpage is now available on IPFS. <br> Send us your hash (plus feedback) via <a href="mailto:info@pact.online?subject=Keep hash online&body=Hi, %0D%0A %0D%0A Please keep the following hash online (called pinning): ${fileId}  %0D%0A Here are my feedback/ideas regarding pact.online: %0D%0A %0D%0A %0D%0A Regards,">mail</a> to keep it online.`;
-    document.getElementById('emailSharer').href = `mailto:?subject=Distributed Webpage created with Pact.online&body=Hi, %0D%0A %0D%0A I just created a distributed webpage with pact.online. You can access it here: %0D%0A ${encodeURIComponent(
-      link,
-    )}%0D%0A %0D%0A Best Regards,`;
+    onlyLastTab();
+    document.getElementById('doneHeadline').innerText = 'Your Dwebpage is Online!';
+    document.getElementById('fileAvailable').innerHTML = `<p>Your distributed webpage is now available on IPFS: <a href='${link}' target='_blank'>${fileId}</a>. </p> <p style='margin-bottom: 0px;'>Send us your hash (plus feedback) via <a href="mailto:info@pact.online?subject=Keep hash online&body=Hi, %0D%0A %0D%0A Please keep the following hash online (called pinning): ${fileId}  %0D%0A Here are my feedback/ideas regarding pact.online: %0D%0A %0D%0A %0D%0A Regards,">mail</a> to keep it online permanently.</p>`;
   } else {
+    document.getElementById('doneHeadline').innerText = 'Step 2: Done';
     document.getElementById('emailSharer').href = `mailto:?subject=Distributed File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
       link,
     )}%0D%0A %0D%0A Best Regards,`;
