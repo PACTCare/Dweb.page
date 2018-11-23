@@ -60,7 +60,6 @@ function printLog(iotaLogArray, storageLogArray) {
       cell1.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
       cell2.innerHTML = iotaLogArray[j].fileId;
       // private = PR
-      console.log(iotaLogArray[j].tag.substring(4, 6));
       if (iotaLogArray[j].tag.substring(4, 6) === 'PR') {
         cell3.innerHTML = 'Yes';
       } else {

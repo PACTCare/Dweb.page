@@ -93,7 +93,8 @@ async function load() {
         const logObj = await iota.getLog(transactions[transactions.length - 1]);
         const name = `${logObj.fileName}.${logObj.fileType}`;
         document.getElementById('firstField').value = '';
-        if (name.includes('.html')) {
+        // .htm and .html are exactly the same
+        if (name.includes('.htm')) {
           window.open(GATEWAY + fileInput, '_self');
         } else {
           const typeM = MIME.getType(name);

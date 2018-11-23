@@ -75,7 +75,8 @@ function errorMessage(errorMsg) {
 }
 
 function mobileLayout() {
-  if (!ISMOBILE || filename.includes('.html')) {
+  // .htm and .html are exactly the same
+  if (!ISMOBILE || filename.includes('.htm')) {
     document.getElementById('explainText1').innerText = 'via Email or Copy Link';
     document.getElementById('smsSharer').style.display = 'none';
   } else {
@@ -98,7 +99,7 @@ function unencryptedLayout(fileId) {
     window.location.href.replace('index.html', '')
   }index.html?id=${fileId}&password=nopass`;
   keepIPFSStuffOnline(fileId);
-  if (filename.includes('.html')) {
+  if (filename.includes('.htm')) {
     link = GATEWAY + fileId;
     document.getElementById('fileLink').innerText = 'Share Page  > ';
     document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share your Webpage';
