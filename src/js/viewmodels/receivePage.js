@@ -24,10 +24,10 @@ function downloadFile(fileId, fileName, blob, isEncrypted) {
 }
 
 function progressBar(percent) {
-  const elem = document.getElementById('loadBar');
+  const elem = document.getElementById('loadBarReceive');
   elem.style.width = `${percent}%`;
   if (percent >= 100) {
-    document.getElementById('loadProgress').style.display = 'none';
+    document.getElementById('loadProgressReceive').style.display = 'none';
   }
 }
 
@@ -49,9 +49,9 @@ async function load() {
   } else {
     output('');
     const oReq = new XMLHttpRequest();
-    document.getElementById('receiveResponse').style.display = 'none';
     oReq.onloadstart = function onloadstart() {
-      document.getElementById('loadProgress').style.display = 'block';
+      document.getElementById('receiveResponse').style.display = 'block';
+      document.getElementById('loadProgressReceive').style.display = 'block';
     };
     oReq.onload = async function onload() {
       const arrayBuffer = oReq.response;

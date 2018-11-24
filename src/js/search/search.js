@@ -15,7 +15,16 @@ const STORAGEKEY = 'loadedMetadataNumber';
 const STARTNUMBER = 4;
 let db;
 
-async function updateDatabase() {
+window.miniSearch = new MiniSearch({
+  idField: 'fileId',
+  fields: ['fileName', 'fileType', 'description'],
+  searchOptions: {
+    boost: { fileName: 2 },
+    fuzzy: 0.2,
+  },
+});
+
+async function updateDatabase(databaseWorks) {
   const iota = new Iota();
   const logFlags = {};
   let nrSofar = window.localStorage.getItem(STORAGEKEY);
@@ -37,16 +46,20 @@ async function updateDatabase() {
     const logObj = await iota.getLog(transaction);
     if (!logFlags[logObj.fileId]) {
       logFlags[logObj.fileId] = true;
-      const tx = db.transaction([storeNames], 'readwrite');
-      const store = tx.objectStore(storeNames);
-      const countRequest = store.count(logObj.fileId);
-      countRequest.onsuccess = function checkExistens() {
-        if (countRequest.result === 0) {
-          tx.objectStore(storeNames).put(logObj, logObj.fileId);
-          // if it's new immidiatly update search engine
-          addMetaData(logObj);
-        }
-      };
+      if (databaseWorks) {
+        const tx = db.transaction([storeNames], 'readwrite');
+        const store = tx.objectStore(storeNames);
+        const countRequest = store.count(logObj.fileId);
+        countRequest.onsuccess = function checkExistens() {
+          if (countRequest.result === 0) {
+            tx.objectStore(storeNames).put(logObj, logObj.fileId);
+            // if it's new immidiatly update search engine
+            addMetaData(logObj);
+          }
+        };
+      } else {
+        addMetaData(logObj);
+      }
     }
   });
   window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
@@ -63,17 +76,16 @@ request.onsuccess = async function startSearch(event) {
   const metadataTx = tx.objectStore(storeNames).getAll();
   metadataTx.onsuccess = function addMetaDataToSearch() {
     window.metadata = metadataTx.result;
-    window.miniSearch = new MiniSearch({
-      idField: 'fileId',
-      fields: ['fileName', 'fileType', 'description'],
-      searchOptions: {
-        boost: { fileName: 2 },
-        fuzzy: 0.2,
-      },
-    });
+
     window.miniSearch.addAll(window.metadata);
-    updateDatabase();
+    updateDatabase(true);
   };
+};
+
+request.onerror = function databaseError(e) {
+  console.log('SearchDB error - Private mode');
+  window.metadata = [];
+  updateDatabase(false);
 };
 
 function capFirstLetter(string) {

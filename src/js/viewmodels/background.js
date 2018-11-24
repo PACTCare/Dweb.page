@@ -1,6 +1,7 @@
 const maxSize = 1600;
 const key = 'backgroundImage';
 const storeNames = 'ImageStore';
+
 const request = indexedDB.open('ImageDB', 1);
 let db;
 
@@ -31,7 +32,6 @@ function readBackgroundImage(event) {
       const tx = db.transaction([storeNames], 'readwrite');
       tx.objectStore(storeNames).put(imageUrl, key);
       tx.oncomplete = function imageStored(e) {
-        console.log('data stored');
         document.getElementById('resetImage').style.display = 'inherit';
         document
           .getElementsByTagName('body')[0]
@@ -88,7 +88,12 @@ function startDatabase() {
   };
 
   request.onerror = function databaseError(e) {
-    console.error('Unable to open database.');
+    console.log('ImageDB error - Private mode');
+    document.getElementById('resetImage').style.display = 'none';
+    document
+      .getElementsByTagName('body')[0]
+      .style
+      .backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("https://pact.online/background.jpeg")';
   };
 }
 
