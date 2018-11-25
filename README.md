@@ -16,8 +16,8 @@ QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs
 ## Hosting
 [Dweb.page](https://dweb.page) simply needs to be hosted on a writable IPFS gateway. You can easily run [Dweb.page](https://dweb.page) local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and also works for example on the Internet Explorer.
 
-[Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
-[Tutorial online hosting](https://blog.florence.chat/tutorial-host-your-own-ipfs-node-and-help-the-next-generation-of-web-2860eb59e45e)
+* [Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
+* [Tutorial online hosting](https://blog.florence.chat/tutorial-host-your-own-ipfs-node-and-help-the-next-generation-of-web-2860eb59e45e)
 
 ## Security
 For a detailed description of the security of [Dweb.page](https://dweb.page) see the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Secuirty%20Whitepaper_V0.11.pdf).
