@@ -30,6 +30,8 @@ If you wish to participate you can simply set up your own IPFS node with a write
 If you want to help either join our **[discord server](https://discord.gg/VMj7PFN)** or you can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository.
 
 ## Donate
+
+IOTA Donation address
 ```
 SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUYFZOTSAS9C
 ```
