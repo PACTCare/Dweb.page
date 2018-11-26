@@ -16,13 +16,14 @@ QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs
 ## Hosting
 [Dweb.page](https://dweb.page) simply needs to be hosted on a writable IPFS gateway. You can easily run [Dweb.page](https://dweb.page) local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and also works for example on the Internet Explorer.
 
-[Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
+* [Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
+* [Tutorial online hosting](https://blog.florence.chat/tutorial-host-your-own-ipfs-node-and-help-the-next-generation-of-web-2860eb59e45e)
 
 ## Security
 For a detailed description of the security of [Dweb.page](https://dweb.page) see the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Secuirty%20Whitepaper_V0.11.pdf).
 
 ## Participate
-If you wish to participate you can simply set up your own IPFS node with a writeable gateway. You need to allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care or on our [discord server](https://discord.gg/VMj7PFN) so we then can integrate your side on our main page. Currently, we share the IOTA donations equally among all participants at the end of every month. For transparency, you can track all donations under the current IOTA donation address. In the future, we might set up an advertising model to make it more attractive for IPFS nodes to participate.
+If you wish to participate you can simply [set up your own IPFS node with a writeable gateway](https://blog.florence.chat/tutorial-host-your-own-ipfs-node-and-help-the-next-generation-of-web-2860eb59e45e). You need to allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care or on our [discord server](https://discord.gg/VMj7PFN) so we then can integrate your side on our main page. Currently, we share the IOTA donations equally among all participants at the end of every month. For transparency, you can track all donations under the current IOTA donation address. In the future, we might set up an advertising model to make it more attractive for IPFS nodes to participate.
 
 ## Contributing
 [Dweb.page](https://dweb.page) is free, open source software licensed under GNU AGPLv3.
@@ -30,6 +31,8 @@ If you wish to participate you can simply set up your own IPFS node with a write
 If you want to help either join our **[discord server](https://discord.gg/VMj7PFN)** or you can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository.
 
 ## Donate
+
+IOTA Donation address
 ```
 SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUYFZOTSAS9C
 ```
