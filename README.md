@@ -15,7 +15,6 @@ QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs
 ```
 **List of participating nodes**
 
-* https://noreallyitis.me/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/
 * https://ipfs.adder.black/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/
 * https://pactcare.online/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/
 * https://untangle.care/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/
