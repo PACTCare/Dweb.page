@@ -38,6 +38,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: 'Dweb.page',
       minify: minifySettings,
       meta: metaTags,
       filename: './html/index.html',
