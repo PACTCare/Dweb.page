@@ -5,7 +5,7 @@ html,
 body,
 * {
   box-sizing: border-box;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.4em;
 }
 #receivePage, #historyPage, #aboutPage{
@@ -566,8 +566,7 @@ a.share:hover {
 
 #ipfsHash:hover,
 #messages,
-#messagesReceivePage,
-.uploader div {
+#messagesReceivePage {
   color: #db3e4d;
 }
 

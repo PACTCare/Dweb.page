@@ -9,7 +9,8 @@ export default function keepIPFSStuffOnline(fileId) {
     'https://pactcare.online/ipfs/',
     'https://ipfs.eternum.io/ipfs/',
     'https://untangle.care/ipfs/',
-    'https://ipfs.adder.black/ipfs/'];
+    'https://ipfs.adder.black/ipfs/',
+    'https://noreallyitis.me/ipfs/'];
   function shuffle(a) {
     for (let i = a.length; i; i -= 1) {
       const j = Math.floor(Math.random() * i);

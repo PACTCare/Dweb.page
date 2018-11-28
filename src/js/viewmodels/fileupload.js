@@ -1,5 +1,7 @@
 import Cookie from '../services/Cookie';
+import getGateway from '../helperFunctions/getGateway';
 
+const GATEWAY = getGateway();
 const checkBoxCookie = new Cookie('Checkbox');
 
 function supportsFileread() {
@@ -8,13 +10,52 @@ function supportsFileread() {
 
 const checkbox = document.getElementById('endToEndCheck');
 
-checkbox.addEventListener('change', function checkBox() {
-  if (this.checked) {
-    document.getElementById('checkboxText').innerText = 'Private';
-    checkBoxCookie.setCookie('on', 365);
+function removeChildren(myNode) {
+  while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+  }
+}
+
+function publicLayout() {
+  document.getElementById('checkboxText').innerText = 'Public';
+  document.getElementById('start').style.color = '#db3e4d';
+  const icon = document.createElement('i');
+  icon.className = 'fas fa-file-upload';
+  document.getElementById('start').appendChild(icon);
+  const div = document.createElement('div');
+  div.id = 'addFileText';
+  if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
+    div.innerHTML = 'Add File(s) for Public Sharing';
   } else {
-    document.getElementById('checkboxText').innerText = 'Public';
+    div.innerHTML = 'Add File(s) for Public Sharing<br> <span id="limitText">Up to 1GB</span>';
+  }
+  document.getElementById('start').appendChild(div);
+}
+
+function privateLayout() {
+  document.getElementById('checkboxText').innerText = 'Private';
+  document.getElementById('start').style.color = '#3157a7';
+  const icon = document.createElement('i');
+  icon.className = 'fas fa-lock';
+  document.getElementById('start').appendChild(icon);
+  const div = document.createElement('div');
+  div.id = 'addFileText';
+  if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
+    div.innerHTML = 'Add File(s) for Private Sharing';
+  } else {
+    div.innerHTML = 'Add File(s) for Private Sharing<br> <span id="limitText">Up to 1GB</span>';
+  }
+  document.getElementById('start').appendChild(div);
+}
+
+checkbox.addEventListener('change', function checkBox() {
+  removeChildren(document.getElementById('start'));
+  if (this.checked) {
+    checkBoxCookie.setCookie('on', 365);
+    privateLayout();
+  } else {
     checkBoxCookie.setCookie('off', 365);
+    publicLayout();
   }
 });
 
@@ -53,9 +94,11 @@ function ekUpload() {
 
   function Init() {
     const checkboxCookie = checkBoxCookie.getCookie();
-    if (checkboxCookie !== 'off') {
+    if (checkboxCookie === 'on') {
       document.getElementById('endToEndCheck').checked = true;
-      document.getElementById('checkboxText').innerText = 'Private';
+      privateLayout();
+    } else {
+      publicLayout();
     }
     const fileSelect = document.getElementById('file-upload');
     const fileDrag = document.getElementById('file-drag');

@@ -34,7 +34,6 @@ let filename;
 // no upload limit if it's running local
 if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
   sizeLimit = 10000000;
-  document.getElementById('limitText').style.display = 'none';
 }
 
 function progressBar(percent) {
