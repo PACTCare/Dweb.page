@@ -8,6 +8,8 @@ import { saveAs } from '../services/fileSaver';
 import '../search/search';
 
 const GATEWAY = getGateway();
+let fakeProgress = 0;
+let progressId;
 
 /**
  * Outputs error messages
@@ -18,6 +20,8 @@ function output(msg) {
 }
 
 function downloadFile(fileId, fileName, blob, isEncrypted) {
+  fakeProgress = 0;
+  document.getElementById('loadProgressReceive').style.display = 'none';
   new Log().createLog(fileId, fileName, false, GATEWAY, isEncrypted, 'Not yet available');
   window.history.replaceState(null, null, window.location.pathname);
   saveAs(blob, fileName);
@@ -28,6 +32,25 @@ function progressBar(percent) {
   elem.style.width = `${percent}%`;
   if (percent >= 100) {
     document.getElementById('loadProgressReceive').style.display = 'none';
+  }
+}
+
+function propagationProgress() {
+  if (fakeProgress >= 45) {
+    // todo propagation error
+    clearInterval(progressId);
+  } else {
+    fakeProgress += 0.5;
+    progressBar(fakeProgress);
+  }
+}
+
+function iotaDecryptionProgress() {
+  if (fakeProgress >= 100) {
+    clearInterval(progressId);
+  } else {
+    fakeProgress += 0.5;
+    progressBar(fakeProgress);
   }
 }
 
@@ -52,9 +75,12 @@ async function load() {
     oReq.onloadstart = function onloadstart() {
       document.getElementById('receiveResponse').style.display = 'block';
       document.getElementById('loadProgressReceive').style.display = 'block';
+      progressId = setInterval(propagationProgress, 100);
     };
     oReq.onload = async function onload() {
       const arrayBuffer = oReq.response;
+      fakeProgress = 95;
+      progressId = setInterval(iotaDecryptionProgress, 100);
       // encrypted
       if (passwordInput !== '' && passwordInput !== 'nopass') {
         const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
@@ -105,9 +131,15 @@ async function load() {
       }
     };
     oReq.onprogress = function onprogress(e) {
+      // progress starts only when file is loaded via IPFS
+      // for search it take a load of time to actually start the loading
+      if (fakeProgress < 45) {
+        clearInterval(progressId);
+        fakeProgress = 45;
+      }
       if (e.lengthComputable) {
         const per = Math.round((e.loaded * 100) / e.total);
-        progressBar(per);
+        progressBar(40 + (per / 2));
       }
     };
     oReq.onreadystatechange = function onreadystatechange() {

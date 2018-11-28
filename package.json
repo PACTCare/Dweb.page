@@ -1,6 +1,6 @@
 {
   "name": "dweb.page",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Your Gateway to the Distributed Web",
   "private": true,
   "scripts": {
