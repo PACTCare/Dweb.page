@@ -58,12 +58,12 @@ function printLog(iotaLogArray, storageLogArray) {
         link += '&password=nopass';
       }
       cell1.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
-      cell2.innerHTML = iotaLogArray[j].fileId;
+      cell2.textContent = iotaLogArray[j].fileId;
       // private = PR
       if (iotaLogArray[j].tag.substring(4, 6) === 'PR') {
-        cell3.innerHTML = 'Yes';
+        cell3.textContent = 'Yes';
       } else {
-        cell3.innerHTML = 'No';
+        cell3.textContent = 'No';
       }
 
       const signedLinkPartOne = " <a class='signRef' href='https://twitter.com/intent/tweet?text=I’m%20the%20owner%20of%20the%20following%20public%20signature%20key%20";
@@ -102,12 +102,15 @@ function printLog(iotaLogArray, storageLogArray) {
         }
       }
       cell4.innerHTML = cellUpload;
-      cell6.innerHTML = cellUploadSig;
+      cell6.textContent = cellUploadSig;
 
       let cellDownload = 'n/a';
       let cellDownloadSig = 'n/a';
+
+      // Show downloads only for private downloads
+      // D = Download, PR = Private
       const downloadArray = iotaLogArray.filter(
-        x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D', // D = Download
+        x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D' && x.tag.substring(4, 6) === 'PR',
       );
       for (let i = 0; i < downloadArray.length; i += 1) {
         console.log(storageLogArray);
@@ -139,7 +142,7 @@ function printLog(iotaLogArray, storageLogArray) {
         }
       }
       cell5.innerHTML = cellDownload;
-      cell7.innerHTML = cellDownloadSig;
+      cell7.textContent = cellDownloadSig;
     }
   }
   hideColumns(1, 5, 6);

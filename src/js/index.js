@@ -16,6 +16,7 @@ import getGateway from './helperFunctions/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
 import keepIPFSStuffOnline from './helperFunctions/keepIPFSStuffOnline';
+import checkBrowserDirectOpen from './helperFunctions/checkBrowserDirectOpen';
 import '../css/style.css';
 import '../css/toggle.css';
 import '../css/steps.css';
@@ -47,7 +48,7 @@ function progressBar(percent) {
 }
 
 function output(msg) {
-  document.getElementById('messages').innerHTML = msg;
+  document.getElementById('messages').textContent = msg;
 }
 
 function prepareStepsLayout() {
@@ -68,18 +69,18 @@ function onlyLastTab() {
 
 function errorMessage(errorMsg) {
   onlyLastTab();
-  document.getElementById('doneHeadline').innerText = 'Error';
+  document.getElementById('doneHeadline').textContent = 'Error';
   document.getElementById('doneHeadline').style.color = '#db3e4d';
-  document.getElementById('fileAvailable').innerText = errorMsg;
+  document.getElementById('fileAvailable').textContent = errorMsg;
   document.getElementById('fileAvailable').style.color = '#db3e4d';
 }
 
 function mobileLayout() {
   if (!ISMOBILE) {
-    document.getElementById('explainText1').innerText = 'via Email or Copy Link';
+    document.getElementById('explainText1').textContent = 'via Email or Copy Link';
     document.getElementById('smsSharer').style.display = 'none';
   } else {
-    document.getElementById('explainText1').innerText = 'via Email, SMS or Copy Link';
+    document.getElementById('explainText1').textContent = 'via Email, SMS or Copy Link';
     document.getElementById('smsSharer').style.display = 'inline-block';
   }
 }
@@ -96,14 +97,16 @@ function unencryptedLayout(fileId) {
   let link = `${
     window.location.href.replace('index.html', '')
   }index.html?id=${fileId}&password=nopass`;
+  if (checkBrowserDirectOpen(filename)) {
+    link = GATEWAY + fileId;
+  }
   keepIPFSStuffOnline(fileId);
   if (filename.includes('.htm')) {
-    link = GATEWAY + fileId;
     onlyLastTab();
-    document.getElementById('doneHeadline').innerText = 'Your Dwebpage is Online!';
+    document.getElementById('doneHeadline').textContent = 'Your Dwebpage is Online!';
     document.getElementById('fileAvailable').innerHTML = `<p>Your distributed webpage is now available on IPFS: <a href='${link}' target='_blank'>${fileId}</a>. </p> <p style='margin-bottom: 0px;'>Send us your hash (plus feedback) via <a href="mailto:info@pact.online?subject=Keep hash online&body=Hi, %0D%0A %0D%0A Please keep the following hash online (called pinning): ${fileId}  %0D%0A Here are my feedback/ideas regarding pact.online: %0D%0A %0D%0A %0D%0A Regards,">mail</a> to keep it online permanently.</p>`;
   } else {
-    document.getElementById('doneHeadline').innerText = 'Step 2: Done';
+    document.getElementById('doneHeadline').textContent = 'Step 2: Done';
     document.getElementById('emailSharer').href = `mailto:?subject=Distributed File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
       link,
     )}%0D%0A %0D%0A Best Regards,`;
@@ -121,13 +124,13 @@ function unencryptedLayout(fileId) {
   }
   mobileLayout();
   document.getElementById('ipfsHash').href = link;
-  document.getElementById('ipfsHash').innerText = link;
+  document.getElementById('ipfsHash').textContent = link;
 }
 
 function encryptedLayout(fileId) {
   const link = `${window.location.href.replace('index.html', '')}index.html?id=${fileId}`;
   document.getElementById('ipfsHash').href = link;
-  document.getElementById('ipfsHash').innerText = link;
+  document.getElementById('ipfsHash').textContent = link;
   document.getElementById('emailSharer').href = `${'mailto:?subject=Distributed and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
     + '1. Open the link below %0D%0A'
     + "2. Enter the password I'll share with you via WhatsApp or Telegram %0D%0A %0D%0A"
@@ -195,7 +198,7 @@ function encryptBeforeUpload(reader) {
     const exportKeyPromise = enc.exportKey(key);
     exportKeyPromise.then((keydata) => {
       const keyString = keydata.k;
-      document.getElementById('password').innerText = keyString;
+      document.getElementById('password').textContent = keyString;
       let whatsappLink = `https://api.whatsapp.com/send?text=${keyString}`;
       if (!ISMOBILE) {
         whatsappLink = `https://web.whatsapp.com/send?text=${keyString}`;

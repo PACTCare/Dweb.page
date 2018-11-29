@@ -32,13 +32,13 @@ function isIE() {
 
 function indexInit() {
   document.getElementById('nextAtEnd').style.display = 'none';
-  document.getElementById('fileLink').innerText = 'File Link > ';
+  document.getElementById('fileLink').textContent = 'File Link > ';
   document.getElementById('passwordDiv').style.display = 'block';
-  document.getElementById('passwordStep').innerText = 'Password > ';
+  document.getElementById('passwordStep').textContent = 'Password > ';
   document.getElementById('passwordStep').style.display = 'inline-block';
-  document.getElementById('fileLinkHeadline').innerText = 'Step 1: Share File Link';
-  document.getElementById('secondStepHeadline').innerText = 'Step 2: Share Password';
-  document.getElementById('doneHeadline').innerText = 'Step 3: Done';
+  document.getElementById('fileLinkHeadline').textContent = 'Step 1: Share File Link';
+  document.getElementById('secondStepHeadline').textContent = 'Step 2: Share Password';
+  document.getElementById('doneHeadline').textContent = 'Step 3: Done';
   document.getElementById('fileAvailable').innerHTML = 'Your file is available for 3 days.<br> You can find your sharing history <a onclick="openHistory()" style="color: #6d91c7;cursor: pointer;">here</a>.';
   document.getElementById('file-upload-form').style.display = 'block';
   document.getElementById('headline').style.display = 'block';
@@ -66,8 +66,9 @@ function receiveInit() {
         document.getElementById('load').click();
       }
     });
-  document.getElementById('searchHeadline').innerText = 'Search';
-  document.getElementById('currentSelectedHiddenHash').innerText = 'nix';
+  document.getElementById('messagesReceivePage').textContent = '';
+  document.getElementById('searchHeadline').textContent = 'Search';
+  document.getElementById('currentSelectedHiddenHash').textContent = 'nix';
   document.getElementById('firstField').style.display = 'block';
   document.getElementById('receiveResponse').style.display = 'none';
   document.getElementById('firstField').value = '';
@@ -77,7 +78,7 @@ function receiveInit() {
 }
 
 function linkInit() {
-  document.getElementById('searchHeadline').innerText = 'Receive File';
+  document.getElementById('searchHeadline').textContent = 'Receive File';
   document.getElementById('firstField').style.display = 'none';
   document.getElementById('receiveResponse').style.display = 'none';
   document.getElementById('searchHeadline').style.marginBottom = '0rem';

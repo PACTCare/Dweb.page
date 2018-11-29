@@ -24,18 +24,18 @@ function copy(copyText) {
 function copyHash() {
   const copyText = document.getElementById('ipfsHash');
   copy(copyText);
-  document.getElementById('notification1').innerHTML = 'Link copied to clipboard!';
+  document.getElementById('notification1').textContent = 'Link copied to clipboard!';
   setTimeout(() => {
-    document.getElementById('notification1').innerHTML = '';
+    document.getElementById('notification1').textContent = '';
   }, 5000);
 }
 
 function copyPassword() {
   const copyText = document.getElementById('password');
   copy(copyText);
-  document.getElementById('notification2').innerHTML = 'Password copied to clipboard!';
+  document.getElementById('notification2').textContent = 'Password copied to clipboard!';
   setTimeout(() => {
-    document.getElementById('notification2').innerHTML = '';
+    document.getElementById('notification2').textContent = '';
   }, 5000);
 }
 

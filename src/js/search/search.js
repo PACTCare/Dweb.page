@@ -10,9 +10,9 @@ const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'loadedMetadataNumber';
 
 // first search metadata was stored at day zero
-// the lower the number the more search data is loaded
-// later change to x days befor current day
-const STARTNUMBER = 4;
+// the bigger the number the more search data is initialy loaded
+// Todo: later continue loading older data in the background
+const nrOfPreviousDaysLoad = 6;
 let db;
 
 window.miniSearch = new MiniSearch({
@@ -24,19 +24,26 @@ window.miniSearch = new MiniSearch({
   },
 });
 
+/**
+ *
+ * @param {boolean} databaseWorks
+ */
 async function updateDatabase(databaseWorks) {
+  console.time('update');
   const iota = new Iota();
   const logFlags = {};
-  let nrSofar = window.localStorage.getItem(STORAGEKEY);
-  if (nrSofar === null) {
-    nrSofar = STARTNUMBER;
-  }
   // returns the highest number!
   const mostRecentDayNumber = createDayNumber();
   let dayNumber = mostRecentDayNumber;
   const awaitTransactions = [];
+  let nrSofar = window.localStorage.getItem(STORAGEKEY);
+  if (nrSofar === null) {
+    nrSofar = mostRecentDayNumber - nrOfPreviousDaysLoad;
+  }
+
   while (dayNumber >= nrSofar) {
     const dayTag = iota.createTimeTag(dayNumber);
+    console.log(`DWEBPUU${dayTag}`);
     awaitTransactions.push(iota.getTransactionByTag(`DWEBPUU${dayTag}`));
     dayNumber -= 1;
   }
@@ -63,6 +70,7 @@ async function updateDatabase(databaseWorks) {
     }
   });
   window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
+  console.timeEnd('update');
 }
 
 request.onupgradeneeded = function databaseUpgrade(e) {
@@ -76,7 +84,6 @@ request.onsuccess = async function startSearch(event) {
   const metadataTx = tx.objectStore(storeNames).getAll();
   metadataTx.onsuccess = function addMetaDataToSearch() {
     window.metadata = metadataTx.result;
-
     window.miniSearch.addAll(window.metadata);
     updateDatabase(true);
   };

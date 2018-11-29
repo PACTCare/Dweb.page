@@ -48,7 +48,7 @@ function showTab(n) {
       .setAttribute('style', 'display:inline !important');
   } else {
     document.getElementById('newUpload').style.display = 'none';
-    document.getElementById('nextBtn').innerHTML = 'Next';
+    document.getElementById('nextBtn').textContent = 'Next';
     document.getElementById('nextBtn').style.display = 'inline';
   }
   // ... and run a function that will display the correct step indicator:
