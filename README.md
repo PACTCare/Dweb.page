@@ -14,6 +14,7 @@ The most recent online version of [Dweb.page](https://dweb.page) has the followi
 QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs
 ```
 **List of participating nodes**
+* https://ipfs.sopinka.com/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/ (by [Sopinka Inc.](https://sopinka.com/))
 * https://noreallyitis.me/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/ (by [Donald Brown](https://noreallyitis.me))
 * https://ipfs.adder.black/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/ (by anonymous)
 * https://pactcare.online/ipfs/QmaSpmvTr68z3EgTp2XFZdBzc1HwNPQXWHyF34rpctJgCs/ (by [Pact](https://pact.care/))
