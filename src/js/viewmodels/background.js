@@ -89,6 +89,7 @@ function startDatabase() {
 
   request.onerror = function databaseError(e) {
     console.log('ImageDB error - Private mode');
+    document.getElementById('right').style.display = 'none';
     document.getElementById('resetImage').style.display = 'none';
     document
       .getElementsByTagName('body')[0]

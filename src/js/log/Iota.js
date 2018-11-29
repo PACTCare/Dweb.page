@@ -1,12 +1,19 @@
 import IOTA from 'iota.lib.js';
 import createDayNumber from '../helperFunctions/createDayNumber';
-// import poWaaS from './powaas';
+import powaas from './powaas';
 
-const NODE = 'https://nodes.thetangle.org:443';
+// todo: random node selection needs to replace by
+// something detecting the health of iota nodes
+const NODES = ['https://pow3.iota.community:443',
+  'https://turnip.iotasalad.org:14265',
+  'https://node02.iotatoken.nl:443',
+  'https://field.deviota.com:443',
+  'https://tuna.iotasalad.org:14265'];
 
 export default class Iota {
   constructor() {
-    this.iotaNode = new IOTA({ provider: NODE });
+    this.node = NODES[Math.floor(Math.random() * NODES.length)];
+    this.iotaNode = new IOTA({ provider: this.node });
     this.tagLength = 27;
     this.depth = 3;
     this.minWeight = 14;
@@ -19,8 +26,10 @@ export default class Iota {
     isUpload,
     isEncrypted,
   ) {
-    // not needed since the tangle as poWaas integrated!
-    // poWaaS(this.iotaNode, 'https://api.powsrv.io:443/');
+    if (!this.node.includes('thetangle.org')) {
+      powaas(this.iotaNode, 'https://api.powsrv.io:443/');
+    }
+
     const log = {
       id,
       fileId: metadata.fileId,

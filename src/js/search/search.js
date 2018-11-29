@@ -10,9 +10,13 @@ const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'loadedMetadataNumber';
 
 // first search metadata was stored at day zero
-// the bigger the number the more search data is initialy loaded
-// Todo: later continue loading older data in the background
-const nrOfPreviousDaysLoad = 6;
+// but the first few days was all about testing
+const startDay = 4;
+
+// the bigger maxDaysLoaded the more search data is loaded parallel
+// storage should get too big offer time
+const maxDaysToLoad = 30;
+
 let db;
 
 window.miniSearch = new MiniSearch({
@@ -32,16 +36,27 @@ async function updateDatabase(databaseWorks) {
   console.time('update');
   const iota = new Iota();
   const logFlags = {};
+
   // returns the highest number!
   const mostRecentDayNumber = createDayNumber();
   let dayNumber = mostRecentDayNumber;
   const awaitTransactions = [];
-  let nrSofar = window.localStorage.getItem(STORAGEKEY);
-  if (nrSofar === null) {
-    nrSofar = mostRecentDayNumber - nrOfPreviousDaysLoad;
+  let daysLoaded = window.localStorage.getItem(STORAGEKEY);
+
+  // first time user
+  if (daysLoaded === null) {
+    if (mostRecentDayNumber + startDay > maxDaysToLoad) {
+      daysLoaded = mostRecentDayNumber - maxDaysToLoad; // load the max number of days
+    } else {
+      daysLoaded = startDay;
+    }
+  } else if (mostRecentDayNumber - daysLoaded > maxDaysToLoad) {
+    // means the last time the page was open is quite some time ago
+    daysLoaded = mostRecentDayNumber - maxDaysToLoad;
   }
 
-  while (dayNumber >= nrSofar) {
+  console.log(daysLoaded);
+  while (dayNumber >= daysLoaded) {
     const dayTag = iota.createTimeTag(dayNumber);
     console.log(`DWEBPUU${dayTag}`);
     awaitTransactions.push(iota.getTransactionByTag(`DWEBPUU${dayTag}`));
@@ -49,6 +64,7 @@ async function updateDatabase(databaseWorks) {
   }
   const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
   const transactions = [].concat(...transactionsArrays);
+
   transactions.map(async (transaction) => {
     const logObj = await iota.getLog(transaction);
     if (!logFlags[logObj.fileId]) {
@@ -69,6 +85,7 @@ async function updateDatabase(databaseWorks) {
       }
     }
   });
+
   window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
   console.timeEnd('update');
 }

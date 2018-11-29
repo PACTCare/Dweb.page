@@ -38,7 +38,7 @@ function printLog(iotaLogArray, storageLogArray) {
       const cell2 = row.insertCell(1);
       cell2.setAttribute('data-title', 'File ID: ');
       const cell3 = row.insertCell(2);
-      cell3.setAttribute('data-title', 'Encrypted: ');
+      cell3.setAttribute('data-title', 'Sharing Mode: ');
       const cell4 = row.insertCell(3);
       cell4.setAttribute('data-title', 'Upload: ');
       const cell5 = row.insertCell(4);
@@ -61,15 +61,15 @@ function printLog(iotaLogArray, storageLogArray) {
       cell2.textContent = iotaLogArray[j].fileId;
       // private = PR
       if (iotaLogArray[j].tag.substring(4, 6) === 'PR') {
-        cell3.textContent = 'Yes';
+        cell3.textContent = 'Private';
       } else {
-        cell3.textContent = 'No';
+        cell3.textContent = 'Public';
       }
 
       const signedLinkPartOne = " <a class='signRef' href='https://twitter.com/intent/tweet?text=I’m%20the%20owner%20of%20the%20following%20public%20signature%20key%20";
       const signedLinkPartTwo = "%20at%20&url=https://pact.online' target='_blank'><i class='fas fa-file-signature'></i></a>";
-      let cellUpload = 'n/a';
-      let cellUploadSig = 'n/a';
+      let cellUpload = 'N/A';
+      let cellUploadSig = 'N/A';
       const uploadArray = iotaLogArray.filter(
         x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'U', // U = Upload
       );
@@ -104,16 +104,18 @@ function printLog(iotaLogArray, storageLogArray) {
       cell4.innerHTML = cellUpload;
       cell6.textContent = cellUploadSig;
 
-      let cellDownload = 'n/a';
-      let cellDownloadSig = 'n/a';
+      let cellDownload = 'N/A';
+      if (iotaLogArray[j].tag.substring(4, 6) === 'PU') {
+        cellDownload = 'N/A in public mode';
+      }
+      let cellDownloadSig = 'N/A';
 
-      // Show downloads only for private downloads
+      // Shows downloads only for private downloads
       // D = Download, PR = Private
       const downloadArray = iotaLogArray.filter(
         x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D' && x.tag.substring(4, 6) === 'PR',
       );
       for (let i = 0; i < downloadArray.length; i += 1) {
-        console.log(storageLogArray);
         const idPart = storageLogArray.find(x => x.id == downloadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;

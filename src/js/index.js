@@ -17,6 +17,7 @@ import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
 import keepIPFSStuffOnline from './helperFunctions/keepIPFSStuffOnline';
 import checkBrowserDirectOpen from './helperFunctions/checkBrowserDirectOpen';
+import extractMetadata from './search/extractMetadata';
 import '../css/style.css';
 import '../css/toggle.css';
 import '../css/steps.css';
@@ -85,11 +86,19 @@ function mobileLayout() {
   }
 }
 
+function changeBackgroundColor(colorHex) {
+  const elements = document.getElementsByClassName('share');
+  for (let i = 0; i < elements.length; i += 1) {
+    elements[i].style.backgroundColor = colorHex;
+  }
+}
+
 /**
  * Creates the unencrypted Layout, difference between html or not
  * @param {string} fileId
  */
 function unencryptedLayout(fileId) {
+  changeBackgroundColor('#db3e4d');
   document.getElementById('passwordStep').classList.remove('step');
   document.getElementById('passwordStep').style.display = 'none';
   document.getElementById('passwordTab').classList.remove('tabSteps');
@@ -128,6 +137,7 @@ function unencryptedLayout(fileId) {
 }
 
 function encryptedLayout(fileId) {
+  changeBackgroundColor('#3157a7');
   const link = `${window.location.href.replace('index.html', '')}index.html?id=${fileId}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').textContent = link;
@@ -227,18 +237,7 @@ function encryptBeforeUpload(reader) {
     });
   });
 }
-function extractMetadata(readerResult) {
-  // unencrypted upload, metadata stored on IOTA!
-  const enc = new TextDecoder('utf-8');
-  const htmlText = enc.decode(readerResult);
-  if (htmlText.toUpperCase().includes('!DOCTYPE HTML')) {
-    describtion = (new DOMParser()).parseFromString(htmlText, 'text/html').documentElement.textContent.trim();
-    if (htmlText.includes('<title>') && htmlText.includes('</title>')) {
-      filename = htmlText.match(new RegExp('<title>(.*)</title>'));
-      filename = `${filename[1]}.html`;
-    }
-  }
-}
+
 
 function readFile(e) {
   const reader = new FileReader();
@@ -247,7 +246,9 @@ function readFile(e) {
     if (document.getElementById('endToEndCheck').checked) {
       encryptBeforeUpload(reader);
     } else {
-      extractMetadata(reader.result);
+      const [nameMeta, desMeta] = extractMetadata(reader.result, filename);
+      filename = nameMeta;
+      describtion = desMeta;
       uploadToIPFS(reader.result, false);
     }
   };

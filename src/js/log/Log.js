@@ -37,7 +37,8 @@ export default class Log {
       this.idNumber + fileId + this.time + gateway,
     );
     // Tag contains information about encryption and upload, no need to integrate this here!
-    const [fileNamePart, fileTypePart] = filename.split('.');
+    // only last point represents a filetype
+    const [, fileNamePart, fileTypePart] = filename.match(/(.*)\.(.*)/);
     let metadata = {
       fileId,
       fileName: fileNamePart,

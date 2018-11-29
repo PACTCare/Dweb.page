@@ -338,7 +338,6 @@ pre {
 
 a.share {
   color: #fff;
-  background: #db3e4d;
   text-decoration: none;
   height: 2.5rem;
   width: 2.5rem;
@@ -360,8 +359,7 @@ a.share {
 }
 
 a.share:hover {
-  background: #a30025;
-  /* background: #3157a7; */
+  filter: brightness(85%);
 }
 
 .uploader label {

@@ -36,7 +36,7 @@ function privateLayout() {
   document.getElementById('checkboxText').textContent = 'Private';
   document.getElementById('start').style.color = '#3157a7';
   const icon = document.createElement('i');
-  icon.className = 'fas fa-lock';
+  icon.className = 'fas fa-shield-alt';
   document.getElementById('start').appendChild(icon);
   const div = document.createElement('div');
   div.id = 'addFileText';

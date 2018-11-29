@@ -50,8 +50,7 @@ function propagationProgress() {
     // todo propagation error
     // if this happens often let people know this file no longer exists
     clearInterval(progressId);
-    console.log('set Time out');
-    timeOutPropagation = setTimeout(propagationError, 5000);
+    timeOutPropagation = setTimeout(propagationError, 10000);
   } else {
     fakeProgress += 0.5;
     progressBar(fakeProgress);
@@ -85,11 +84,14 @@ async function load() {
   } else {
     output('');
     const oReq = new XMLHttpRequest();
+    // not encrypted, get information from IOTA,
+    // but start already here, for parallel loading
+    const iota = new Iota();
+    const transactionPromise = iota.getTransaction(fileInput);
     oReq.onloadstart = function onloadstart() {
-      console.log('load start');
       document.getElementById('receiveResponse').style.display = 'block';
       document.getElementById('loadProgressReceive').style.display = 'block';
-      progressId = setInterval(propagationProgress, 100);
+      progressId = setInterval(propagationProgress, 200);
     };
     oReq.onload = async function onload() {
       const arrayBuffer = oReq.response;
@@ -129,9 +131,7 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        // not encrypted, get information from IOTA
-        const iota = new Iota();
-        const transactions = await iota.getTransaction(fileInput);
+        const transactions = await transactionPromise;
         const logObj = await iota.getLog(transactions[transactions.length - 1]);
         const name = `${logObj.fileName}.${logObj.fileType}`;
         document.getElementById('firstField').value = '';
@@ -150,8 +150,6 @@ async function load() {
       // progress starts only when file is loaded via IPFS
       // for search it take a load of time to actually start the loading
       if (typeof timeOutPropagation !== 'undefined') {
-        console.log('this should only start if it goes on!');
-        console.log(timeOutPropagation);
         clearTimeout(timeOutPropagation);
       }
       if (fakeProgress < 45) {
