@@ -33,7 +33,6 @@ window.miniSearch = new MiniSearch({
  * @param {boolean} databaseWorks
  */
 async function updateDatabase(databaseWorks) {
-  console.time('update');
   const iota = new Iota();
   const logFlags = {};
 
@@ -55,10 +54,8 @@ async function updateDatabase(databaseWorks) {
     daysLoaded = mostRecentDayNumber - maxDaysToLoad;
   }
 
-  console.log(daysLoaded);
   while (dayNumber >= daysLoaded) {
     const dayTag = iota.createTimeTag(dayNumber);
-    console.log(`DWEBPUU${dayTag}`);
     awaitTransactions.push(iota.getTransactionByTag(`DWEBPUU${dayTag}`));
     dayNumber -= 1;
   }
@@ -87,7 +84,6 @@ async function updateDatabase(databaseWorks) {
   });
 
   window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
-  console.timeEnd('update');
 }
 
 request.onupgradeneeded = function databaseUpgrade(e) {

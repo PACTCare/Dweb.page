@@ -5,10 +5,8 @@ import powaas from './powaas';
 // todo: random node selection needs to replace by
 // something detecting the health of iota nodes
 const NODES = ['https://pow3.iota.community:443',
-  'https://turnip.iotasalad.org:14265',
   'https://node02.iotatoken.nl:443',
-  'https://field.deviota.com:443',
-  'https://tuna.iotasalad.org:14265'];
+  'https://field.deviota.com:443'];
 
 export default class Iota {
   constructor() {

@@ -42,7 +42,7 @@ function progressBar(percent) {
 
 function propagationError() {
   reset();
-  output('Try to reload, but the hash might not be available!');
+  output('The file you’re requesting is difficult to load or not available at all!');
 }
 
 function propagationProgress() {
@@ -91,7 +91,7 @@ async function load() {
     oReq.onloadstart = function onloadstart() {
       document.getElementById('receiveResponse').style.display = 'block';
       document.getElementById('loadProgressReceive').style.display = 'block';
-      progressId = setInterval(propagationProgress, 200);
+      progressId = setInterval(propagationProgress, 300);
     };
     oReq.onload = async function onload() {
       const arrayBuffer = oReq.response;
