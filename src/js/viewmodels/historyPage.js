@@ -38,7 +38,7 @@ function printLog(iotaLogArray, storageLogArray) {
       const cell2 = row.insertCell(1);
       cell2.setAttribute('data-title', 'File ID: ');
       const cell3 = row.insertCell(2);
-      cell3.setAttribute('data-title', 'Sharing Mode: ');
+      cell3.setAttribute('data-title', 'Mode: ');
       const cell4 = row.insertCell(3);
       cell4.setAttribute('data-title', 'Upload: ');
       const cell5 = row.insertCell(4);

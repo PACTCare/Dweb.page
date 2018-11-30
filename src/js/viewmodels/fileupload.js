@@ -20,14 +20,16 @@ function publicLayout() {
   document.getElementById('checkboxText').textContent = 'Public';
   document.getElementById('start').style.color = '#db3e4d';
   const icon = document.createElement('i');
+  icon.style.fontSize = '50px';
+  icon.style.marginBottom = '1rem';
   icon.className = 'fas fa-file-upload';
   document.getElementById('start').appendChild(icon);
   const div = document.createElement('div');
   div.id = 'addFileText';
   if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
-    div.innerHTML = 'Add File(s) for Public Sharing';
+    div.innerHTML = 'Add File(s) for Public Dweb Sharing';
   } else {
-    div.innerHTML = 'Add File(s) for Public Sharing<br> <span id="limitText">Up to 1GB</span>';
+    div.innerHTML = 'Add File(s) for Public Dweb Sharing<br> <span id="limitText">Up to 1GB</span>';
   }
   document.getElementById('start').appendChild(div);
 }
@@ -36,14 +38,16 @@ function privateLayout() {
   document.getElementById('checkboxText').textContent = 'Private';
   document.getElementById('start').style.color = '#3157a7';
   const icon = document.createElement('i');
+  icon.style.fontSize = '50px';
+  icon.style.marginBottom = '1rem';
   icon.className = 'fas fa-shield-alt';
   document.getElementById('start').appendChild(icon);
   const div = document.createElement('div');
   div.id = 'addFileText';
   if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
-    div.innerHTML = 'Add File(s) for Private Sharing';
+    div.innerHTML = 'Add File(s) for Private Dweb Sharing';
   } else {
-    div.innerHTML = 'Add File(s) for Private Sharing<br> <span id="limitText">Up to 1GB</span>';
+    div.innerHTML = 'Add File(s) for Private Dweb Sharing<br> <span id="limitText">Up to 1GB</span>';
   }
   document.getElementById('start').appendChild(div);
 }

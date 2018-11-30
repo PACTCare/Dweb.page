@@ -6,9 +6,7 @@
   <title>
     <%= htmlWebpackPlugin.options.title %>
   </title>
-  <link rel="shortcut icon" href="https://pact.online/dist/img/favicon3.png" type="image/x-icon">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-    crossorigin="anonymous">
+  <link id="favicon" rel="shortcut icon" type="image/x-icon">
 </head>
 
 <body>
@@ -62,7 +60,7 @@
 
   <!-- Upload Page  -->
   <div id="index">
-    <img src="https://pact.online/dist/img/dweb2.png" alt="Logo" class="logo"><br>
+    <img id='logo1' alt="Logo" class="logo"><br>
     <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our
       encryption
       tools.
@@ -81,9 +79,6 @@
         <label for="file-upload" id="file-drag">
           <img id="file-image" src="#" alt="Preview" class="hidden">
           <div id="start">
-            <!-- <i class="" aria-hidden=" true"></i>
-            <div id="addFileText">
-            </div> -->
           </div>
           <div id="response" class="hidden">
             <pre>
@@ -163,7 +158,7 @@
 
   <!-- Receive Page  -->
   <div id="receivePage">
-    <img src="https://pact.online/dist/img/dweb2.png" alt="Logo" class="logo"><br>
+    <img id='logo2' alt="Logo" class="logo"><br>
     <p id="notSupported"><i class="fas fa-exclamation-circle"></i><br> Sorry, your browser doesn’t support our
       encryption
       tools.
@@ -205,7 +200,7 @@
             <tr>
               <th>Name</th>
               <th style="display: none;">File ID</th>
-              <th>Encrypted</th>
+              <th>Mode</th>
               <th>Upload</th>
               <th>Download</th>
               <th style="display: none;">Public Upload Signature Keys</th>

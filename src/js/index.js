@@ -1,4 +1,11 @@
 import '@babel/polyfill';
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
+import {
+  faEnvelope, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
+  faExclamationCircle, faFileSignature, faBars, faBan,
+} from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faImage } from '@fortawesome/free-regular-svg-icons';
+import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
 import './viewmodels/copy';
 import './polyfill/webcrypto-shim';
@@ -23,7 +30,16 @@ import '../css/toggle.css';
 import '../css/steps.css';
 import '../css/alert.css';
 import '../css/menu.css';
+import favicon from '../img/favicon.png';
+import logo from '../img/dweb.png';
 
+library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
+  faPlayCircle, faExclamationCircle, faFileSignature, faBars, faBan,
+  faWhatsapp, faTelegramPlane, faImage);
+dom.watch();
+document.getElementById('logo1').src = logo;
+document.getElementById('logo2').src = logo;
+document.getElementById('favicon').href = favicon;
 const JSZip = require('jszip');
 
 const GATEWAY = getGateway();

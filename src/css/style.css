@@ -437,11 +437,6 @@ a.share:hover {
   border: 3px solid #6d91c7;
   box-shadow: inset 0 0 0 6px #eee;
 }
-.uploader label.hover #start i.fas {
-  -webkit-transform: scale(0.8);
-  transform: scale(0.8);
-  opacity: 0.3;
-}
 
 .uploader #start {
   float: left;
@@ -451,11 +446,6 @@ a.share:hover {
 }
 .uploader #start.hidden {
   display: none;
-}
-.uploader #start i.fas {
-  font-size: 50px;
-  margin-bottom: 1rem;
-  transition: all 0.2s ease-in-out;
 }
 .uploader #response {
   float: left;
