@@ -3,8 +3,8 @@
  * @param {string} name
  */
 export default function checkBrowserDirectOpen(name) {
-  const browserFileTypes = ['.htm', '.css', '.js', '.txt', '.pdf', '.jpg', '.bmp', '.avi', '.mov', '.webm', '.wav',
-    '.gif', '.jpeg', '.png', '.mp3', '.mp4', '.mpeg', '.mpg', '.ogg', '.svg'];
+  const browserFileTypes = ['.htm', '.css', '.js', '.txt', '.pdf', '.jpg', '.bmp', '.webm', '.wav',
+    '.gif', '.jpeg', '.png', '.mp3', '.mp4', '.flac', '.ogg', '.ogv', '.svg'];
   const str = name.toLowerCase();
   for (const i in browserFileTypes) {
     if (str.indexOf(browserFileTypes[i]) > -1) {
