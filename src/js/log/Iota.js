@@ -4,8 +4,8 @@ import powaas from './powaas';
 
 // todo: random node selection needs to replace by
 // something detecting the health of iota nodes
+//   'https://node02.iotatoken.nl:443',ERR_SSL_VERSION_INTERFERENCE
 const NODES = ['https://pow3.iota.community:443',
-  'https://node02.iotatoken.nl:443',
   'https://field.deviota.com:443'];
 
 export default class Iota {

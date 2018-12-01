@@ -11,14 +11,14 @@ Click below to learn more about it in a short **[youtube video](https://www.yout
 ## Current version
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-QmbQcyTUX7R2nUt8URhJ4w3Ff5kua4DgFnGxSMEwnuGTLN
+QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmbQcyTUX7R2nUt8URhJ4w3Ff5kua4DgFnGxSMEwnuGTLN/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://noreallyitis.me/ipfs/QmbQcyTUX7R2nUt8URhJ4w3Ff5kua4DgFnGxSMEwnuGTLN/ (by [Donald Brown](https://noreallyitis.me))
-* https://ipfs.adder.black/ipfs/QmbQcyTUX7R2nUt8URhJ4w3Ff5kua4DgFnGxSMEwnuGTLN/ (by anonymous)
-* https://pactcare.online/ipfs/QmbQcyTUX7R2nUt8URhJ4w3Ff5kua4DgFnGxSMEwnuGTLN/ (by [Pact](https://pact.care/))
-* https://untangle.care/ipfs/QmbQcyTUX7R2nUt8URhJ4w3Ff5kua4DgFnGxSMEwnuGTLN/ (by [Pact](https://pact.care/))
+* https://ipfs.sopinka.com/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Sopinka Inc.](https://sopinka.com/))
+* https://noreallyitis.me/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Donald Brown](https://noreallyitis.me))
+* https://ipfs.adder.black/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by anonymous)
+* https://pactcare.online/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Pact](https://pact.care/))
+* https://untangle.care/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Pact](https://pact.care/))
 
 ## Hosting
 [Dweb.page](https://dweb.page) simply needs to be hosted on a writable IPFS gateway. You can easily run [Dweb.page](https://dweb.page) local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and also works for example on the Internet Explorer.

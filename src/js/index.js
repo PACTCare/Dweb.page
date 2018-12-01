@@ -120,8 +120,8 @@ function unencryptedLayout(fileId) {
   document.getElementById('passwordTab').classList.remove('tabSteps');
   document.getElementById('passwordTab').style.display = 'none';
   let link = `${
-    window.location.href.replace('index.html', '')
-  }index.html?id=${fileId}&password=nopass`;
+    window.location.href
+  }?id=${fileId}&password=nopass`;
   if (checkBrowserDirectOpen(filename)) {
     link = GATEWAY + fileId;
   }
@@ -154,7 +154,7 @@ function unencryptedLayout(fileId) {
 
 function encryptedLayout(fileId) {
   changeBackgroundColor('#3157a7');
-  const link = `${window.location.href.replace('index.html', '')}index.html?id=${fileId}`;
+  const link = `${window.location.href}?id=${fileId}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').textContent = link;
   document.getElementById('emailSharer').href = `${'mailto:?subject=Distributed and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
@@ -234,8 +234,8 @@ function encryptBeforeUpload(reader) {
         'whatsappSharer',
       ).href = whatsappLink;
       document.getElementById('telegramSharer').href = `https://telegram.me/share/url?url=${
-        window.location.href.replace('index.html', '')
-      }index.html`
+        window.location.href
+      }`
         + `&text=Hi, here is your password to access the file: ${keyString}`;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
