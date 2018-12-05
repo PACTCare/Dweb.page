@@ -39,16 +39,16 @@ body,
   position: relative;
   display: inline-block;
   width: 100%;
+  max-width: 600px;
 }
 .autocomplete-items {
   font-family: Quicksand,sans-serif;
   position: absolute;
   border-bottom: none;
   border-top: none;
-  max-height: 54vh;
+  max-height: 60vh;
   overflow: auto;
   z-index: 99;
-  margin-top: -1rem;
   top: 100%;
   left: 0;
   right: 0;
@@ -61,7 +61,7 @@ body,
   padding: 7px 15px;
   cursor: pointer;
   text-align: left;
-
+  border-bottom: 1px solid #e9e9e9;
 }
 .autocomplete-items div:hover {
   background-color: #e9e9e9;
@@ -237,6 +237,7 @@ pre {
 }
 
 .boxInput {
+  margin-top: 1rem;
   font-family: "Quicksand", sans-serif;
   border: 0px;
   border-bottom: 1px solid #ccc;
@@ -390,6 +391,19 @@ a.share:hover {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
+#searchload{
+  float: right;
+  width: 20%;
+  border-top-right-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
+  border-top-left-radius: 0rem;
+  border-bottom-left-radius: 0rem;
+}
+#searchMenu{
+  font-family: Roboto,sans-serif;
+  margin-bottom: -1rem;
+}
+
 #loadProgress, #loadProgressReceive {
   background-color: #6d91c7;
   border-radius: 0.25rem;
@@ -405,6 +419,14 @@ a.share:hover {
   height: 0.5rem;
   background-color: #393f90;
   border-radius: 0.25rem;
+}
+
+#firstField{
+  border-top-left-radius: 0.4rem;
+  border-bottom-left-radius: 0.4rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+  float: left;
+  width: 80%;
 }
 
 #notSupported {

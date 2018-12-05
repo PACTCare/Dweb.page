@@ -23,6 +23,19 @@ function menuAnimation(inputId) {
   }
 }
 
+function searchMenu(inputId) {
+  const ids = ['all', 'images', 'videos', 'music'];
+  for (let i = 0; i < ids.length; i += 1) {
+    if (ids[i] === inputId) {
+      // global object used in the search.js
+      window.searchKind = ids[i];
+      document.getElementById(ids[i]).style.textDecoration = 'underline';
+    } else {
+      document.getElementById(ids[i]).style.textDecoration = 'none';
+    }
+  }
+}
+
 function isIE() {
   const ua = window.navigator.userAgent;
   const msie = ua.indexOf('MSIE '); // IE 10 or older
@@ -57,7 +70,10 @@ function indexInit() {
   document.getElementById('newUpload').style.display = 'none';
 }
 
-function receiveInit() {
+function searchInit() {
+  searchMenu('all');
+  document.getElementById('searchBox').style.display = 'block';
+  document.getElementById('receiveTextBox').style.display = 'none';
   document
     .getElementById('firstField')
     .addEventListener('keyup', (event) => {
@@ -67,21 +83,16 @@ function receiveInit() {
       }
     });
   document.getElementById('messagesReceivePage').textContent = '';
-  document.getElementById('searchHeadline').textContent = 'Search';
   document.getElementById('currentSelectedHiddenHash').textContent = 'nix';
-  document.getElementById('firstField').style.display = 'block';
   document.getElementById('receiveResponse').style.display = 'none';
   document.getElementById('firstField').value = '';
-  document.getElementById('passwordField').style.display = 'none';
-  document.getElementById('searchHeadline').style.marginBottom = '1.5rem';
   window.history.replaceState(null, null, window.location.pathname);
 }
 
 function linkInit() {
-  document.getElementById('searchHeadline').textContent = 'Receive File';
-  document.getElementById('firstField').style.display = 'none';
+  document.getElementById('searchBox').style.display = 'none';
+  document.getElementById('receiveTextBox').style.display = 'block';
   document.getElementById('receiveResponse').style.display = 'none';
-  document.getElementById('searchHeadline').style.marginBottom = '0rem';
 }
 
 function aboutInit() {
@@ -94,7 +105,7 @@ function currentPage(inputId) {
     if (ids[i] === inputId) {
       document.getElementById(ids[i]).classList.add('currentPage');
       if (ids[i] === 'toReceive') {
-        receiveInit();
+        searchInit();
         if (!isIE()) {
           window.setTimeout(() => {
             document.getElementById('firstField').focus();
@@ -173,7 +184,24 @@ document.getElementById('toReceive').addEventListener('click', () => {
 document.getElementById('toHistory').addEventListener('click', () => {
   window.openHistory();
 });
+
 document.getElementById('toAbout').addEventListener('click', () => {
   menuAnimation('aboutPage');
   currentPage('toAbout');
+});
+
+document.getElementById('all').addEventListener('click', () => {
+  searchMenu('all');
+});
+
+document.getElementById('images').addEventListener('click', () => {
+  searchMenu('images');
+});
+
+document.getElementById('videos').addEventListener('click', () => {
+  searchMenu('videos');
+});
+
+document.getElementById('music').addEventListener('click', () => {
+  searchMenu('music');
 });

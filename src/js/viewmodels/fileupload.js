@@ -81,11 +81,13 @@ function ekUpload() {
     document.getElementById('start').style.display = 'none';
     document.getElementById('response').style.display = 'block';
     const imageName = file.name;
+    // thumbnail
     const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(imageName);
     if (isImage) {
       document.getElementById('file-image').style.display = 'inline-block';
       document.getElementById('file-image').src = URL.createObjectURL(file);
     }
+    // Todo show for other file types
   }
 
   function fileSelectHandler(e) {

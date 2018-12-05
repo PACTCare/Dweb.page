@@ -163,15 +163,13 @@
       encryption
       tools.
       <br> Please update your browser or switch to another browser.</p>
+
+    <!-- Receive -->
     <div id="receiveTextBox" class="textBox">
-      <h2 class="receiveHeadline" id="searchHeadline"></h2>
-      <form id="inputForm">
-        <div class="autocomplete">
-          <span id="currentSelectedHiddenHash"></span>
-          <input autocomplete="user-password" type="text" name="EmailFrom" id="firstField" placeholder="Search the Dweb..."
-            class="boxInput">
-        </div>
-        <input type="text" name="EmailTo" id="passwordField" placeholder="Enter your Password" class="boxInput">
+      <h2 class="receiveHeadline">Receive File</h2>
+      <form id="inputForm" autocomplete="off">
+        <input autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" type="text" name="EmailTo"
+          id="passwordField" placeholder="Enter your Password" class="boxInput">
         <div id="messagesReceivePage"></div>
         <div id="receiveResponse" class="hidden">
           <div id="loadProgressReceive">
@@ -181,6 +179,27 @@
         <input type="button" class="boxButton" value="Download" id="load">
       </form>
     </div>
+
+    <!--Search -->
+    <div id="searchBox">
+      <div id="searchMenu" class="mobile-menu">
+        <ul id="menu">
+          <li><span id='all'>All</span></li>
+          <li><span id='images'>Images</span> </li>
+          <li><span id='videos'>Videos</span></li>
+          <li><span id='music'>Music</span></li>
+        </ul>
+      </div>
+      <form autocomplete="off">
+        <div class="autocomplete">
+          <span id="currentSelectedHiddenHash"></span>
+          <input autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" type="text" name="EmailFrom"
+            id="firstField" placeholder="Search the Dweb..." class="boxInput">
+          <input type="button" class="boxButton" value="Open" id="searchload">
+        </div>
+      </form>
+    </div>
+
     <p class="lead" id="headline">
       Your Gateway to the Distributed Web<br>
       <span id="videoLink2"><i class="fas fa-play-circle"></i> Watch the Video</span>

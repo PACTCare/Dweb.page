@@ -9,6 +9,7 @@
 
 /* Style the buttons inside the tab */
 .tab button {
+  font-family: Roboto,sans-serif;
   background-color: transparent;
   float: left;
   color: #fff;

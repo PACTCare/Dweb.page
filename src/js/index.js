@@ -254,7 +254,6 @@ function encryptBeforeUpload(reader) {
   });
 }
 
-
 function readFile(e) {
   const reader = new FileReader();
   reader.onloadend = function onloadend() {

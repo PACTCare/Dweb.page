@@ -28,6 +28,19 @@ window.miniSearch = new MiniSearch({
   },
 });
 
+// Todo: improve file types preselection
+function fileTypePreselection(val) {
+  if (window.searchKind === 'images') {
+    return `${val} jpg png`;
+  } if (window.searchKind === 'videos') {
+    return `${val} mp4 mov`;
+  } if (window.searchKind === 'music') {
+    return `${val} mp3`;
+  }
+  return val;
+}
+
+
 /**
  *
  * @param {boolean} databaseWorks
@@ -142,18 +155,38 @@ function autocomplete(inp) {
   inp.addEventListener('input', async function inputFunction(e) {
     let b; let i;
     let maxAddedWordCount = 0;
-    const val = this.value;
+    let val = this.value;
     closeAllLists();
     if (!val) {
       document.getElementById('currentSelectedHiddenHash').innerText = 'nix';
       return false;
     }
+    val = fileTypePreselection(val);
     const searchResults = window.miniSearch.search(val.replace('.', ' '));
     const searchItems = [];
-    for (let i = 0; i < searchResults.length; i += 1) {
-      const item = window.metadata.find(o => o.fileId === searchResults[i].id);
-      item.score = searchResults[i].score;
-      searchItems.push(item);
+    for (let j = 0; j < searchResults.length; j += 1) {
+      const item = window.metadata.find(o => o.fileId === searchResults[j].id);
+      item.score = searchResults[j].score;
+
+      // improve file types actual selection
+      if (window.searchKind === 'images') {
+        const imageTypes = ['png', 'jpg', 'jpeg'];
+        if (imageTypes.indexOf(item.fileType) > -1) {
+          searchItems.push(item);
+        }
+      } else if (window.searchKind === 'videos') {
+        const imageTypes = ['mp4'];
+        if (imageTypes.indexOf(item.fileType) > -1) {
+          searchItems.push(item);
+        }
+      } else if (window.searchKind === 'music') {
+        const imageTypes = ['mp3'];
+        if (imageTypes.indexOf(item.fileType) > -1) {
+          searchItems.push(item);
+        }
+      } else {
+        searchItems.push(item);
+      }
     }
     searchItems.sort(sortByScoreAndTime);
     currentFocus = -1;
