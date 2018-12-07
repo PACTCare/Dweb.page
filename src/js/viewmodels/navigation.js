@@ -68,6 +68,7 @@ function indexInit() {
   document.getElementById('passwordStep').classList.add('step');
   document.getElementById('lastTab').style.display = 'none';
   document.getElementById('newUpload').style.display = 'none';
+  document.getElementById('askForTags').style.display = 'none';
 }
 
 function searchInit() {
@@ -76,15 +77,15 @@ function searchInit() {
   document.getElementById('receiveTextBox').style.display = 'none';
   document
     .getElementById('firstField')
-    .addEventListener('keyup', (event) => {
-      event.preventDefault();
+    .addEventListener('keydown', (event) => {
       if (event.keyCode === 13) {
-        document.getElementById('load').click();
+        event.preventDefault();
+        document.getElementById('searchload').click();
       }
     });
   document.getElementById('messagesReceivePage').textContent = '';
   document.getElementById('currentSelectedHiddenHash').textContent = 'nix';
-  document.getElementById('receiveResponse').style.display = 'none';
+  document.getElementById('loadProgressSearch').style.display = 'none';
   document.getElementById('firstField').value = '';
   window.history.replaceState(null, null, window.location.pathname);
 }
@@ -92,7 +93,7 @@ function searchInit() {
 function linkInit() {
   document.getElementById('searchBox').style.display = 'none';
   document.getElementById('receiveTextBox').style.display = 'block';
-  document.getElementById('receiveResponse').style.display = 'none';
+  document.getElementById('loadProgressReceive').style.display = 'none';
 }
 
 function aboutInit() {

@@ -80,9 +80,7 @@ function ekUpload() {
     document.getElementById('passwordDiv').style.display = 'none';
     document.getElementById('start').style.display = 'none';
     document.getElementById('response').style.display = 'block';
-    const imageName = file.name;
-    // thumbnail
-    const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(imageName);
+    const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(file.name);
     if (isImage) {
       document.getElementById('file-image').style.display = 'inline-block';
       document.getElementById('file-image').src = URL.createObjectURL(file);

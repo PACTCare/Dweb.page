@@ -1,6 +1,7 @@
 
 import MiniSearch from 'minisearch';
 import Iota from '../log/Iota';
+import FileType from '../services/FileType';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
@@ -31,15 +32,14 @@ window.miniSearch = new MiniSearch({
 // Todo: improve file types preselection
 function fileTypePreselection(val) {
   if (window.searchKind === 'images') {
-    return `${val} jpg png`;
+    return `${val} jpg png gif svg bmp webp tiff`;
   } if (window.searchKind === 'videos') {
-    return `${val} mp4 mov`;
+    return `${val} mp4 mov flv avi wmv webm`;
   } if (window.searchKind === 'music') {
-    return `${val} mp3`;
+    return `${val} mp3 wma wav ogg acc flac`;
   }
   return val;
 }
-
 
 /**
  *
@@ -170,18 +170,15 @@ function autocomplete(inp) {
 
       // improve file types actual selection
       if (window.searchKind === 'images') {
-        const imageTypes = ['png', 'jpg', 'jpeg'];
-        if (imageTypes.indexOf(item.fileType) > -1) {
+        if (FileType.imageTypes().indexOf(item.fileType.toLowerCase()) > -1) {
           searchItems.push(item);
         }
       } else if (window.searchKind === 'videos') {
-        const imageTypes = ['mp4'];
-        if (imageTypes.indexOf(item.fileType) > -1) {
+        if (FileType.videoTypes().indexOf(item.fileType.toLowerCase()) > -1) {
           searchItems.push(item);
         }
       } else if (window.searchKind === 'music') {
-        const imageTypes = ['mp3'];
-        if (imageTypes.indexOf(item.fileType) > -1) {
+        if (FileType.musicTypes().indexOf(item.fileType.toLowerCase()) > -1) {
           searchItems.push(item);
         }
       } else {
@@ -206,7 +203,7 @@ function autocomplete(inp) {
         b.addEventListener('click', function valueToInput(e) {
           inp.value = this.getElementsByTagName('input')[0].value;
           closeAllLists();
-          document.getElementById('load').click();
+          document.getElementById('searchload').click();
         });
         a.appendChild(b);
       }

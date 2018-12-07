@@ -17,6 +17,8 @@ import './viewmodels/historyPage';
 import './viewmodels/receivePage';
 import './viewmodels/navigation';
 import './viewmodels/aboutPage';
+import createTagsElement from './viewmodels/tags';
+import FileType from './services/FileType';
 import Log from './log/Log';
 import Encryption from './services/Encryption';
 import getGateway from './helperFunctions/getGateway';
@@ -30,8 +32,10 @@ import '../css/toggle.css';
 import '../css/steps.css';
 import '../css/alert.css';
 import '../css/menu.css';
+import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
+
 
 library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
   faPlayCircle, faExclamationCircle, faFileSignature, faBars, faBan,
@@ -152,6 +156,33 @@ function unencryptedLayout(fileId) {
   document.getElementById('ipfsHash').textContent = link;
 }
 
+function tagLayout(fileId) {
+  const myNode = document.getElementById('tagsDiv');
+  while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+  }
+  createTagsElement();
+  document.getElementById('afterTags').style.display = 'none';
+  document.getElementById('askForTags').style.display = 'block';
+  document.getElementById('sendTags').addEventListener('click', () => {
+    const tags = document.getElementsByClassName('tag');
+    let tagsString = '';
+    for (let i = 0; i < tags.length; i += 1) {
+      tagsString += ` ${tags[i].textContent}`;
+    }
+    document.getElementById('afterTags').style.display = 'block';
+    document.getElementById('askForTags').style.display = 'none';
+    unencryptedLayout(fileId);
+    if (describtion === 'Not yet available' && tagsString.length > 0) {
+      describtion = tagsString.trim();
+    } else {
+      describtion = tagsString.trim() + describtion;
+    }
+    new Log().createLog(fileId, filename, true, GATEWAY, false, describtion);
+  });
+}
+
+
 function encryptedLayout(fileId) {
   changeBackgroundColor('#3157a7');
   const link = `${window.location.href}?id=${fileId}`;
@@ -183,26 +214,32 @@ function uploadToIPFS(buf, isEncrypted) {
   xhr.open('POST', GATEWAY, true);
   xhr.responseType = 'arraybuffer';
   xhr.timeout = 3600000;
-  xhr.onreadystatechange = async function onreadystatechange() {
+  xhr.onreadystatechange = function onreadystatechange() {
     if (this.readyState === this.HEADERS_RECEIVED) {
       const fileId = xhr.getResponseHeader('ipfs-hash');
+      prepareStepsLayout();
       if (fileId == null || typeof fileId === 'undefined') {
-        prepareStepsLayout();
         errorMessage("The current IPFS gateway you are using  isn't writable!");
       } else {
-        prepareStepsLayout();
-        new Log().createLog(
-          fileId,
-          filename,
-          true,
-          GATEWAY,
-          isEncrypted,
-          describtion,
-        );
+        // if image/video create thumbnail
+        const [, , fileTypePart] = filename.match(/(.*)\.(.*)/);
+        if (FileType.imageTypes().indexOf(fileTypePart.toLowerCase()) > -1) {
+          // 1. resize
+          // upload on ipfs
+          // only make sense if it loads faster!
+        }
         if (isEncrypted) {
+          new Log().createLog(
+            fileId,
+            filename,
+            true,
+            GATEWAY,
+            isEncrypted,
+            describtion,
+          );
           encryptedLayout(fileId);
         } else {
-          unencryptedLayout(fileId, filename);
+          tagLayout(fileId);
         }
       }
     }

@@ -1,3 +1,5 @@
+import resizeImage from '../helperFunctions/resizeImage';
+
 const maxSize = 1600;
 const key = 'backgroundImage';
 const storeNames = 'ImageStore';
@@ -10,24 +12,7 @@ function readBackgroundImage(event) {
   reader.onloadend = function onloadend(readerEvent) {
     const image = new Image();
     image.onload = function imageResized() {
-      // Resize the image
-      const canvas = document.createElement('canvas');
-      let { width, height } = image;
-      if (width > height) {
-        if (width > maxSize) {
-          height *= maxSize / width;
-          width = maxSize;
-        }
-      } else if (height > maxSize) {
-        width *= maxSize / height;
-        height = maxSize;
-      }
-      canvas.width = width;
-      canvas.height = height;
-      canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-      const dataUrl = canvas.toDataURL('image/png');
-      const imageUrl = dataUrl.replace(/(\r\n|\n|\r)/gm, '');
-
+      const imageUrl = resizeImage(image, maxSize);
       // safe in indexDB instead
       const tx = db.transaction([storeNames], 'readwrite');
       tx.objectStore(storeNames).put(imageUrl, key);
@@ -43,7 +28,10 @@ function readBackgroundImage(event) {
   };
   const file = event.target.files[0] || event.dataTransfer.files[0];
   if (file) {
-    reader.readAsDataURL(file);
+    const isImage = /\.(?=gif|jpg|png|jpeg)/gi.test(file.name);
+    if (isImage) {
+      reader.readAsDataURL(file);
+    }
   }
 }
 

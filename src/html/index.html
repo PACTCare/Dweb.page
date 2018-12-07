@@ -93,56 +93,66 @@
     </div>
 
     <div id="afterUpload" class="textBox">
-      <div id="stepsDiv">
-        <span class="step" id="fileLink"></span>
-        <span id="passwordStep"></span>
-        <span class="step">Done</span><br>
+      <div id="askForTags">
+        <h2 id='tagHeadline'>Help others to discover your upload!</h2>
+        <form autocomplete="off">
+          <div id="tagsDiv" class="tags-input" data-name="tags-input"></div>
+          <div id="messagesReceivePage"></div>
+          <input type="button" class="boxButton" value="Done" id="sendTags">
+        </form>
       </div>
-      <span id="notification1"></span>
-      <span id="notification2"></span>
-      <div class="tabSteps" id="fileTab">
-        <pre>
+      <div id="afterTags">
+        <div id="stepsDiv">
+          <span class="step" id="fileLink"></span>
+          <span id="passwordStep"></span>
+          <span class="step">Done</span><br>
+        </div>
+        <span id="notification1"></span>
+        <span id="notification2"></span>
+        <div class="tabSteps" id="fileTab">
+          <pre>
         <span class="steps" id="fileLinkHeadline"></span>
       </pre>
-        <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent"><i class="fas fa-envelope"></i></a>
-        <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent"><i class="fas fa-mobile-alt"></i></a>
-        or
-        <a class="share" onclick="nextPrev(1)" id="copyFirstLink"><i class="far fa-copy"></i></a>
-        <br>
-        <span id="explainText1"></span>
-        <pre class="longLink">
+          <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent"><i class="fas fa-envelope"></i></a>
+          <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent"><i class="fas fa-mobile-alt"></i></a>
+          or
+          <a class="share" onclick="nextPrev(1)" id="copyFirstLink"><i class="far fa-copy"></i></a>
+          <br>
+          <span id="explainText1"></span>
+          <pre class="longLink">
       <a id="ipfsHash"  target="_blank"></a>
       </pre>
-      </div>
-      <div id="passwordTab">
-        <pre>
+        </div>
+        <div id="passwordTab">
+          <pre>
         <span class="steps" id="secondStepHeadline"></span>
       </pre>
-        <a class="share" id="whatsappSharer" onclick="nextPrev(1)" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <a class="share" id="telegramSharer" onclick="nextPrev(1)" target="_blank"><i class="fab fa-telegram-plane"></i></a>
-        or
-        <a class="share" onclick="nextPrev(1)" id="copySecondLink"><i class="far fa-copy"></i></a>
-        <br>
-        via WhatsApp, Telegram or Copy Link
-        <pre class="longLink">
+          <a class="share" id="whatsappSharer" onclick="nextPrev(1)" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          <a class="share" id="telegramSharer" onclick="nextPrev(1)" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+          or
+          <a class="share" onclick="nextPrev(1)" id="copySecondLink"><i class="far fa-copy"></i></a>
+          <br>
+          via WhatsApp, Telegram or Copy Link
+          <pre class="longLink">
         <span id="password" target="_blank"></span>
       </pre>
-      </div>
-      <div class="tabSteps" id="lastTab">
-        <pre><span class="steps" id="doneHeadline"></span>
+        </div>
+        <div class="tabSteps" id="lastTab">
+          <pre><span class="steps" id="doneHeadline"></span>
       <span id="fileAvailable"></span>
     </pre>
 
-      </div>
+        </div>
 
-      <!-- Buttons -->
-      <div id="stepsButtons">
-        <div style="float:center;">
-          <button class="stepButton" type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-          <div id="nextAtEnd">
-            <button class="stepButton" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+        <!-- Buttons -->
+        <div id="stepsButtons">
+          <div style="float:center;">
+            <button class="stepButton" type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+            <div id="nextAtEnd">
+              <button class="stepButton" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+            </div>
+            <button class="stepButton" type="button" id="newUpload">Restart</button>
           </div>
-          <button class="stepButton" type="button" id="newUpload">Restart</button>
         </div>
       </div>
     </div>
@@ -171,10 +181,8 @@
         <input autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" type="text" name="EmailTo"
           id="passwordField" placeholder="Enter your Password" class="boxInput">
         <div id="messagesReceivePage"></div>
-        <div id="receiveResponse" class="hidden">
-          <div id="loadProgressReceive">
-            <div id="loadBarReceive"></div>
-          </div>
+        <div id="loadProgressReceive">
+          <div id="loadBarReceive"></div>
         </div>
         <input type="button" class="boxButton" value="Download" id="load">
       </form>
@@ -198,6 +206,9 @@
           <input type="button" class="boxButton" value="Open" id="searchload">
         </div>
       </form>
+      <div id="loadProgressSearch">
+        <div id="loadBarSearch"></div>
+      </div>
     </div>
 
     <p class="lead" id="headline">

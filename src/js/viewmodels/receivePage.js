@@ -12,6 +12,24 @@ const GATEWAY = getGateway();
 let fakeProgress = 0;
 let progressId;
 let timeOutPropagation;
+let isSearch = false;
+
+
+function showLoadProgress() {
+  if (isSearch) {
+    document.getElementById('loadProgressSearch').style.display = 'block';
+  } else {
+    document.getElementById('loadProgressReceive').style.display = 'block';
+  }
+}
+
+function hideLoadProgress() {
+  if (isSearch) {
+    document.getElementById('loadProgressSearch').style.display = 'none';
+  } else {
+    document.getElementById('loadProgressReceive').style.display = 'none';
+  }
+}
 
 /**
  * Outputs error messages
@@ -23,9 +41,10 @@ function output(msg) {
 
 function reset() {
   fakeProgress = 0;
-  document.getElementById('loadProgressReceive').style.display = 'none';
+  hideLoadProgress();
   window.history.replaceState(null, null, window.location.pathname);
 }
+
 
 function downloadFile(fileName, blob) {
   reset();
@@ -33,10 +52,13 @@ function downloadFile(fileName, blob) {
 }
 
 function progressBar(percent) {
-  const elem = document.getElementById('loadBarReceive');
+  let elem = document.getElementById('loadBarReceive');
+  if (isSearch) {
+    elem = document.getElementById('loadBarSearch');
+  }
   elem.style.width = `${percent}%`;
   if (percent >= 100) {
-    document.getElementById('loadProgressReceive').style.display = 'none';
+    hideLoadProgress();
   }
 }
 
@@ -89,8 +111,7 @@ async function load() {
     const iota = new Iota();
     const transactionPromise = iota.getTransaction(fileInput);
     oReq.onloadstart = function onloadstart() {
-      document.getElementById('receiveResponse').style.display = 'block';
-      document.getElementById('loadProgressReceive').style.display = 'block';
+      showLoadProgress();
       progressId = setInterval(propagationProgress, 300);
     };
     oReq.onload = async function onload() {
@@ -177,5 +198,10 @@ async function load() {
 }
 
 document.getElementById('load').addEventListener('click', () => {
+  load();
+});
+
+document.getElementById('searchload').addEventListener('click', () => {
+  isSearch = true;
   load();
 });

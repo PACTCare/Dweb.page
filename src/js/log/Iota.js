@@ -55,7 +55,7 @@ export default class Iota {
         value: 0,
         address: trytes,
         message: tryteMessage,
-        tag,
+        tag: 'DWEBPAGETEST', // tag,
       },
     ];
     return new Promise((resolve, reject) => {

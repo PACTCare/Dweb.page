@@ -4,7 +4,6 @@ export default function extractMetadata(readerResult, name) {
   let filename = name;
   const enc = new TextDecoder('utf-8');
   const text = enc.decode(readerResult);
-  console.log(text);
   if (text.toUpperCase().includes('!DOCTYPE HTML')) {
     describtion = (new DOMParser()).parseFromString(text, 'text/html').documentElement.textContent.trim();
     if (text.includes('<title>') && text.includes('</title>')) {
