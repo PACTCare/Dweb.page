@@ -36,7 +36,12 @@ function hideLoadProgress() {
  * @param {string} msg
  */
 function output(msg) {
-  document.getElementById('messagesReceivePage').textContent = msg;
+  if (isSearch) {
+    console.log(msg);
+    document.getElementById('messagesSearch').textContent = msg;
+  } else {
+    document.getElementById('messagesReceivePage').textContent = msg;
+  }
 }
 
 function reset() {

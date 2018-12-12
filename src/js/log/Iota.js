@@ -6,6 +6,7 @@ import powaas from './powaas';
 // something detecting the health of iota nodes
 //   'https://node02.iotatoken.nl:443',ERR_SSL_VERSION_INTERFERENCE
 const NODES = ['https://pow3.iota.community:443',
+  'https://nodes.thetangle.org:443',
   'https://field.deviota.com:443'];
 
 export default class Iota {

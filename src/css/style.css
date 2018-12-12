@@ -597,6 +597,12 @@ a.share:hover {
 #messagesReceivePage {
   color: #db3e4d;
 }
+#messagesSearch {
+  font-family: Roboto,sans-serif;
+  color: #db3e4d;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .uploader .btn {
   display: inline-block;
