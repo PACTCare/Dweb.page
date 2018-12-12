@@ -1,5 +1,5 @@
 /**
- *
+ * Returns Url Parameter specific to input string
  * @param {string} sParam
  */
 export default function getURLParameter(sParam) {
@@ -11,4 +11,5 @@ export default function getURLParameter(sParam) {
       return sParameterName[1];
     }
   }
+  return undefined;
 }

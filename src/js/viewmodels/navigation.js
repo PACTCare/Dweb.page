@@ -91,6 +91,14 @@ function searchInit() {
 }
 
 function linkInit() {
+  document
+    .getElementById('passwordField')
+    .addEventListener('keydown', (event) => {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById('load').click();
+      }
+    });
   document.getElementById('searchBox').style.display = 'none';
   document.getElementById('receiveTextBox').style.display = 'block';
   document.getElementById('loadProgressReceive').style.display = 'none';
@@ -149,14 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.getElementById('passwordField').style.display = 'block';
       if (!isIE()) { document.getElementById('passwordField').focus(); }
-      document
-        .getElementById('passwordField')
-        .addEventListener('keyup', (event) => {
-          event.preventDefault();
-          if (event.keyCode === 13) {
-            document.getElementById('load').click();
-          }
-        });
     }
   } else {
     document.getElementById('toIndex').classList.add('currentPage');

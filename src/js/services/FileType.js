@@ -1,3 +1,6 @@
+/**
+ * Class to structure the supported file types into imageTypes, videoTypes and musicTypes
+ */
 export default class FileType {
   static imageTypes() {
     return ['png', 'jpg', 'jpeg', 'gif', 'svg', 'bmp', 'webp', 'tiff'];

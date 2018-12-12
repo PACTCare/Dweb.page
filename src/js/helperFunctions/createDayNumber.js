@@ -1,3 +1,6 @@
+/**
+ * Returns the number of days since 2018 11 18
+ */
 export default function createDayNumber() {
   const oneDay = 24 * 60 * 60 * 1000;
   const today = new Date();

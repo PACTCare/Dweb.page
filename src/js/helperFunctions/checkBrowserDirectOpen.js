@@ -1,5 +1,5 @@
 /**
- * Checks if data should be open directly in browser or downloaded
+ * Checks if data should be open directly in browser = true or downloaded = false
  * @param {string} name
  */
 export default function checkBrowserDirectOpen(name) {
@@ -8,7 +8,6 @@ export default function checkBrowserDirectOpen(name) {
   const str = name.toLowerCase();
   for (const i in browserFileTypes) {
     if (str.indexOf(browserFileTypes[i]) > -1) {
-      console.log('true');
       return true;
     }
   }

@@ -1,5 +1,5 @@
 /**
- * Compares two objects based on the date time element, for the sort function
+ * Compares two objects based on the string date time element, for the sort function
  * @param {Object} a
  * @param {Object} b
  */
