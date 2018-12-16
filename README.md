@@ -79,7 +79,7 @@ If you want to help either join our **[discord server](https://discord.gg/VMj7PF
 
 If editing the README, please conform to the [standard-readme specification](https://github.com/RichardLitt/standard-readme).
 
-### License
+## License
 [GNU General Public License v3.0](https://github.com/PACTCare/Dweb.page/blob/master/LICENSE)
 
 
