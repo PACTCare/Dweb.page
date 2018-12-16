@@ -4,13 +4,13 @@
 
 > Your Gateway to the Distributed Web
 
----
-
 [Dweb.page](https://dweb.page) (previously [Pact.online](http://www.pact.online)) is an open source webpage that lets you **share and search content on the distributed web** based on [IPFS](https://ipfs.io/). The webpage itself runs on any writable IPFS gateway (see Hosting below). It’s one of the first distributed websites, and it's completely running in your browser, meaning you are in control of your own data. Furthermore, the website uses the distributed ledger technology [IOTA](https://www.iota.org/) to store metadata of the publicly uploaded files. The decentralized search engine integrated into the website uses this metadata to index the uploaded content. Additionally, the transfer history based on IOTA provides a transparent logging system and allows you to claim the ownership of your data.
 
 Click below to learn more about it in a short **[youtube video](https://www.youtube.com/watch?v=vVZP-mfy6QE&t)**:
 
 <a href="https://www.youtube.com/watch?v=vVZP-mfy6QE&t"><img src="https://pact.online/dist/img/dwebyoutube.png" width="500px" alt="Dweb.page youtube"></a>
+
+---
 
 ## Table of Contents
 
