@@ -73,13 +73,9 @@ SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGU
 ```
 
 ### Code 
-[Dweb.page](https://dweb.page) is free, open source software licensed under GNU AGPLv3.
-
 If you want to help either join our **[discord server](https://discord.gg/VMj7PFN)** or you can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository.
 
 If editing the README, please conform to the [standard-readme specification](https://github.com/RichardLitt/standard-readme).
 
 ## License
 [GNU General Public License v3.0](https://github.com/PACTCare/Dweb.page/blob/master/LICENSE) © PACT Care B.V.
-
-
