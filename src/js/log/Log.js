@@ -1,5 +1,4 @@
 import Iota from './Iota';
-import Signature from './Signature';
 import addMetaData from '../search/addMetaData';
 import prepMetaData from '../search/prepMetaData';
 
@@ -27,15 +26,18 @@ export default class Log {
     } else {
       this.idNumber = logs.length;
     }
-    const sig = new Signature();
-    const publicKey = sig.generateKeyPairHex();
+
+    // Todo store private key
+    // ho
+    // const sig = new Signature();
+    // const publicKey = sig.generateKeyPairHex();
 
     // log needs to be different, probably better integrate into indexdb
-    logs.push(`${this.idNumber}???${fileId}&&&${filename}===${publicKey}`);
+    logs.push(`${this.idNumber}???${fileId}&&&${filename}`);
     window.localStorage.setItem(STORAGEKEY, JSON.stringify(logs));
-    const signature = sig.sign(
-      this.idNumber + fileId + this.time + gateway,
-    );
+    // const signature = sig.sign(
+    //   this.idNumber + fileId + this.time + gateway,
+    // );
     // Tag contains information about encryption and upload, no need to integrate this here!
     // only last point represents a filetype
     const [, fileNamePart, fileTypePart] = filename.match(/(.*)\.(.*)/);
@@ -51,7 +53,6 @@ export default class Log {
     new Iota().send(
       metadata,
       this.idNumber,
-      signature,
       isUpload,
       isEncrypted,
     );

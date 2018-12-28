@@ -1,6 +1,6 @@
 import '../services/tableToCsv';
 import Iota from '../log/Iota';
-import Signature from '../log/Signature';
+import Signature from '../log/secp256k1';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import '../polyfill/remove';

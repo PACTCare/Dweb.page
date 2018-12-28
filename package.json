@@ -17,9 +17,9 @@
     "@fortawesome/free-brands-svg-icons": "^5.6.0",
     "@fortawesome/free-regular-svg-icons": "^5.6.0",
     "@fortawesome/free-solid-svg-icons": "^5.6.0",
+    "big-integer": "^1.6.40",
     "fast-text-encoding": "^1.0.0",
     "iota.lib.js": "^0.5.1",
-    "jsrsasign": "^8.0.12",
     "jszip": "^3.1.5",
     "mime": "^2.4.0",
     "minisearch": "^0.1.20"

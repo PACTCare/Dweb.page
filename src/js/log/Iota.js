@@ -4,10 +4,8 @@ import powaas from './powaas';
 
 // todo: random node selection needs to replace by
 // something detecting the health of iota nodes
-//   'https://node02.iotatoken.nl:443',ERR_SSL_VERSION_INTERFERENCE
 const NODES = ['https://pow3.iota.community:443',
-  'https://nodes.thetangle.org:443',
-  'https://field.deviota.com:443'];
+  'https://nodes.thetangle.org:443'];
 
 export default class Iota {
   constructor() {
@@ -18,6 +16,14 @@ export default class Iota {
     this.minWeight = 14;
   }
 
+  /**
+   * Creates entry on tangle: unencrypted files need metadata, encrypted files are found by file hash
+   * @param {object} metadata
+   * @param {int} id
+   * @param {string} signature
+   * @param {boolean} isUpload
+   * @param {boolean} isEncrypted
+   */
   send(
     metadata,
     id,
@@ -43,24 +49,27 @@ export default class Iota {
       uploadTag = 'D';
     }
     let tag = `DWEBPR${uploadTag}`; // PR = private, PU = Public
+    const tryteAddress = this.iotaNode.utils.toTrytes(log.fileId).slice(0, 81);
+
     if (!isEncrypted) {
+      // tryteAddress = '';// publicKey
       tag = `DWEBPU${uploadTag + timeTag}`; // unencrypted + DATE
       log.fileName = metadata.fileName;
       log.fileType = metadata.fileType;
       log.description = metadata.description;
     }
-    const trytes = this.iotaNode.utils.toTrytes(log.fileId).slice(0, 81);
+
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(log));
     const transfers = [
       {
         value: 0,
-        address: trytes,
+        address: tryteAddress,
         message: tryteMessage,
         tag: 'DWEBPAGETEST', // tag,
       },
     ];
     return new Promise((resolve, reject) => {
-      this.iotaNode.api.sendTransfer(trytes, this.depth, this.minWeight, transfers, (err, res) => {
+      this.iotaNode.api.sendTransfer(tryteAddress, this.depth, this.minWeight, transfers, (err, res) => {
         if (!err) {
           return resolve(res);
         }
@@ -105,6 +114,10 @@ export default class Iota {
         }
       });
     });
+  }
+
+  trytesGenerater(text) {
+    return this.iotaNode.utils.toTrytes(text);
   }
 
   /**

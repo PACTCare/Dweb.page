@@ -2,8 +2,10 @@ export default class Encryption {
   constructor() {
     this.encryptionName = 'AES-GCM';
     this.tagLength = 128;
+    this.keyFormat = 'jwk';
   }
 
+  // todo keys should not be extractable
   generateKey() {
     return window.crypto.subtle.generateKey(
       {
@@ -17,7 +19,7 @@ export default class Encryption {
 
   exportKey(key) {
     return window.crypto.subtle.exportKey(
-      'jwk', // can be "jwk" or "raw"
+      this.keyFormat,
       key,
     );
   }
@@ -48,7 +50,7 @@ export default class Encryption {
 
   importKey(password) {
     return window.crypto.subtle.importKey(
-      'jwk',
+      this.keyFormat,
       {
         kty: 'oct',
         k: password,

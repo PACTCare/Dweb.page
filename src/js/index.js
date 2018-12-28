@@ -36,6 +36,8 @@ import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
 
+import Signature from './log/Signature';
+
 
 library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
   faPlayCircle, faExclamationCircle, faFileSignature, faBars, faBan,
@@ -68,6 +70,10 @@ function progressBar(percent) {
   }
 }
 
+/**
+ * Output messages
+ * @param {string} msg
+ */
 function output(msg) {
   document.getElementById('messages').textContent = msg;
 }
@@ -209,7 +215,13 @@ function encryptedLayout(fileId) {
   }
 }
 
-function uploadToIPFS(buf, isEncrypted) {
+async function uploadToIPFS(buf, isEncrypted) {
+  const sig = new Signature();
+  const key = await sig.generateKeys();
+  const pubKey = await sig.exportKey(key.publicKey);
+  console.log(pubKey);
+  await sig.importPublicKey(pubKey);
+
   const xhr = new XMLHttpRequest();
   xhr.open('POST', GATEWAY, true);
   xhr.responseType = 'arraybuffer';
@@ -307,7 +319,6 @@ function readFile(e) {
 
   const files = e.target.files || e.dataTransfer.files;
   if (files.length > 1) {
-    // zip it
     const zip = new JSZip();
     for (let i = 0; i < files.length; i += 1) {
       zip.file(files[i].name.replace(/[^A-Za-z0-9. _\-]/g, ''), files[i]);
