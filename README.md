@@ -25,7 +25,8 @@ Click below to learn more about it in a short **[youtube video](https://www.yout
 - [License](#license)
 
 ## Security
-For a description of the security of [Dweb.page](https://dweb.page) see the first draft of the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Secuirty%20Whitepaper_V0.11.pdf).
+For a description of the security of [Dweb.page](https://dweb.page) see the first draft of the [security whitepaper](https://github.com/PACTCare/Pact.online/blob/master/Pact%20Secuirty%20Whitepaper_V0.11.pdf)
+*(Outdated draft needs to be changed after new signature + search engine implementation)*.
 
 ## Install
 
