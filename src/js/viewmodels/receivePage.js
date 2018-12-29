@@ -1,10 +1,10 @@
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
-import Iota from '../log/Iota';
-import Encryption from '../services/Encryption';
+import Iota from '../iota/Iota';
+import Encryption from '../crypto/Encryption';
 import getGateway from '../helperFunctions/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
-import Log from '../log/Log';
+import Log from '../iota/Log';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
 

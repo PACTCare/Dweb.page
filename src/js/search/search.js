@@ -1,6 +1,6 @@
 
 import MiniSearch from 'minisearch';
-import Iota from '../log/Iota';
+import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';

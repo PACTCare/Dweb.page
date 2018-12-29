@@ -1,6 +1,5 @@
 import '../services/tableToCsv';
-import Iota from '../log/Iota';
-import Signature from '../log/secp256k1';
+import Iota from '../iota/Iota';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import '../polyfill/remove';
@@ -24,7 +23,7 @@ function printLog(iotaLogArray, storageLogArray) {
   iotaLogArray.sort(compareTime);
   document.getElementById('csvDownload').style.visibility = 'visible';
   document.getElementById('clearHistory').style.visibility = 'visible';
-  const sig = new Signature();
+  // const sig = new Signature();
   // remove fake double entries,
   // iotaLogArray = Array.from(new Set(iotaLogArray));
   // for (const obj of iotaLogArray)
@@ -77,7 +76,7 @@ function printLog(iotaLogArray, storageLogArray) {
         const idPart = storageLogArray.find(x => x.id == uploadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
-          const ver = sig.verification(uploadArray[i], pubSigKey);
+          const ver = true; //  sig.verification(uploadArray[i], pubSigKey);
           if (i === 0) {
             if (ver) {
               cellUpload = uploadArray[i].time.replace(',', '')
@@ -119,7 +118,7 @@ function printLog(iotaLogArray, storageLogArray) {
         const idPart = storageLogArray.find(x => x.id == downloadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
-          const ver = sig.verification(downloadArray[i], pubSigKey);
+          const ver = true; // sig.verification(downloadArray[i], pubSigKey);
           if (i === 0) {
             if (ver) {
               cellDownload = downloadArray[i].time.replace(',', '')

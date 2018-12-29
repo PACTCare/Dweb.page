@@ -19,8 +19,8 @@ import './viewmodels/navigation';
 import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
 import FileType from './services/FileType';
-import Log from './log/Log';
-import Encryption from './services/Encryption';
+import Log from './iota/Log';
+import Encryption from './crypto/Encryption';
 import getGateway from './helperFunctions/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
@@ -36,7 +36,7 @@ import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
 
-import Signature from './log/Signature';
+import Signature from './crypto/Signature';
 
 
 library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
@@ -218,9 +218,11 @@ function encryptedLayout(fileId) {
 async function uploadToIPFS(buf, isEncrypted) {
   const sig = new Signature();
   const key = await sig.generateKeys();
-  const pubKey = await sig.exportKey(key.publicKey);
-  console.log(pubKey);
-  await sig.importPublicKey(pubKey);
+  console.log('key after methode');
+  console.log(key);
+  // const pubKey = await sig.exportPublicKey();
+  // console.log(pubKey);
+  // await sig.importPublicKey(pubKey);
 
   const xhr = new XMLHttpRequest();
   xhr.open('POST', GATEWAY, true);

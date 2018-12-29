@@ -1,32 +1,6 @@
+import Base64Url from './Base64Url';
+
 const bigInt = require('big-integer');
-
-function escapeRegExp(str) {
-  return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-}
-
-function replaceAll(str, find, replace) {
-  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-}
-
-function base64urlToBase64(base64url) {
-  let test = replaceAll(base64url, '-', '+');
-  test = replaceAll(test, '_', '/');
-  return test;
-}
-
-function base64ToBase64Url(base64) {
-  let test = replaceAll(base64, '+', '-');
-  test = replaceAll(test, '/', '_');
-  return test;
-}
-
-function ToBase64Url(hexString) {
-  return base64ToBase64Url(Buffer.from(hexString, 'hex').toString('base64')).replace('=', '');
-}
-
-function ToHex(base64UrlString) {
-  return Buffer.from(base64urlToBase64(base64UrlString), 'base64').toString('hex');
-}
 
 // Consts for secp256r1
 const prime = '115792089210356248762697446949407573530086143415290314195533631308867097853951';
@@ -44,8 +18,8 @@ export default class SigCompression {
   * @return {string} Compressed hex representation
   */
   static ECPointCompress(xArray, yArray) {
-    const x = ToHex(xArray);
-    const y = ToHex(yArray);
+    const x = Base64Url.ToHex(xArray);
+    const y = Base64Url.ToHex(yArray);
     // if odd == 03 else == 02
     let prefix = '03';
     if (parseInt(y[y.length - 1], 16) % 2 === 0) {
@@ -68,8 +42,8 @@ export default class SigCompression {
       y = prime.subtract(y);
     }
     return {
-      x: ToBase64Url(x.toString(16), 64),
-      y: ToBase64Url(y.toString(16), 64),
+      x: Base64Url.FromHex(x.toString(16), 64),
+      y: Base64Url.FromHex(y.toString(16), 64),
     };
   }
 }
