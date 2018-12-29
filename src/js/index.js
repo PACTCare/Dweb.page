@@ -217,7 +217,7 @@ function encryptedLayout(fileId) {
 
 async function uploadToIPFS(buf, isEncrypted) {
   const sig = new Signature();
-  const key = await sig.generateKeys();
+  const key = await sig.getKeys();
   console.log('key after methode');
   console.log(key);
   // const pubKey = await sig.exportPublicKey();
