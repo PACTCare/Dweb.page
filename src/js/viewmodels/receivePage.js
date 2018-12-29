@@ -4,9 +4,9 @@ import Iota from '../iota/Iota';
 import Encryption from '../crypto/Encryption';
 import getGateway from '../helperFunctions/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
-import Log from '../iota/Log';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
+import createLog from '../log/createLog';
 
 const GATEWAY = getGateway();
 let fakeProgress = 0;
@@ -145,8 +145,7 @@ async function load() {
                 const typeM = MIME.getType(fileName);
                 const blob = new Blob([decrypted], { type: typeM });
                 blob.name = fileName;
-                // logging of download only for private files
-                new Log().createLog(fileInput, fileName, false, GATEWAY, true, 'Not yet available');
+                createLog(fileInput, fileName, false);
                 downloadFile(fileName, blob);
               })
               .catch(() => {

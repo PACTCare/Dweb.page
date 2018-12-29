@@ -1,5 +1,5 @@
 import SigCompression from './SigCompression';
-import db from './SigDatabase';
+import db from './sigDb';
 
 /**
  * Curves and their primes
@@ -32,23 +32,17 @@ export default class Signature {
     return cryptoKey;
   }
 
-  async exportPublicKey(key) {
-    // generate new keys or load database
-    // maybe in constructor
+  /**
+   * Export public as hex string
+   * @param {object} publicKey
+   * @return {string} publickey as hex string
+   */
+  async exportPublicKey(publicKey) {
     const keydata = await window.crypto.subtle.exportKey(
       this.keyFormat,
-      key,
+      publicKey,
     );
-    const test = SigCompression.ECPointCompress(keydata.x, keydata.y);
-    // const iota = new IOTA();
-    // // https://stackoverflow.com/questions/23190056/hex-to-base64-converter-for-javascript
-    // const tryteTest = iota.trytesGenerater(Buffer.from(test, 'hex').toString('base64'));
-    // console.log(tryteTest);
-    // starts always with kb
-    // KB can be removed
-    // result 88 bzw. 86 -> 5 letters
-    // sig.importPublicKey('x', 'y');
-    return test;
+    return SigCompression.ECPointCompress(keydata.x, keydata.y);
   }
 
   /**
@@ -85,22 +79,16 @@ export default class Signature {
       });
   }
 
-  sign(privateKey, data) {
-    window.crypto.subtle.sign(
+  sign(privateKey, text) {
+    const enc = new TextEncoder();
+    return window.crypto.subtle.sign(
       {
         name: this.signatureName,
         hash: { name: this.nameHash },
       },
       privateKey,
-      data, // ArrayBuffer of data you want to sign
-    )
-      .then((signature) => {
-        // returns an ArrayBuffer containing the signature
-        console.log(new Uint8Array(signature));
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      enc.encode(text), // ArrayBuffer of data you want to sign
+    );
   }
 
   /**
@@ -110,7 +98,7 @@ export default class Signature {
    * @param {arraybuffer} data
    */
   verify(publicKey, signature, data) {
-    window.crypto.subtle.verify(
+    return window.crypto.subtle.verify(
       {
         name: this.signatureName,
         hash: { name: this.nameHash },
@@ -118,13 +106,6 @@ export default class Signature {
       publicKey, // from generateKey or importKey above
       signature, // ArrayBuffer of the signature
       data, // ArrayBuffer of the data
-    )
-      .then((isvalid) => {
-        // returns a boolean on whether the signature is true or not
-        console.log(isvalid);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    );
   }
 }

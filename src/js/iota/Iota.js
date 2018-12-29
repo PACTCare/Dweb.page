@@ -16,56 +16,17 @@ export default class Iota {
     this.minWeight = 14;
   }
 
-  /**
-   * Creates entry on tangle: unencrypted files need metadata, encrypted files are found by file hash
-   * @param {object} metadata
-   * @param {int} id
-   * @param {string} signature
-   * @param {boolean} isUpload
-   * @param {boolean} isEncrypted
-   */
-  send(
-    metadata,
-    id,
-    signature,
-    isUpload,
-    isEncrypted,
-  ) {
-    if (!this.node.includes('thetangle.org')) {
-      powaas(this.iotaNode, 'https://api.powsrv.io:443/');
-    }
+  createTimeTag(number) {
+    return this.iotaNode.utils.toTrytes(number.toString());
+  }
 
-    const log = {
-      id,
-      fileId: metadata.fileId,
-      time: metadata.time,
-      gateway: metadata.gateway,
-      signature,
-    };
-    // timeTag changes every month. If more users change more frequent
-    const timeTag = this.createTimeTag(createDayNumber());
-    let uploadTag = 'U'; // U = Upload, D = Download
-    if (!isUpload) {
-      uploadTag = 'D';
-    }
-    let tag = `DWEBPR${uploadTag}`; // PR = private, PU = Public
-    const tryteAddress = this.iotaNode.utils.toTrytes(log.fileId).slice(0, 81);
-
-    if (!isEncrypted) {
-      // tryteAddress = '';// publicKey
-      tag = `DWEBPU${uploadTag + timeTag}`; // unencrypted + DATE
-      log.fileName = metadata.fileName;
-      log.fileType = metadata.fileType;
-      log.description = metadata.description;
-    }
-
-    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(log));
+  send(tryteAddress, tryteMessage, tag = 'DWEBPAGETESTE') {
     const transfers = [
       {
         value: 0,
         address: tryteAddress,
         message: tryteMessage,
-        tag: 'DWEBPAGETEST', // tag,
+        tag,
       },
     ];
     return new Promise((resolve, reject) => {
@@ -78,8 +39,26 @@ export default class Iota {
     });
   }
 
-  createTimeTag(number) {
-    return this.iotaNode.utils.toTrytes(number.toString());
+  /**
+   * Creates entry on tangle: unencrypted files need metadata, encrypted files are found by file hash
+   * @param {object} metadata
+   */
+  sendMetadata(metadata) {
+    if (!this.node.includes('thetangle.org')) {
+      powaas(this.iotaNode, 'https://api.powsrv.io:443/');
+    }
+    const iotaJson = metadata;
+    const tag = `DWEB${this.createTimeTag(createDayNumber())}`;
+    const tryteAddress = metadata.publicTryteKey.slice(0, 81);
+    iotaJson.publicTryteKey = metadata.publicTryteKey.slice(81);
+    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(iotaJson));
+    this.send(tryteAddress, tryteMessage); // add tag
+  }
+
+  sendLog(logEntry) {
+    const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
+    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
+    this.send(tryteAddress, tryteMessage);
   }
 
   /**
@@ -116,8 +95,15 @@ export default class Iota {
     });
   }
 
-  trytesGenerater(text) {
-    return this.iotaNode.utils.toTrytes(text);
+  /**
+   * Generates 86 character long tryte public key for secp256r1
+   * https://stackoverflow.com/questions/23190056/hex-to-base64-converter-for-javascript
+   * @param {string} hexString
+   */
+  publicKeyPrep(hexString) {
+    const trytePublicKey = this.iotaNode.utils.toTrytes(Buffer.from(hexString, 'hex').toString('base64'));
+    // starts always with KB => remove KB
+    return trytePublicKey.substr(2);
   }
 
   /**

@@ -5,9 +5,8 @@ import FileType from '../services/FileType';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
+import db from './searchDb';
 
-const storeNames = 'SearchStore';
-const request = indexedDB.open('SearchDB', 1);
 const STORAGEKEY = 'loadedMetadataNumber';
 
 // first search metadata was stored at day zero
@@ -17,8 +16,6 @@ const startDay = 4;
 // the bigger maxDaysLoaded the more search data is loaded parallel
 // storage should get too big offer time
 const maxDaysToLoad = 30;
-
-let db;
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -80,16 +77,11 @@ async function updateDatabase(databaseWorks) {
     if (!logFlags[logObj.fileId]) {
       logFlags[logObj.fileId] = true;
       if (databaseWorks) {
-        const tx = db.transaction([storeNames], 'readwrite');
-        const store = tx.objectStore(storeNames);
-        const countRequest = store.count(logObj.fileId);
-        countRequest.onsuccess = function checkExistens() {
-          if (countRequest.result === 0) {
-            tx.objectStore(storeNames).put(logObj, logObj.fileId);
-            // if it's new immidiatly update search engine
-            addMetaData(logObj);
-          }
-        };
+        const metadata = await db.metadata.get({ fileId: logObj.fileId });
+        if (typeof metadata === 'undefined') {
+          await db.metadata.add(logObj);
+          addMetaData(logObj);
+        }
       } else {
         addMetaData(logObj);
       }
@@ -99,27 +91,16 @@ async function updateDatabase(databaseWorks) {
   window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
 }
 
-request.onupgradeneeded = function databaseUpgrade(e) {
-  const dbLocal = e.target.result;
-  dbLocal.createObjectStore(storeNames);
-};
-
-request.onsuccess = async function startSearch(event) {
-  db = event.target.result;
-  const tx = db.transaction([storeNames]);
-  const metadataTx = tx.objectStore(storeNames).getAll();
-  metadataTx.onsuccess = function addMetaDataToSearch() {
-    window.metadata = metadataTx.result;
+async function startSearch() {
+  try {
+    window.metadata = await db.metadata.toArray();
     window.miniSearch.addAll(window.metadata);
     updateDatabase(true);
-  };
-};
-
-request.onerror = function databaseError(e) {
-  console.log('SearchDB error - Private mode');
-  window.metadata = [];
-  updateDatabase(false);
-};
+  } catch (err) {
+    window.metadata = [];
+    updateDatabase(true);
+  }
+}
 
 function capFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -227,3 +208,5 @@ function autocomplete(inp) {
 }
 
 autocomplete(document.getElementById('firstField'));
+
+startSearch();

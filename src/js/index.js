@@ -19,7 +19,6 @@ import './viewmodels/navigation';
 import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
 import FileType from './services/FileType';
-import Log from './iota/Log';
 import Encryption from './crypto/Encryption';
 import getGateway from './helperFunctions/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
@@ -35,9 +34,8 @@ import '../css/menu.css';
 import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
-
-import Signature from './crypto/Signature';
-
+import createMetadata from './search/createMetadata';
+import createLog from './log/createLog';
 
 library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
   faPlayCircle, faExclamationCircle, faFileSignature, faBars, faBan,
@@ -182,9 +180,9 @@ function tagLayout(fileId) {
     if (describtion === 'Not yet available' && tagsString.length > 0) {
       describtion = tagsString.trim();
     } else {
-      describtion = tagsString.trim() + describtion;
+      describtion = `${tagsString.trim()} ${describtion}`;
     }
-    new Log().createLog(fileId, filename, true, GATEWAY, false, describtion);
+    createMetadata(fileId, filename, GATEWAY, describtion);
   });
 }
 
@@ -216,14 +214,6 @@ function encryptedLayout(fileId) {
 }
 
 async function uploadToIPFS(buf, isEncrypted) {
-  const sig = new Signature();
-  const key = await sig.getKeys();
-  console.log('key after methode');
-  console.log(key);
-  // const pubKey = await sig.exportPublicKey();
-  // console.log(pubKey);
-  // await sig.importPublicKey(pubKey);
-
   const xhr = new XMLHttpRequest();
   xhr.open('POST', GATEWAY, true);
   xhr.responseType = 'arraybuffer';
@@ -243,14 +233,7 @@ async function uploadToIPFS(buf, isEncrypted) {
           // only make sense if it loads faster!
         }
         if (isEncrypted) {
-          new Log().createLog(
-            fileId,
-            filename,
-            true,
-            GATEWAY,
-            isEncrypted,
-            describtion,
-          );
+          createLog(fileId, filename, true);
           encryptedLayout(fileId);
         } else {
           tagLayout(fileId);
