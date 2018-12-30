@@ -8,7 +8,7 @@ body,
   font-size: 17px;
   line-height: 1.4em;
 }
-#receivePage, #historyPage, #aboutPage{
+#receivePage, #filePage, #aboutPage{
   transition: none;
   visibility: hidden;
   transform: scale(0.9);
@@ -16,7 +16,7 @@ body,
   width: 0%;
   opacity: 0%;
 }
-#receivePage, #historyPage, #aboutPage, #index{
+#receivePage, #filePage, #aboutPage, #index{
   overflow: hidden;
 }
 

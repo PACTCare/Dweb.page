@@ -3,7 +3,7 @@ import getURLParameter from '../helperFunctions/urlParameter';
 function menuAnimation(inputId) {
   // reset upload page, receive etc.
   document.getElementById('show-menu').checked = false;
-  const ids = ['receivePage', 'historyPage', 'index', 'aboutPage'];
+  const ids = ['receivePage', 'filePage', 'index', 'aboutPage'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       document.getElementById(ids[i]).style.transition = 'visibility 0.2s,transform 0.2s, opacity 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
@@ -109,7 +109,7 @@ function aboutInit() {
 }
 
 function currentPage(inputId) {
-  const ids = ['toIndex', 'toReceive', 'toHistory', 'toAbout'];
+  const ids = ['toIndex', 'toReceive', 'toFile', 'toAbout'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       document.getElementById(ids[i]).classList.add('currentPage');
@@ -164,8 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.openHistory = function openHistory() {
-  menuAnimation('historyPage');
-  currentPage('toHistory');
+  menuAnimation('filePage');
+  currentPage('toFile');
 };
 
 document.getElementById('toIndex').addEventListener('click', () => {
@@ -182,7 +182,7 @@ document.getElementById('toReceive').addEventListener('click', () => {
   menuAnimation('receivePage');
   currentPage('toReceive');
 });
-document.getElementById('toHistory').addEventListener('click', () => {
+document.getElementById('toFile').addEventListener('click', () => {
   window.openHistory();
 });
 

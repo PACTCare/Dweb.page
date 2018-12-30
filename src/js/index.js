@@ -1,10 +1,12 @@
 import '@babel/polyfill';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
-  faEnvelope, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
-  faExclamationCircle, faFileSignature, faBars, faBan,
+  faVideo, faMusic, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
+  faExclamationCircle, faBars, faBan,
 } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faImage } from '@fortawesome/free-regular-svg-icons';
+import {
+  faEnvelope, faFile, faFolderOpen, faCopy, faImage,
+} from '@fortawesome/free-regular-svg-icons';
 import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
 import './viewmodels/copy';
@@ -13,7 +15,7 @@ import './polyfill/remove';
 import './viewmodels/background';
 import './viewmodels/alert';
 import './viewmodels/steps';
-import './viewmodels/historyPage';
+import './viewmodels/filePage';
 import './viewmodels/receivePage';
 import './viewmodels/navigation';
 import './viewmodels/aboutPage';
@@ -37,8 +39,8 @@ import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
 
-library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
-  faPlayCircle, faExclamationCircle, faFileSignature, faBars, faBan,
+library.add(faVideo, faMusic, faFile, faFolderOpen, faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
+  faPlayCircle, faExclamationCircle, faBars, faBan,
   faWhatsapp, faTelegramPlane, faImage);
 dom.watch();
 document.getElementById('logo1').src = logo;

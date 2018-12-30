@@ -1,89 +1,72 @@
 import '../services/tableToCsv';
 import Iota from '../iota/Iota';
+import FileType from '../services/FileType';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import '../polyfill/remove';
+import db from '../log/logDb';
 
-const STORAGEKEY = 'logsv0.1';
 const iotaFlags = {};
 
-function hideColumns(col1, col2, col3) {
+function hideColumns(col1) {
   const tbl = document.getElementById('table');
   if (tbl != null) {
     for (let i = 0; i < tbl.rows.length; i += 1) {
       for (let j = 0; j < tbl.rows[i].cells.length; j += 1) {
         tbl.rows[i].cells[j].style.display = '';
-        if (j === col1 || j === col2 || j === col3) { tbl.rows[i].cells[j].style.display = 'none'; }
+        if (j === col1) { tbl.rows[i].cells[j].style.display = 'none'; }
       }
     }
   }
 }
 
-function printLog(iotaLogArray, storageLogArray) {
+function printLog(iotaLogArray, logsDb) {
   iotaLogArray.sort(compareTime);
   document.getElementById('csvDownload').style.visibility = 'visible';
   document.getElementById('clearHistory').style.visibility = 'visible';
-  // const sig = new Signature();
-  // remove fake double entries,
-  // iotaLogArray = Array.from(new Set(iotaLogArray));
-  // for (const obj of iotaLogArray)
   for (let j = 0; j < iotaLogArray.length; j += 1) {
     if (!iotaFlags[iotaLogArray[j].fileId]) {
       iotaFlags[iotaLogArray[j].fileId] = true;
       const table = document.getElementById('table');
       const row = table.insertRow(-1);
       const cell1 = row.insertCell(0);
-      cell1.setAttribute('data-title', 'Name: ');
+      cell1.setAttribute('data-title', 'Icons: ');
       const cell2 = row.insertCell(1);
-      cell2.setAttribute('data-title', 'File ID: ');
+      cell2.setAttribute('data-title', 'Name: ');
       const cell3 = row.insertCell(2);
-      cell3.setAttribute('data-title', 'Mode: ');
+      cell3.setAttribute('data-title', 'File ID: ');
       const cell4 = row.insertCell(3);
-      cell4.setAttribute('data-title', 'Upload: ');
+      cell4.setAttribute('data-title', 'Mode: ');
       const cell5 = row.insertCell(4);
-      cell5.setAttribute('data-title', 'Download: ');
+      cell5.setAttribute('data-title', 'Upload: ');
       const cell6 = row.insertCell(5);
-      cell6.setAttribute('data-title', 'Public Upload Signature Keys: ');
-      const cell7 = row.insertCell(6);
-      cell7.setAttribute('data-title', 'Public Download Signature Keys: ');
-      const linkText = storageLogArray.find(x => x.hash === iotaLogArray[j].fileId).name;
-      let link = `${window.location.href.replace('history', 'receive')
+      cell6.setAttribute('data-title', 'Download: ');
+      const linkText = logsDb.find(x => x.fileId === iotaLogArray[j].fileId).filename;
+      const link = `${window.location.href.replace('history', 'receive')
       }?id=${
         iotaLogArray[j].fileId
       }`;
-      // see Iota.js for the setup of the log
-      // public = PU
-      if (iotaLogArray[j].tag.substring(4, 6) === 'PU') {
-        link += '&password=nopass';
-      }
-      cell1.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
-      cell2.textContent = iotaLogArray[j].fileId;
-      // private = PR
-      if (iotaLogArray[j].tag.substring(4, 6) === 'PR') {
-        cell3.textContent = 'Private';
-      } else {
-        cell3.textContent = 'Public';
-      }
 
-      const signedLinkPartOne = " <a class='signRef' href='https://twitter.com/intent/tweet?text=I’m%20the%20owner%20of%20the%20following%20public%20signature%20key%20";
-      const signedLinkPartTwo = "%20at%20&url=https://pact.online' target='_blank'><i class='fas fa-file-signature'></i></a>";
+      const [, , fileTypePart] = linkText.match(/(.*)\.(.*)/);
+      cell1.innerHTML = FileType.returnFileIcon(fileTypePart);
+      cell1.style.fontSize = '18px';
+      cell2.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
+      cell3.textContent = iotaLogArray[j].fileId;
+      cell4.textContent = 'Private';
+
       let cellUpload = 'N/A';
-      let cellUploadSig = 'N/A';
       const uploadArray = iotaLogArray.filter(
         x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'U', // U = Upload
       );
       for (let i = 0; i < uploadArray.length; i += 1) {
-        const idPart = storageLogArray.find(x => x.id == uploadArray[i].id);
+        const idPart = logsDb.find(x => x.id == uploadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
           const ver = true; //  sig.verification(uploadArray[i], pubSigKey);
           if (i === 0) {
             if (ver) {
               cellUpload = uploadArray[i].time.replace(',', '')
-                + signedLinkPartOne
-                + pubSigKey
-                + signedLinkPartTwo;
-              cellUploadSig = pubSigKey;
+                + pubSigKey;
             } else {
               cellUpload = uploadArray[i].time.replace(',', '');
             }
@@ -91,17 +74,13 @@ function printLog(iotaLogArray, storageLogArray) {
             cellUpload = `${cellUpload
             }\n ${
               uploadArray[i].time.replace(',', '')
-            }${signedLinkPartOne
-            }${pubSigKey
-            }${signedLinkPartTwo}`;
-            cellUploadSig = `${cellUpload}\n ${pubSigKey}`;
+            }${pubSigKey}`;
           } else {
             cellUpload = `${cellUpload}\n ${uploadArray[i].time.replace(',', '')}`;
           }
         }
       }
-      cell4.innerHTML = cellUpload;
-      cell6.textContent = cellUploadSig;
+      cell5.textContent = cellUpload;
 
       let cellDownload = 'N/A';
       if (iotaLogArray[j].tag.substring(4, 6) === 'PU') {
@@ -115,16 +94,14 @@ function printLog(iotaLogArray, storageLogArray) {
         x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D' && x.tag.substring(4, 6) === 'PR',
       );
       for (let i = 0; i < downloadArray.length; i += 1) {
-        const idPart = storageLogArray.find(x => x.id == downloadArray[i].id);
+        const idPart = logsDb.find(x => x.id == downloadArray[i].id);
         if (typeof idPart !== 'undefined') {
           const pubSigKey = idPart.sig;
           const ver = true; // sig.verification(downloadArray[i], pubSigKey);
           if (i === 0) {
             if (ver) {
               cellDownload = downloadArray[i].time.replace(',', '')
-                + signedLinkPartOne
-                + pubSigKey
-                + signedLinkPartTwo;
+                + pubSigKey;
               cellDownloadSig = pubSigKey;
             } else {
               cellDownload = downloadArray[i].time.replace(',', '');
@@ -133,43 +110,31 @@ function printLog(iotaLogArray, storageLogArray) {
             cellDownload = `${cellDownload
             }\n ${
               downloadArray[i].time.replace(',', '')
-            }${signedLinkPartOne
-            }${pubSigKey
-            }${signedLinkPartTwo}`;
+            }${pubSigKey}`;
             cellDownloadSig = `${cellDownloadSig}\n ${pubSigKey}`;
           } else {
             cellDownload = `${cellDownload}\n ${downloadArray[i].time.replace(',', '')}`;
           }
         }
       }
-      cell5.innerHTML = cellDownload;
-      cell7.textContent = cellDownloadSig;
+      cell6.textContent = cellDownload;
     }
   }
-  hideColumns(1, 5, 6);
+  hideColumns(2);
   if (document.getElementById('firstRow') !== null) {
     document.getElementById('firstRow').remove();
   }
 }
 
-async function createListOfLogs(logs) {
-  const storageLogArray = [];
-  for (let i = 0; i < logs.length; i += 1) {
-    storageLogArray.push({
-      id: logs[i].split('???')[0],
-      hash: logs[i].split('???')[1].split('&&&')[0],
-      name: logs[i].split('&&&')[1].split('===')[0],
-      sig: logs[i].split('===')[1],
-    });
-  }
+async function createListOfLogs(logsDb) {
   const iotaLogArray = [];
   const iota = new Iota();
   const logFlags = {};
   await Promise.all(
-    storageLogArray.map(async (logObject) => {
-      if (!logFlags[logObject.hash]) {
-        logFlags[logObject.hash] = true;
-        const transactions = await iota.getTransaction(logObject.hash);
+    logsDb.map(async (logObject) => {
+      if (!logFlags[logObject.fileId]) {
+        logFlags[logObject.fileId] = true;
+        const transactions = await iota.getTransaction(logObject.fileId);
         await Promise.all(
           transactions.map(async (transaction) => {
             const logObj = await iota.getLog(transaction);
@@ -181,26 +146,27 @@ async function createListOfLogs(logs) {
   );
   document.getElementById('loader').style.visibility = 'hidden';
   if (iotaLogArray.length > 0) {
-    printLog(iotaLogArray, storageLogArray);
+    printLog(iotaLogArray, logsDb);
   }
 }
 
-document.getElementById('clearHistory').addEventListener('click', () => {
-  window.localStorage.removeItem(STORAGEKEY);
+document.getElementById('clearHistory').addEventListener('click', async () => {
+  await db.log.clear();
   window.location.reload();
 });
-// Check browser support
-document.getElementById('toHistory').addEventListener('click', () => {
-  if (typeof Storage !== 'undefined') {
-    const logs = JSON.parse(localStorage.getItem(STORAGEKEY));
-    if (logs == null) {
+
+document.getElementById('toFile').addEventListener('click', async () => {
+  try {
+    const logsDb = await db.log.toArray();
+    if (logsDb == null) {
       document.getElementById('csvDownload').style.visibility = 'hidden';
       document.getElementById('clearHistory').style.visibility = 'hidden';
     } else {
       document.getElementById('loader').style.visibility = 'visible';
-      createListOfLogs(logs);
+      createListOfLogs(logsDb);
     }
-  } else {
+  } catch (error) {
+    console.log(error);
     document.getElementById('logResult').innerHTML = 'Sorry, your browser does not support Web Storage.';
   }
 });

@@ -114,7 +114,7 @@
 }
 
 #logResult > a {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .table-responsive-vertical {
@@ -128,7 +128,6 @@ td > a {
 }
 td {
   word-break: break-all;
-  min-width: 6rem;
   white-space: pre-line;
 }
 

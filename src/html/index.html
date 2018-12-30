@@ -17,7 +17,7 @@
     <ul id="menu">
       <li><span id="toIndex">Share</span></li>
       <li><span id="toReceive">Search</span> </li>
-      <li><span id="toHistory">History</span> </li>
+      <li><span id="toFile">Files</span> </li>
       <li><span id="toAbout">About</span></li>
     </ul>
   </nav>
@@ -113,7 +113,7 @@
           <pre>
         <span class="steps" id="fileLinkHeadline"></span>
       </pre>
-          <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent"><i class="fas fa-envelope"></i></a>
+          <a class="share" onclick="nextPrev(1)" id="emailSharer" target="_parent"><i class="far fa-envelope"></i></a>
           <a class="share" onclick="nextPrev(1)" id="smsSharer" target="_parent"><i class="fas fa-mobile-alt"></i></a>
           or
           <a class="share" onclick="nextPrev(1)" id="copyFirstLink"><i class="far fa-copy"></i></a>
@@ -218,24 +218,19 @@
     </p>
   </div>
 
-  <!-- History Page  -->
-  <div id="historyPage">
+  <!-- File Page  -->
+  <div id="filePage">
     <div class="longText" id="historyLongText">
-      <h2>Sharing History</h2>
-      <p>You can publicly claim the ownership of a transaction on Twitter by clicking on the
-        following icons below <i style='color: #6f6f6f;' class='fas fa-file-signature'></i></p>
       <div class="table-responsive-vertical shadow-z-1">
-        <!-- Table starts here -->
         <table id="table" class="table table-hover table-mc-light-blue">
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
               <th style="display: none;">File ID</th>
               <th>Mode</th>
               <th>Upload</th>
               <th>Download</th>
-              <th style="display: none;">Public Upload Signature Keys</th>
-              <th style="display: none;">Public Download Signature Keys</th>
             </tr>
           </thead>
           <tbody id='tablebody'>
@@ -250,7 +245,7 @@
         <div class="loading-dot"></div>
       </div>
       <div id="historyButtons">
-        <button id="clearHistory" class="boxButton">Clear History</button>
+        <button id="clearHistory" class="boxButton">Clear Cache</button>
         <button id="csvDownload" class="boxButton" onclick="exportTableToCSV('FileTransfer.csv')">Export CSV</button>
       </div>
     </div>

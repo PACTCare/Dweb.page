@@ -14,7 +14,7 @@ export default async function createLog(fileId, filename, isUpload) {
   const sig = new Signature();
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
-  await db.log.add({ fileId, filename });
+  await db.log.add({ fileId, filename, folder: 'none' });
   const logEntry = {
     fileId,
     time,
