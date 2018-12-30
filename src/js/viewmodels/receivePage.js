@@ -1,6 +1,5 @@
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
-import Iota from '../iota/Iota';
 import Encryption from '../crypto/Encryption';
 import getGateway from '../helperFunctions/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
@@ -96,8 +95,11 @@ function iotaDecryptionProgress() {
 async function load() {
   const passwordInput = document.getElementById('passwordField').value.trim();
   let fileInput = document.getElementById('firstField').value.trim();
-  if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && document.getElementById('currentSelectedHiddenHash').textContent !== 'nix') {
-    fileInput = document.getElementById('currentSelectedHiddenHash').textContent;
+  if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && window.searchSelection.fileId !== 'na') {
+    // get also public key
+    console.log('inside load');
+    console.log(window.searchSelection.fileId);
+    fileInput = window.searchSelection.fileId;
   }
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!
@@ -111,10 +113,6 @@ async function load() {
   } else {
     output('');
     const oReq = new XMLHttpRequest();
-    // not encrypted, get information from IOTA,
-    // but start already here, for parallel loading
-    const iota = new Iota();
-    const transactionPromise = iota.getTransaction(fileInput);
     oReq.onloadstart = function onloadstart() {
       showLoadProgress();
       progressId = setInterval(propagationProgress, 300);
@@ -156,9 +154,7 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        const transactions = await transactionPromise;
-        const logObj = await iota.getMessage(transactions[transactions.length - 1]);
-        const name = `${logObj.fileName}.${logObj.fileType}`;
+        const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser
         if (checkBrowserDirectOpen(name)) {

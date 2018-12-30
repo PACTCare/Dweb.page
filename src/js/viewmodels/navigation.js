@@ -84,7 +84,6 @@ function searchInit() {
       }
     });
   document.getElementById('messagesReceivePage').textContent = '';
-  document.getElementById('currentSelectedHiddenHash').textContent = 'nix';
   document.getElementById('loadProgressSearch').style.display = 'none';
   document.getElementById('firstField').value = '';
   window.history.replaceState(null, null, window.location.pathname);

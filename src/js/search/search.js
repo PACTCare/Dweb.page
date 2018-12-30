@@ -81,11 +81,12 @@ async function updateDatabase(databaseWorks) {
       const sig = new Signature();
       metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
       const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
-      const { signature } = metaObject;
+      const { signature, address } = metaObject;
       delete metaObject.signature;
       delete metaObject.tag;
       delete metaObject.address;
       const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
+      metaObject.address = address;
       // only download verified metadata
       console.log(isVerified);
       if (isVerified) {
@@ -147,13 +148,13 @@ function autocomplete(inp) {
     }
   }
 
-  inp.addEventListener('input', async function inputFunction(e) {
+  inp.addEventListener('input', async function inputFunction() {
     let b; let i;
     let maxAddedWordCount = 0;
     let val = this.value;
     closeAllLists();
     if (!val) {
-      document.getElementById('currentSelectedHiddenHash').innerText = 'nix';
+      window.searchSelection = { fileId: 'na', subscribeAddress: 'na' };
       return false;
     }
     val = fileTypePreselection(val);
@@ -189,13 +190,13 @@ function autocomplete(inp) {
     for (i = 0; i < searchItems.length; i += 1) {
       if (maxAddedWordCount < 6) {
         if (maxAddedWordCount === 0) {
-          document.getElementById('currentSelectedHiddenHash').innerText = searchItems[i].fileId;
+          window.searchSelection = searchItems[i];
         }
         maxAddedWordCount += 1;
         b = document.createElement('DIV');
         b.innerHTML = `<span style='color:#db3e4d'>[${searchItems[i].fileType}]</span> <strong>${capFirstLetter(searchItems[i].fileName)}</strong> <span style='font-size: 12px;'>${searchItems[i].time}<br>${searchItems[i].fileId}</span>`;
         b.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
-        b.addEventListener('click', function valueToInput(e) {
+        b.addEventListener('click', function valueToInput() {
           inp.value = this.getElementsByTagName('input')[0].value;
           closeAllLists();
           document.getElementById('searchload').click();

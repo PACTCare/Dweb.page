@@ -10,7 +10,7 @@ const b = new bigInt('4105836372515214212932612978004726840911444101599372555483
 const pIdent = '28948022302589062190674361737351893382521535853822578548883407827216774463488';
 
 /**
- * https://stackoverflow.com/questions/17171542/algorithm-for-elliptic-curve-point-compression
+ * Elliptic curve point compression for the Web Crypto API (secp256r1)
  */
 export default class SigCompression {
   /**
