@@ -40,7 +40,8 @@ export default class Iota {
   }
 
   /**
-   * Creates entry on tangle: unencrypted files need metadata, encrypted files are found by file hash
+   * Creates entry on tangle: unencrypted files need metadata,
+   * encrypted files are found by file hash
    * @param {object} metadata
    */
   sendMetadata(metadata) {
@@ -52,7 +53,7 @@ export default class Iota {
     const tryteAddress = metadata.publicTryteKey.slice(0, 81);
     iotaJson.publicTryteKey = metadata.publicTryteKey.slice(81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(iotaJson));
-    this.send(tryteAddress, tryteMessage); // add tag
+    this.send(tryteAddress, tryteMessage, tag); // add tag
   }
 
   sendLog(logEntry) {
@@ -97,14 +98,22 @@ export default class Iota {
 
   /**
    * Generates 86 character long tryte public key for secp256r1
-   * https://stackoverflow.com/questions/23190056/hex-to-base64-converter-for-javascript
-   * @param {string} hexString
+   * @param {string} hexKey
    */
-  publicKeyPrep(hexString) {
-    const trytePublicKey = this.iotaNode.utils.toTrytes(Buffer.from(hexString, 'hex').toString('base64'));
+  hexKeyToTryte(hexKey) {
+    const trytePublicKey = this.iotaNode.utils.toTrytes(Buffer.from(hexKey, 'hex').toString('base64'));
     // starts always with KB => remove KB
     return trytePublicKey.substr(2);
   }
+
+  /**
+   * Transforms a tryte public key to a hex public key for secp256r1
+   * @param {string} tryteKey
+   */
+  tryteKeyToHex(tryteKey) {
+    return Buffer.from(this.iotaNode.utils.fromTrytes(`KB${tryteKey}`), 'base64').toString('hex');
+  }
+
 
   /**
    * Gets transactions on IOTA by name
@@ -129,10 +138,10 @@ export default class Iota {
   }
 
   /**
-   *
+   * Returns the message of an Iota transaction
    * @param {string} transaction
    */
-  getLog(transaction) {
+  getMessage(transaction) {
     return new Promise((resolve, reject) => {
       this.iotaNode.api.getBundle(transaction, (error, sucess2) => {
         if (error) {
@@ -140,10 +149,11 @@ export default class Iota {
         } else {
           const message = sucess2[0].signatureMessageFragment;
           const [usedMessage] = message.split(
-            '99999999999999999999999999999999999999999999999999',
+            '999999999999999999999999999999999999999999',
           );
           const obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
           obj.tag = sucess2[0].tag;
+          obj.address = sucess2[0].address;
           resolve(obj);
         }
       });

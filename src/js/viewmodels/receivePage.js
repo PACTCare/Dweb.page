@@ -157,7 +157,7 @@ async function load() {
           });
       } else {
         const transactions = await transactionPromise;
-        const logObj = await iota.getLog(transactions[transactions.length - 1]);
+        const logObj = await iota.getMessage(transactions[transactions.length - 1]);
         const name = `${logObj.fileName}.${logObj.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser

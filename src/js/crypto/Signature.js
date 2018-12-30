@@ -47,13 +47,12 @@ export default class Signature {
 
   /**
    * Import public compressed key
-   * @param {string} key
+   * @param {string} key as hex string
+   * @return {object} public key
    */
   importPublicKey(key) {
     const keydata = SigCompression.ECPointDecompress(key);
-    console.log('keydata');
-    console.log(keydata);
-    window.crypto.subtle.importKey(
+    return window.crypto.subtle.importKey(
       this.keyFormat,
       { // this is an example jwk key, other key types are Uint8Array objects
         kty: 'EC',
@@ -68,17 +67,14 @@ export default class Signature {
       },
       false, // whether the key is extractable (i.e. can be used in exportKey)
       ['verify'],
-    )
-      .then((publicKey) => {
-        // returns a publicKey (or privateKey if you are importing a private key)
-        console.log('Success');
-        console.log(publicKey);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    );
   }
 
+  /**
+   *
+   * @param {object} privateKey
+   * @param {string} text
+   */
   sign(privateKey, text) {
     const enc = new TextEncoder();
     return window.crypto.subtle.sign(
@@ -94,18 +90,20 @@ export default class Signature {
   /**
    *
    * @param {string} publicKey
-   * @param {arraybuffer} signature
-   * @param {arraybuffer} data
+   * @param {string} signatureBase64
+   * @param {string} text
    */
-  verify(publicKey, signature, data) {
+  verify(publicKey, signatureBase64, text) {
+    const enc = new TextEncoder();
+    const sigArray = Uint8Array.from(atob(signatureBase64), c => c.charCodeAt(0));
     return window.crypto.subtle.verify(
       {
         name: this.signatureName,
         hash: { name: this.nameHash },
       },
-      publicKey, // from generateKey or importKey above
-      signature, // ArrayBuffer of the signature
-      data, // ArrayBuffer of the data
+      publicKey,
+      sigArray,
+      enc.encode(text),
     );
   }
 }

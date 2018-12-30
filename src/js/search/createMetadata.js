@@ -17,7 +17,7 @@ export default async function createMetadata(fileId, filename, gateway, descript
   const sig = new Signature();
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
-  const publicTryteKey = iota.publicKeyPrep(publicHexKey);
+  const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
 
   const [, fileNamePart, fileTypePart] = filename.match(/(.*)\.(.*)/);
   let metadata = {
@@ -31,8 +31,7 @@ export default async function createMetadata(fileId, filename, gateway, descript
   };
   metadata = prepMetaData(metadata);
   const signature = await sig.sign(keys.privateKey, JSON.stringify(metadata));
-  // https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string/38858127
-  metadata.signature = btoa(String.fromCharCode.apply(null, new Uint8Array(signature)));
+  metadata.signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
   iota.sendMetadata(metadata);
   // store direct in database!
   addMetaData(metadata);

@@ -6,12 +6,13 @@ import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
 import db from './searchDb';
+import Signature from '../crypto/Signature';
 
 const STORAGEKEY = 'loadedMetadataNumber';
 
 // first search metadata was stored at day zero
 // but the first few days was all about testing
-const startDay = 4;
+const startDay = 0;
 
 // the bigger maxDaysLoaded the more search data is loaded parallel
 // storage should get too big offer time
@@ -39,7 +40,7 @@ function fileTypePreselection(val) {
 }
 
 /**
- *
+ * Load most recent database entries
  * @param {boolean} databaseWorks
  */
 async function updateDatabase(databaseWorks) {
@@ -66,24 +67,37 @@ async function updateDatabase(databaseWorks) {
 
   while (dayNumber >= daysLoaded) {
     const dayTag = iota.createTimeTag(dayNumber);
-    awaitTransactions.push(iota.getTransactionByTag(`DWEBPUU${dayTag}`));
+    console.log(`DWEB${dayTag}`);
+    awaitTransactions.push(iota.getTransactionByTag(`DWEB${dayTag}`));
     dayNumber -= 1;
   }
   const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
   const transactions = [].concat(...transactionsArrays);
 
   transactions.map(async (transaction) => {
-    const logObj = await iota.getLog(transaction);
-    if (!logFlags[logObj.fileId]) {
-      logFlags[logObj.fileId] = true;
-      if (databaseWorks) {
-        const metadata = await db.metadata.get({ fileId: logObj.fileId });
-        if (typeof metadata === 'undefined') {
-          await db.metadata.add(logObj);
-          addMetaData(logObj);
+    const metaObject = await iota.getMessage(transaction);
+    if (!logFlags[metaObject.fileId]) {
+      logFlags[metaObject.fileId] = true;
+      const sig = new Signature();
+      metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
+      const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
+      const { signature } = metaObject;
+      delete metaObject.signature;
+      delete metaObject.tag;
+      delete metaObject.address;
+      const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
+      // only download verified metadata
+      console.log(isVerified);
+      if (isVerified) {
+        if (databaseWorks) {
+          const metadata = await db.metadata.get({ fileId: metaObject.fileId });
+          if (typeof metadata === 'undefined') {
+            await db.metadata.add(metaObject);
+            addMetaData(metaObject);
+          }
+        } else {
+          addMetaData(metaObject);
         }
-      } else {
-        addMetaData(logObj);
       }
     }
   });

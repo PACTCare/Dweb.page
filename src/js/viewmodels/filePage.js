@@ -137,7 +137,7 @@ async function createListOfLogs(logsDb) {
         const transactions = await iota.getTransaction(logObject.fileId);
         await Promise.all(
           transactions.map(async (transaction) => {
-            const logObj = await iota.getLog(transaction);
+            const logObj = await iota.getMessage(transaction);
             iotaLogArray.push(logObj);
           }),
         );
