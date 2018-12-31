@@ -6,6 +6,7 @@ import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
 import db from './searchDb';
 import Signature from '../crypto/Signature';
+import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
 
 // Max length Array
@@ -38,6 +39,7 @@ function fileTypePreselection(val) {
  */
 async function updateDatabase(databaseWorks) {
   const iota = new Iota();
+  const sig = new Signature();
   const logFlags = {};
 
   // returns the highest number!
@@ -79,20 +81,15 @@ async function updateDatabase(databaseWorks) {
   let transactions = [].concat(...transactionsArrays);
   transactions = transactions.slice(0, maxArrayLength);
   transactions.map(async (transaction) => {
-    const metaObject = await iota.getMessage(transaction);
+    let metaObject = await iota.getMessage(transaction);
     if (!logFlags[metaObject.fileId]) {
       logFlags[metaObject.fileId] = true;
-      const sig = new Signature();
       metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
       const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
       const { signature, address } = metaObject;
-      delete metaObject.signature;
-      delete metaObject.tag;
-      delete metaObject.address;
+      metaObject = prepObjectForSignature(metaObject);
       const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
       metaObject.address = address;
-      // only download verified metadata
-      console.log(isVerified);
       if (isVerified) {
         if (databaseWorks) {
           const metadata = await db.metadata.get({ fileId: metaObject.fileId });

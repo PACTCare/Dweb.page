@@ -5,6 +5,8 @@ import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import '../polyfill/remove';
 import db from '../log/logDb';
+import Signature from '../crypto/Signature';
+import prepObjectForSignature from '../crypto/prepObjectForSignature';
 
 const iotaFlags = {};
 
@@ -54,67 +56,29 @@ function printLog(iotaLogArray, logsDb) {
       cell3.textContent = iotaLogArray[j].fileId;
       cell4.textContent = 'Private';
 
-      let cellUpload = 'N/A';
-      const uploadArray = iotaLogArray.filter(
-        x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'U', // U = Upload
+      const downloadArray = iotaLogArray.filter(
+        x => x.fileId === iotaLogArray[j].fileId && !x.isUpload,
       );
+      const uploadArray = iotaLogArray.filter(
+        x => x.fileId === iotaLogArray[j].fileId && x.isUpload,
+      );
+
+      let cellUpload = 'N/A';
       for (let i = 0; i < uploadArray.length; i += 1) {
-        const idPart = logsDb.find(x => x.id == uploadArray[i].id);
-        if (typeof idPart !== 'undefined') {
-          const pubSigKey = idPart.sig;
-          const ver = true; //  sig.verification(uploadArray[i], pubSigKey);
-          if (i === 0) {
-            if (ver) {
-              cellUpload = uploadArray[i].time.replace(',', '')
-                + pubSigKey;
-            } else {
-              cellUpload = uploadArray[i].time.replace(',', '');
-            }
-          } else if (ver) {
-            cellUpload = `${cellUpload
-            }\n ${
-              uploadArray[i].time.replace(',', '')
-            }${pubSigKey}`;
-          } else {
-            cellUpload = `${cellUpload}\n ${uploadArray[i].time.replace(',', '')}`;
-          }
+        if (i === 0) {
+          cellUpload = uploadArray[i].time.replace(',', '');
+        } else {
+          cellUpload = `${cellUpload}\n ${uploadArray[i].time.replace(',', '')}`;
         }
       }
       cell5.textContent = cellUpload;
 
       let cellDownload = 'N/A';
-      if (iotaLogArray[j].tag.substring(4, 6) === 'PU') {
-        cellDownload = 'N/A in public mode';
-      }
-      let cellDownloadSig = 'N/A';
-
-      // Shows downloads only for private downloads
-      // D = Download, PR = Private
-      const downloadArray = iotaLogArray.filter(
-        x => x.fileId === iotaLogArray[j].fileId && x.tag.substring(6, 7) === 'D' && x.tag.substring(4, 6) === 'PR',
-      );
       for (let i = 0; i < downloadArray.length; i += 1) {
-        const idPart = logsDb.find(x => x.id == downloadArray[i].id);
-        if (typeof idPart !== 'undefined') {
-          const pubSigKey = idPart.sig;
-          const ver = true; // sig.verification(downloadArray[i], pubSigKey);
-          if (i === 0) {
-            if (ver) {
-              cellDownload = downloadArray[i].time.replace(',', '')
-                + pubSigKey;
-              cellDownloadSig = pubSigKey;
-            } else {
-              cellDownload = downloadArray[i].time.replace(',', '');
-            }
-          } else if (ver) {
-            cellDownload = `${cellDownload
-            }\n ${
-              downloadArray[i].time.replace(',', '')
-            }${pubSigKey}`;
-            cellDownloadSig = `${cellDownloadSig}\n ${pubSigKey}`;
-          } else {
-            cellDownload = `${cellDownload}\n ${downloadArray[i].time.replace(',', '')}`;
-          }
+        if (i === 0) {
+          cellDownload = downloadArray[i].time.replace(',', '');
+        } else {
+          cellDownload = `${cellDownload}\n ${downloadArray[i].time.replace(',', '')}`;
         }
       }
       cell6.textContent = cellDownload;
@@ -129,6 +93,7 @@ function printLog(iotaLogArray, logsDb) {
 async function createListOfLogs(logsDb) {
   const iotaLogArray = [];
   const iota = new Iota();
+  const sig = new Signature();
   const logFlags = {};
   await Promise.all(
     logsDb.map(async (logObject) => {
@@ -137,8 +102,14 @@ async function createListOfLogs(logsDb) {
         const transactions = await iota.getTransactionByHash(logObject.fileId);
         await Promise.all(
           transactions.map(async (transaction) => {
-            const logObj = await iota.getMessage(transaction);
-            iotaLogArray.push(logObj);
+            let logObj = await iota.getMessage(transaction);
+            const publicKey = await sig.importPublicKey(logObj.publicHexKey);
+            const { signature } = logObj;
+            logObj = prepObjectForSignature(logObj);
+            const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
+            if (isVerified) {
+              iotaLogArray.push(logObj);
+            }
           }),
         );
       }
