@@ -134,7 +134,7 @@ async function createListOfLogs(logsDb) {
     logsDb.map(async (logObject) => {
       if (!logFlags[logObject.fileId]) {
         logFlags[logObject.fileId] = true;
-        const transactions = await iota.getTransaction(logObject.fileId);
+        const transactions = await iota.getTransactionByHash(logObject.fileId);
         await Promise.all(
           transactions.map(async (transaction) => {
             const logObj = await iota.getMessage(transaction);

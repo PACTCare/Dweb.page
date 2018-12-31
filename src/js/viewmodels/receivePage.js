@@ -6,6 +6,7 @@ import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import createLog from '../log/createLog';
+import db from '../search/searchDb';
 
 const GATEWAY = getGateway();
 let fakeProgress = 0;
@@ -48,7 +49,6 @@ function reset() {
   hideLoadProgress();
   window.history.replaceState(null, null, window.location.pathname);
 }
-
 
 function downloadFile(fileName, blob) {
   reset();
@@ -96,10 +96,17 @@ async function load() {
   const passwordInput = document.getElementById('passwordField').value.trim();
   let fileInput = document.getElementById('firstField').value.trim();
   if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && window.searchSelection.fileId !== 'na') {
-    // get also public key
-    console.log('inside load');
-    console.log(window.searchSelection.fileId);
     fileInput = window.searchSelection.fileId;
+    const subArray = await db.subscription.where('address').equals(window.searchSelection.address).toArray();
+    console.log(subArray);
+    // only add new addresses
+    if (subArray.length < 1) {
+      await db.subscription.add({
+        address: window.searchSelection.address,
+        daysLoaded: 0,
+        blocked: false,
+      });
+    }
   }
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!

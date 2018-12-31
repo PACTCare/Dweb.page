@@ -1,4 +1,3 @@
-
 import MiniSearch from 'minisearch';
 import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
@@ -7,16 +6,10 @@ import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
 import db from './searchDb';
 import Signature from '../crypto/Signature';
+import daysToLoadNr from './dayToLoadNr';
 
-const STORAGEKEY = 'loadedMetadataNumber';
-
-// first search metadata was stored at day zero
-// but the first few days was all about testing
-const startDay = 0;
-
-// the bigger maxDaysLoaded the more search data is loaded parallel
-// storage should get too big offer time
-const maxDaysToLoad = 30;
+// Max length Array
+const maxArrayLength = 1000;
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -49,31 +42,42 @@ async function updateDatabase(databaseWorks) {
 
   // returns the highest number!
   const mostRecentDayNumber = createDayNumber();
-  let dayNumber = mostRecentDayNumber;
   const awaitTransactions = [];
-  let daysLoaded = window.localStorage.getItem(STORAGEKEY);
+  let firstTime = false;
+  let recentDaysLoaded = 0;
+  let maxRecentDayLoad = 1;
 
-  // first time user
-  if (daysLoaded === null) {
-    if (mostRecentDayNumber + startDay > maxDaysToLoad) {
-      daysLoaded = mostRecentDayNumber - maxDaysToLoad; // load the max number of days
-    } else {
-      daysLoaded = startDay;
-    }
-  } else if (mostRecentDayNumber - daysLoaded > maxDaysToLoad) {
-    // means the last time the page was open is quite some time ago
-    daysLoaded = mostRecentDayNumber - maxDaysToLoad;
+  const subscribeArray = await db.subscription.toArray();
+  if (subscribeArray.length === 0) {
+    firstTime = true;
+    maxRecentDayLoad = 10;
   }
 
-  while (dayNumber >= daysLoaded) {
-    const dayTag = iota.createTimeTag(dayNumber);
-    console.log(`DWEB${dayTag}`);
-    awaitTransactions.push(iota.getTransactionByTag(`DWEB${dayTag}`));
+  let dayNumber = mostRecentDayNumber;
+  if (!firstTime) {
+    for (let i = 0; i < subscribeArray.length; i += 1) {
+      const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
+      while (dayNumber >= daysLoaded) {
+        const tag = iota.createTimeTag(dayNumber);
+        awaitTransactions.push(iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag));
+        recentDaysLoaded += 1;
+        dayNumber -= 1;
+      }
+    }
+  }
+
+  dayNumber = mostRecentDayNumber;
+  recentDaysLoaded = 0;
+  while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
+    const tag = iota.createTimeTag(dayNumber);
+    awaitTransactions.push(iota.getTransactionByTag(tag));
+    recentDaysLoaded += 1;
     dayNumber -= 1;
   }
-  const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
-  const transactions = [].concat(...transactionsArrays);
 
+  const transactionsArrays = await Promise.all(awaitTransactions);
+  let transactions = [].concat(...transactionsArrays);
+  transactions = transactions.slice(0, maxArrayLength);
   transactions.map(async (transaction) => {
     const metaObject = await iota.getMessage(transaction);
     if (!logFlags[metaObject.fileId]) {
@@ -103,7 +107,8 @@ async function updateDatabase(databaseWorks) {
     }
   });
 
-  window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
+  // update most recent day for all subscribers
+  await db.subscription.where('daysLoaded').aboveOrEqual(0).modify({ daysLoaded: mostRecentDayNumber });
 }
 
 async function startSearch() {

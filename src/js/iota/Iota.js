@@ -17,7 +17,7 @@ export default class Iota {
   }
 
   createTimeTag(number) {
-    return this.iotaNode.utils.toTrytes(number.toString());
+    return `DWEB${this.iotaNode.utils.toTrytes(number.toString())}`;
   }
 
   send(tryteAddress, tryteMessage, tag = 'DWEBPAGETESTE') {
@@ -49,7 +49,7 @@ export default class Iota {
       powaas(this.iotaNode, 'https://api.powsrv.io:443/');
     }
     const iotaJson = metadata;
-    const tag = `DWEB${this.createTimeTag(createDayNumber())}`;
+    const tag = this.createTimeTag(createDayNumber());
     const tryteAddress = metadata.publicTryteKey.slice(0, 81);
     iotaJson.publicTryteKey = metadata.publicTryteKey.slice(81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(iotaJson));
@@ -60,40 +60,6 @@ export default class Iota {
     const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
     this.send(tryteAddress, tryteMessage);
-  }
-
-  /**
-   *
-   * @param {string} filename
-   */
-  filenameToTag(filename) {
-    const filenameWithoutExtension = filename.split('.')[0].toUpperCase();
-    const tryteFilenname = this.iotaNode.utils.toTrytes(filenameWithoutExtension);
-    const tag = tryteFilenname.substring(0, this.tagLength);
-    return tag;
-  }
-
-  /**
-   *
-   * @param {string} hash
-   */
-  getTransaction(hash) {
-    const loggingAddress = this.iotaNode.utils.toTrytes(hash).substring(0, 81);
-    const searchVarsAddress = {
-      addresses: [loggingAddress],
-    };
-    return new Promise((resolve, reject) => {
-      this.iotaNode.api.findTransactions(searchVarsAddress, (
-        error,
-        transactions,
-      ) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(transactions);
-        }
-      });
-    });
   }
 
   /**
@@ -114,6 +80,17 @@ export default class Iota {
     return Buffer.from(this.iotaNode.utils.fromTrytes(`KB${tryteKey}`), 'base64').toString('hex');
   }
 
+  getTransaction(searchVarsAddress) {
+    return new Promise((resolve, reject) => {
+      this.iotaNode.api.findTransactions(searchVarsAddress, (error, transactions) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(transactions);
+        }
+      });
+    });
+  }
 
   /**
    * Gets transactions on IOTA by name
@@ -123,18 +100,32 @@ export default class Iota {
     const searchVarsAddress = {
       tags: [tag], // 'BILDPNG99999999999999999999'
     };
-    return new Promise((resolve, reject) => {
-      this.iotaNode.api.findTransactions(searchVarsAddress, (
-        error,
-        transactions,
-      ) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(transactions);
-        }
-      });
-    });
+    return this.getTransaction(searchVarsAddress);
+  }
+
+  /**
+  *
+  * @param {string} hash
+  */
+  getTransactionByHash(hash) {
+    const loggingAddress = this.iotaNode.utils.toTrytes(hash).substring(0, 81);
+    const searchVarsAddress = {
+      addresses: [loggingAddress],
+    };
+    return this.getTransaction(searchVarsAddress);
+  }
+
+  /**
+ * Get transaction by address
+ * @param {string} tryte Address
+ * @param {string} tag
+ */
+  getTransactionByAddressAndTag(address, tag) {
+    const searchVarsAddress = {
+      addresses: [address],
+      tags: [tag],
+    };
+    return this.getTransaction(searchVarsAddress);
   }
 
   /**
