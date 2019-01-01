@@ -2,7 +2,7 @@ import IOTA from 'iota.lib.js';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import powaas from './powaas';
 
-// todo: random node selection needs to replace by
+// TODO: random node selection needs to replace by
 // something detecting the health of iota nodes
 const NODES = ['https://pow3.iota.community:443',
   'https://nodes.thetangle.org:443'];
@@ -20,7 +20,7 @@ export default class Iota {
     return `DWEB${this.iotaNode.utils.toTrytes(number.toString())}`;
   }
 
-  send(tryteAddress, tryteMessage, tag = 'DWEBPAGETESTE') {
+  send(tryteAddress, tryteMessage, tag) {
     const transfers = [
       {
         value: 0,
@@ -59,7 +59,8 @@ export default class Iota {
   sendLog(logEntry) {
     const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
-    this.send(tryteAddress, tryteMessage);
+    const tag = `P${this.createTimeTag(createDayNumber())}`;
+    this.send(tryteAddress, tryteMessage, tag);
   }
 
   /**
@@ -111,6 +112,20 @@ export default class Iota {
     const loggingAddress = this.iotaNode.utils.toTrytes(hash).substring(0, 81);
     const searchVarsAddress = {
       addresses: [loggingAddress],
+    };
+    return this.getTransaction(searchVarsAddress);
+  }
+
+  /**
+*
+* @param {string} publicHexKey
+*/
+  getTransactionByPublicKey(publicHexKey) {
+    const base64 = Buffer.from(publicHexKey, 'hex').toString('base64');
+    const kbAddress = this.iotaNode.utils.toTrytes(base64).substring(0, 83);
+    const address = kbAddress.substr(2);
+    const searchVarsAddress = {
+      addresses: [address],
     };
     return this.getTransaction(searchVarsAddress);
   }

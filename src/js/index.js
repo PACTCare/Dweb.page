@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
-  faVideo, faMusic, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
+  faArrowDown, faArrowUp, faVideo, faMusic, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
   faExclamationCircle, faBars, faBan,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -39,7 +39,8 @@ import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
 
-library.add(faVideo, faMusic, faFile, faFolderOpen, faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
+library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
+  faMobileAlt, faCopy, faFileUpload, faShieldAlt,
   faPlayCircle, faExclamationCircle, faBars, faBan,
   faWhatsapp, faTelegramPlane, faImage);
 dom.watch();

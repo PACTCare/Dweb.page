@@ -61,6 +61,7 @@ async function updateDatabase(databaseWorks) {
       const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
       while (dayNumber >= daysLoaded) {
         const tag = iota.createTimeTag(dayNumber);
+        console.log(tag);
         awaitTransactions.push(iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag));
         recentDaysLoaded += 1;
         dayNumber -= 1;

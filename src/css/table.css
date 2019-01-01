@@ -240,6 +240,14 @@ td {
 .table-hover > tbody > tr:hover > th {
   background-color: rgba(0, 0, 0, 0.12);
 }
+
+#sortName, #modeName, #uploadName, #downloadName{
+  cursor: pointer;
+  min-width: 6rem;
+}
+th > span {
+  font-size: 10px;
+}
 @media screen and (max-width: 768px) {
   .table-responsive-vertical > .table {
     margin-bottom: 0;

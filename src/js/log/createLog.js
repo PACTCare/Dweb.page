@@ -14,7 +14,9 @@ export default async function createLog(fileId, filename, isUpload) {
   const sig = new Signature();
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
-  await db.log.add({ fileId, filename, folder: 'none' });
+  await db.log.add({
+    fileId, filename, time, isUpload, isPrivate: true, folder: 'none',
+  });
   const logEntry = {
     fileId,
     time,
@@ -22,7 +24,6 @@ export default async function createLog(fileId, filename, isUpload) {
     publicHexKey,
   };
   const signature = await sig.sign(keys.privateKey, JSON.stringify(logEntry));
-  // https://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string/38858127
   logEntry.signature = btoa(String.fromCharCode.apply(null, new Uint8Array(signature)));
   iota.sendLog(logEntry);
 }

@@ -94,7 +94,7 @@
 
     <div id="afterUpload" class="textBox">
       <div id="askForTags">
-        <h2 id='tagHeadline'>Help others to discover your upload!</h2>
+        <h2 id='tagHeadline'>Add Tags</h2>
         <form autocomplete="off">
           <div id="tagsDiv" class="tags-input" data-name="tags-input"></div>
           <div id="messagesReceivePage"></div>
@@ -225,11 +225,11 @@
           <thead>
             <tr>
               <th></th>
-              <th>Name</th>
-              <th style="display: none;">File ID</th>
-              <th>Mode</th>
-              <th>Upload</th>
-              <th>Download</th>
+              <th id='sortName'>Name <span id='sortNameIcon'> </span></th>
+              <th style="display: none;">File ID </th>
+              <th id='modeName'>Mode <span id='sortModeIcon'> </span></th>
+              <th id='uploadName'>Upload <span id='sortUploadIcon'> </span></th>
+              <th id='downloadName'>Download <span id='sortDownloadIcon'> </span></th>
             </tr>
           </thead>
           <tbody id='tablebody'>
@@ -244,7 +244,7 @@
         <div class="loading-dot"></div>
       </div>
       <div id="historyButtons">
-        <button id="clearHistory" class="boxButton">Clear Cache</button>
+        <button id="clearHistory" class="boxButton">Clear Files</button>
         <button id="csvDownload" class="boxButton" onclick="exportTableToCSV('FileTransfer.csv')">Export CSV</button>
       </div>
     </div>

@@ -6,7 +6,7 @@ import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import createLog from '../log/createLog';
-import db from '../search/searchDb';
+import searchDb from '../search/searchDb';
 
 const GATEWAY = getGateway();
 let fakeProgress = 0;
@@ -97,11 +97,12 @@ async function load() {
   let fileInput = document.getElementById('firstField').value.trim();
   if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && window.searchSelection.fileId !== 'na') {
     fileInput = window.searchSelection.fileId;
-    const subArray = await db.subscription.where('address').equals(window.searchSelection.address).toArray();
+    // TODO: remove subscriber if there are too many
+    const subArray = await searchDb.subscription.where('address').equals(window.searchSelection.address).toArray();
     console.log(subArray);
     // only add new addresses
     if (subArray.length < 1) {
-      await db.subscription.add({
+      await searchDb.subscription.add({
         address: window.searchSelection.address,
         daysLoaded: 0,
         blocked: false,
@@ -177,6 +178,7 @@ async function load() {
     oReq.onprogress = function onprogress(e) {
       // progress starts only when file is loaded via IPFS
       // for search it take a load of time to actually start the loading
+      // TODO: availability meta data
       if (typeof timeOutPropagation !== 'undefined') {
         clearTimeout(timeOutPropagation);
       }
