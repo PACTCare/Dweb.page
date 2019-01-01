@@ -5,7 +5,7 @@ db.version(1).stores({
   metadata: 'fileId',
 });
 db.version(1).stores({
-  subscription: 'address, daysLoaded',
+  subscription: 'address, blocked, daysLoaded',
 });
 
 export default db;

@@ -58,7 +58,7 @@ body,
   border-radius: 0.4rem;
 }
 .autocomplete-items div {
-  word-break: break-all;
+  word-break: break-word;
   padding: 7px 15px;
   cursor: pointer;
   text-align: left;

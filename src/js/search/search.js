@@ -4,10 +4,11 @@ import FileType from '../services/FileType';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
-import db from './searchDb';
+import searchDb from './searchDb';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
+import prepSearchText from './prepSearchText';
 
 // Max length Array
 const maxArrayLength = 1000;
@@ -49,7 +50,8 @@ async function updateDatabase(databaseWorks) {
   let recentDaysLoaded = 0;
   let maxRecentDayLoad = 1;
 
-  const subscribeArray = await db.subscription.toArray();
+  // Don't load block subscriptions
+  const subscribeArray = await searchDb.subscription.where('blocked').equals(0).toArray();
   if (subscribeArray.length === 0) {
     firstTime = true;
     maxRecentDayLoad = 10;
@@ -93,9 +95,9 @@ async function updateDatabase(databaseWorks) {
       metaObject.address = address;
       if (isVerified) {
         if (databaseWorks) {
-          const metadata = await db.metadata.get({ fileId: metaObject.fileId });
+          const metadata = await searchDb.metadata.get({ fileId: metaObject.fileId });
           if (typeof metadata === 'undefined') {
-            await db.metadata.add(metaObject);
+            await searchDb.metadata.add(metaObject);
             addMetaData(metaObject);
           }
         } else {
@@ -106,12 +108,12 @@ async function updateDatabase(databaseWorks) {
   });
 
   // update most recent day for all subscribers
-  await db.subscription.where('daysLoaded').aboveOrEqual(0).modify({ daysLoaded: mostRecentDayNumber });
+  await searchDb.subscription.where('daysLoaded').aboveOrEqual(0).modify({ daysLoaded: mostRecentDayNumber });
 }
 
 async function startSearch() {
   try {
-    window.metadata = await db.metadata.toArray();
+    window.metadata = await searchDb.metadata.toArray();
     window.miniSearch.addAll(window.metadata);
     updateDatabase(true);
   } catch (err) {
@@ -120,13 +122,8 @@ async function startSearch() {
   }
 }
 
-function capFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 function autocomplete(inp) {
   let currentFocus;
-
   function removeActive(x) {
     for (let i = 0; i < x.length; i += 1) {
       x[i].classList.remove('autocomplete-active');
@@ -196,14 +193,36 @@ function autocomplete(inp) {
           window.searchSelection = searchItems[i];
         }
         maxAddedWordCount += 1;
+
+        const timeArray = searchItems[i].time.split(' ');
+        const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
-        b.innerHTML = `<span style='color:#db3e4d'>[${searchItems[i].fileType}]</span> <strong>${capFirstLetter(searchItems[i].fileName)}</strong> <span style='font-size: 12px;'>${searchItems[i].time}<br>${searchItems[i].fileId}</span>`;
-        b.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
-        b.addEventListener('click', function valueToInput() {
+        const span = document.createElement('SPAN');
+        const icon = FileType.returnFileIcon(searchItems[i].fileType);
+        span.innerHTML = `<strong>${icon} ${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
+        span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
+        span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
+        span.addEventListener('click', function valueToInput() {
           inp.value = this.getElementsByTagName('input')[0].value;
           closeAllLists();
           document.getElementById('searchload').click();
         });
+        b.appendChild(span);
+        const spanTwo = document.createElement('SPAN');
+        spanTwo.innerHTML = '<i class="fas fa-ban"></i>';
+        spanTwo.style.cssFloat = 'right';
+        spanTwo.style.color = '#db3e4d';
+        const { address } = searchItems[i];
+        // eslint-disable-next-line no-loop-func
+        spanTwo.addEventListener('click', async () => {
+          console.log('ban click');
+          // TODO: entries need to be removed from metadata as well as don't load additional meta from this subscriber
+          // window.metadata
+          // window.miniSearch
+          await searchDb.subscription.where('address').equals(address).modify({ blocked: 1 }); // 1 = true
+          await searchDb.metadata.where('address').equals(address).delete();
+        });
+        b.appendChild(spanTwo);
         a.appendChild(b);
       }
     }

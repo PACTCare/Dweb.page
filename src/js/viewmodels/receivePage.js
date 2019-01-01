@@ -14,7 +14,6 @@ let progressId;
 let timeOutPropagation;
 let isSearch = false;
 
-
 function showLoadProgress() {
   if (isSearch) {
     document.getElementById('loadProgressSearch').style.display = 'block';
@@ -73,7 +72,7 @@ function propagationError() {
 
 function propagationProgress() {
   if (fakeProgress >= 45) {
-    // todo propagation error
+    // TODO: propagation error
     // if this happens often let people know this file no longer exists
     clearInterval(progressId);
     timeOutPropagation = setTimeout(propagationError, 10000);
@@ -104,8 +103,8 @@ async function load() {
     if (subArray.length < 1) {
       await searchDb.subscription.add({
         address: window.searchSelection.address,
+        blocked: 0, // 0 = false, 1 = true
         daysLoaded: 0,
-        blocked: false,
       });
     }
   }

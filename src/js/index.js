@@ -183,7 +183,8 @@ function tagLayout(fileId) {
     if (describtion === 'Not yet available' && tagsString.length > 0) {
       describtion = tagsString.trim();
     } else {
-      describtion = `${tagsString.trim()} ${describtion}`;
+      // && marks the beginning of the describtion/end of tags
+      describtion = `${tagsString.trim()}&&${describtion}`;
     }
     createMetadata(fileId, filename, GATEWAY, describtion);
   });
