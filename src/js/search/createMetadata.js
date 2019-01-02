@@ -13,8 +13,8 @@ import db from '../log/logDb';
  */
 export default async function createMetadata(fileId, filename, gateway, description) {
   const iota = new Iota();
+  await iota.nodeInitialization();
   const time = new Date().toUTCString();
-
   const sig = new Signature();
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);

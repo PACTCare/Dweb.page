@@ -26,9 +26,15 @@ body,
 .lead{
   font-weight: 600;
 }
-.clearfix, .textBox, p, table{
+.clearfix, .textBox, p, table {
   font-family: Roboto,sans-serif;
 }
+#pubKey, #publicTryteKey{
+  font-size: 12px;
+  word-break: break-all;
+  margin-top: 0.5rem;
+}
+
 .clearfix{
   max-width: 480px;
   width: 100%;

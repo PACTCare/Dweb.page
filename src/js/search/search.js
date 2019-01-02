@@ -40,6 +40,7 @@ function fileTypePreselection(val) {
  */
 async function updateDatabase(databaseWorks) {
   const iota = new Iota();
+  await iota.nodeInitialization();
   const sig = new Signature();
   const logFlags = {};
 

@@ -1,19 +1,15 @@
-import IOTA from 'iota.lib.js';
 import createDayNumber from '../helperFunctions/createDayNumber';
-import powaas from './powaas';
-
-// TODO: random node selection needs to replace by
-// something detecting the health of iota nodes
-const NODES = ['https://pow3.iota.community:443',
-  'https://nodes.thetangle.org:443'];
+import getHealthyNode from './getHealthyNode';
 
 export default class Iota {
   constructor() {
-    this.node = NODES[Math.floor(Math.random() * NODES.length)];
-    this.iotaNode = new IOTA({ provider: this.node });
     this.tagLength = 27;
     this.depth = 3;
     this.minWeight = 14;
+  }
+
+  async nodeInitialization() {
+    this.iotaNode = await getHealthyNode();
   }
 
   createTimeTag(number) {
@@ -45,9 +41,6 @@ export default class Iota {
    * @param {object} metadata
    */
   sendMetadata(metadata) {
-    if (!this.node.includes('thetangle.org')) {
-      powaas(this.iotaNode, 'https://api.powsrv.io:443/');
-    }
     const iotaJson = metadata;
     const tag = this.createTimeTag(createDayNumber());
     const tryteAddress = metadata.publicTryteKey.slice(0, 81);
@@ -58,6 +51,7 @@ export default class Iota {
 
   sendLog(logEntry) {
     const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
+    console.log(tryteAddress);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
     const tag = `P${this.createTimeTag(createDayNumber())}`;
     this.send(tryteAddress, tryteMessage, tag);

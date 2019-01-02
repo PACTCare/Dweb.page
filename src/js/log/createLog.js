@@ -10,6 +10,7 @@ import db from './logDb';
  */
 export default async function createLog(fileId, filename, isUpload) {
   const iota = new Iota();
+  await iota.nodeInitialization();
   const time = new Date().toUTCString();
   const sig = new Signature();
   const keys = await sig.getKeys();

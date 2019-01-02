@@ -8,6 +8,8 @@ import db from '../log/logDb';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';
 
+const sig = new Signature();
+const iota = new Iota();
 const iotaFlags = {};
 
 function hideColumns(col1) {
@@ -138,12 +140,19 @@ document.getElementById('clearHistory').addEventListener('click', async () => {
 });
 
 document.getElementById('toFile').addEventListener('click', async () => {
+  await iota.nodeInitialization();
+  const keys = await sig.getKeys();
+  const publicHexKey = await sig.exportPublicKey(keys.publicKey);
+  const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
+  document.getElementById('publicTryteKey').textContent = publicTryteKey;
+  document.getElementById('publicTryteKey').setAttribute('href', `https://thetangle.org/address/${publicTryteKey.slice(0, 81)}`);
   try {
     const logsDb = await db.log.toArray();
     if (logsDb == null) {
       document.getElementById('csvDownload').style.visibility = 'hidden';
       document.getElementById('clearHistory').style.visibility = 'hidden';
     } else {
+      console.log(logsDb);
       document.getElementById('loader').style.visibility = 'visible';
       loadInfoFromTangle(logsDb);
     }

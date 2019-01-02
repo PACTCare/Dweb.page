@@ -35,7 +35,7 @@ export default class Signature {
   /**
    * Export public as hex string
    * @param {object} publicKey
-   * @return {string} publickey as hex string
+   * @returns {string} publickey as hex string
    */
   async exportPublicKey(publicKey) {
     const keydata = await window.crypto.subtle.exportKey(
@@ -48,7 +48,7 @@ export default class Signature {
   /**
    * Import public compressed key
    * @param {string} key as hex string
-   * @return {object} public key
+   * @returns {object} public key
    */
   importPublicKey(key) {
     const keydata = SigCompression.ECPointDecompress(key);
