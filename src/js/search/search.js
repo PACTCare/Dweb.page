@@ -207,6 +207,7 @@ function autocomplete(inp) {
         const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
         const span = document.createElement('SPAN');
+        console.log(searchItems[i].description);
         span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
         span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
         span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;

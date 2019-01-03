@@ -37,7 +37,6 @@ function hideLoadProgress() {
  */
 function output(msg) {
   if (isSearch) {
-    console.log(msg);
     document.getElementById('messagesSearch').textContent = msg;
   } else {
     document.getElementById('messagesReceivePage').textContent = msg;
@@ -114,7 +113,6 @@ async function load() {
     fileInput = window.searchSelection.fileId;
     // TODO: remove subscriber if there are too many
     const count = await searchDb.subscription.where('address').equals(window.searchSelection.address).count();
-    console.log(count);
     // only add new addresses
     if (count < 1) {
       await searchDb.subscription.add({

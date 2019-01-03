@@ -2,15 +2,18 @@
 // storage should get too big offer time
 const maxDaysToLoad = 20;
 
+/**
+ * Returns number of the oldest day, which needs to be loaded
+ * @param {number} daysLoaded
+ * @param {number} mostRecentDayNumber
+ * @returns {number} oldest day number
+ */
 export default function (daysLoaded, mostRecentDayNumber) {
-  let daysLoadedPrivate = daysLoaded;
-  if (daysLoadedPrivate === 0) {
-    if (mostRecentDayNumber > maxDaysToLoad) {
-      daysLoadedPrivate = mostRecentDayNumber - maxDaysToLoad; // load the max number of days
-    }
-  } else if (mostRecentDayNumber - daysLoaded > maxDaysToLoad) {
-    // means the last time the page was open is quite some time ago
-    daysLoadedPrivate = mostRecentDayNumber - maxDaysToLoad;
+  if (mostRecentDayNumber < daysLoaded) {
+    return undefined;
   }
-  return daysLoadedPrivate;
+  if (mostRecentDayNumber - daysLoaded > maxDaysToLoad) {
+    return mostRecentDayNumber - maxDaysToLoad;
+  }
+  return daysLoaded;
 }
