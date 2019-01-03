@@ -75,16 +75,10 @@ function printLog(logsDb) {
       cell6.setAttribute('data-title', 'Download: ');
 
       const linkText = logsDb[j].filename;
-      let link = `${window.location.href
-      }?id=${
-        logsDb[j].fileId
-      }`;
-      // TODO: implement link system that works with files that don't support direct link
-      //
+      let link = `${window.location.href}?id=${logsDb[j].fileId}`;
       if (!logsDb[j].isPrivate) {
-        link = `${link.split('/ipfs/')[0]}/ipfs/${logsDb[j].fileId}`;
+        link = `${window.location.href}?id=${logsDb[j].fileId}&password=np&name=${logsDb[j].filename}`;
       }
-
       const [, , fileTypePart] = linkText.match(/(.*)\.(.*)/);
       cell1.innerHTML = FileType.returnFileIcon(fileTypePart);
       cell1.style.fontSize = '18px';

@@ -131,11 +131,12 @@ function currentPage(inputId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialization
   indexInit();
   const urlParameter = getURLParameter('par');
   const fileIdPar = getURLParameter('id');
   const passwordPar = getURLParameter('password');
+  console.log(passwordPar);
+  const namePar = getURLParameter('name');
   if (urlParameter === 'terms' || urlParameter === 'privacy') {
     document.getElementById('dialog-ovelay').style.display = 'none';
     menuAnimation('aboutPage');
@@ -150,6 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage('');
     linkInit();
     document.getElementById('firstField').value = fileIdPar;
+    if (typeof namePar !== 'undefined') {
+      const [, fileNamePart, fileTypePart] = namePar.match(/(.*)\.(.*)/);
+      window.searchSelection = { fileName: fileNamePart, fileType: fileTypePart };
+    }
     if (typeof passwordPar !== 'undefined') {
       document.getElementById('passwordField').value = passwordPar;
       document.getElementById('passwordField').style.display = 'none';

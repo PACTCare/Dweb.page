@@ -127,7 +127,7 @@ async function load() {
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!
     output('You have entered an invalid filename!');
-  } else if (passwordInput.length !== 43 && passwordInput !== '' && passwordInput !== 'nopass') {
+  } else if (passwordInput.length !== 43 && passwordInput !== '' && passwordInput !== 'np') {
     output('You have entered an invalid password!');
   } else if (!/^[a-zA-Z0-9_.-]*$/.test(passwordInput)) {
     output('You have entered an invalid password!');
@@ -145,7 +145,7 @@ async function load() {
       fakeProgress = 95;
       progressId = setInterval(iotaDecryptionProgress, 100);
       // encrypted
-      if (passwordInput !== '' && passwordInput !== 'nopass') {
+      if (passwordInput !== '' && passwordInput !== 'np') {
         const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
         const fileName = new TextDecoder('utf-8').decode(
           arrayBuffer.slice(4, fileNameLength + 4),
@@ -177,8 +177,6 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        // direct link for public content without search => get info from tangle
-
         const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser

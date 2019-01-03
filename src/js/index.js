@@ -132,7 +132,7 @@ function unencryptedLayout(fileId) {
   document.getElementById('passwordTab').style.display = 'none';
   let link = `${
     window.location.href
-  }?id=${fileId}&password=nopass`;
+  }?id=${fileId}&password=np&name=${filename}`;
   if (checkBrowserDirectOpen(filename)) {
     link = GATEWAY + fileId;
   }
