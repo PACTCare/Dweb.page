@@ -1,6 +1,10 @@
 import createDayNumber from '../helperFunctions/createDayNumber';
 import getHealthyNode from './getHealthyNode';
 
+/**
+ * Class contains all IOTA related functions
+ * nodeInitialization is always needed!
+ */
 export default class Iota {
   constructor() {
     this.tagLength = 27;
@@ -26,12 +30,15 @@ export default class Iota {
       },
     ];
     return new Promise((resolve, reject) => {
-      this.iotaNode.api.sendTransfer(tryteAddress, this.depth, this.minWeight, transfers, (err, res) => {
-        if (!err) {
-          return resolve(res);
-        }
-        return reject(err);
-      });
+      this.iotaNode.api.sendTransfer(tryteAddress,
+        this.depth,
+        this.minWeight,
+        transfers, (err, res) => {
+          if (!err) {
+            return resolve(res);
+          }
+          return reject(err);
+        });
     });
   }
 
@@ -49,11 +56,18 @@ export default class Iota {
     this.send(tryteAddress, tryteMessage, tag); // add tag
   }
 
-  sendLog(logEntry) {
+  /**
+   * Creates a log object
+   * @param {object} logEntry
+   * @param {boolean} isUpload
+   */
+  sendLog(logEntry, isUpload) {
     const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
-    console.log(tryteAddress);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
-    const tag = `P${this.createTimeTag(createDayNumber())}`;
+    let tag = `PD${this.createTimeTag(createDayNumber())}`; // P = Private, D = Download
+    if (isUpload) {
+      tag = `PU${this.createTimeTag(createDayNumber())}`; // P = Private, U = Upload
+    }
     this.send(tryteAddress, tryteMessage, tag);
   }
 
@@ -73,6 +87,14 @@ export default class Iota {
    */
   tryteKeyToHex(tryteKey) {
     return Buffer.from(this.iotaNode.utils.fromTrytes(`KB${tryteKey}`), 'base64').toString('hex');
+  }
+
+  /**
+   * Converts an IPFS hash into an IOTA address
+   * @param {string} hash
+   */
+  convertHashToAddress(hash) {
+    return this.iotaNode.utils.toTrytes(hash).substring(0, 81);
   }
 
   getTransaction(searchVarsAddress) {
@@ -103,7 +125,7 @@ export default class Iota {
   * @param {string} hash
   */
   getTransactionByHash(hash) {
-    const loggingAddress = this.iotaNode.utils.toTrytes(hash).substring(0, 81);
+    const loggingAddress = this.convertHashToAddress(hash);
     const searchVarsAddress = {
       addresses: [loggingAddress],
     };

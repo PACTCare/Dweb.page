@@ -26,5 +26,5 @@ export default async function createLog(fileId, filename, isUpload) {
   };
   const signature = await sig.sign(keys.privateKey, JSON.stringify(logEntry));
   logEntry.signature = btoa(String.fromCharCode.apply(null, new Uint8Array(signature)));
-  iota.sendLog(logEntry);
+  iota.sendLog(logEntry, isUpload);
 }

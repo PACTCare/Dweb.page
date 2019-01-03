@@ -97,10 +97,10 @@ async function load() {
   if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && window.searchSelection.fileId !== 'na') {
     fileInput = window.searchSelection.fileId;
     // TODO: remove subscriber if there are too many
-    const subArray = await searchDb.subscription.where('address').equals(window.searchSelection.address).toArray();
-    console.log(subArray);
+    const count = await searchDb.subscription.where('address').equals(window.searchSelection.address).count();
+    console.log(count);
     // only add new addresses
-    if (subArray.length < 1) {
+    if (count < 1) {
       await searchDb.subscription.add({
         address: window.searchSelection.address,
         blocked: 0, // 0 = false, 1 = true

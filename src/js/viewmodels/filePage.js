@@ -7,10 +7,16 @@ import '../polyfill/remove';
 import db from '../log/logDb';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';
+import getTangleExplorer from '../iota/getTangleExplorer';
+import createDayNumber from '../helperFunctions/createDayNumber';
+import daysToLoadNr from '../search/dayToLoadNr';
 
 const sig = new Signature();
 const iota = new Iota();
 const iotaFlags = {};
+let publicLink;
+let tangleExplorerAddress;
+const STORAGEKEY = 'loadedDayNumber';
 
 function hideColumns(col1) {
   const tbl = document.getElementById('table');
@@ -24,12 +30,34 @@ function hideColumns(col1) {
   }
 }
 
-function printLog(iotaLogArray, logsDb) {
+function upDownloadBox(contentArray) {
+  let cellContent = '--';
+  for (let i = 0; i < contentArray.length; i += 1) {
+    const timeText = contentArray[i].time.replace(',', '').replace(' GMT', '').slice(0, -3).substr(4);
+    if (i === 0) {
+      if (contentArray[i].isPrivate) {
+        cellContent = `<a target="_blank" href=${tangleExplorerAddress
+          + iota.convertHashToAddress(contentArray[i].fileId)}>${timeText}</a>`;
+      } else {
+        cellContent = `<a target="_blank" href=${publicLink}>${timeText}</a>`;
+      }
+    } else if (contentArray[i].isPrivate) {
+      cellContent = `${cellContent}\n <a target="_blank" href=${tangleExplorerAddress
+        + iota.convertHashToAddress(contentArray[i].fileId)}>${timeText}</a>`;
+    } else {
+      cellContent = `${cellContent}\n <a target="_blank" href=${publicLink}>${timeText}</a>`;
+    }
+  }
+  return cellContent;
+}
+
+function printLog(logsDb) {
   logsDb.sort(compareTime);
   document.getElementById('csvDownload').style.visibility = 'visible';
   document.getElementById('clearHistory').style.visibility = 'visible';
   for (let j = 0; j < logsDb.length; j += 1) {
-    if (!iotaFlags[logsDb[j].fileId]) {
+    // Downloads don't have a name
+    if (!iotaFlags[logsDb[j].fileId] && logsDb[j].isUpload) {
       iotaFlags[logsDb[j].fileId] = true;
       const table = document.getElementById('table');
       const row = table.insertRow(-1);
@@ -67,32 +95,14 @@ function printLog(iotaLogArray, logsDb) {
         cell4.textContent = 'Public';
       }
 
-      // const downloadArray = logsDb.filter(
-      //   x => x.fileId === logsDb[j].fileId && !x.isUpload,
-      // );
+      const downloadArray = logsDb.filter(
+        x => x.fileId === logsDb[j].fileId && !x.isUpload,
+      );
       const uploadArray = logsDb.filter(
         x => x.fileId === logsDb[j].fileId && x.isUpload,
       );
-
-      let cellUpload = '--';
-      for (let i = 0; i < uploadArray.length; i += 1) {
-        if (i === 0) {
-          cellUpload = uploadArray[i].time.replace(',', '');
-        } else {
-          cellUpload = `${cellUpload}\n ${uploadArray[i].time.replace(',', '')}`;
-        }
-      }
-      cell5.textContent = cellUpload;
-
-      const cellDownload = '--';
-      // for (let i = 0; i < downloadArray.length; i += 1) {
-      //   if (i === 0) {
-      //     cellDownload = downloadArray[i].time.replace(',', '');
-      //   } else {
-      //     cellDownload = `${cellDownload}\n ${downloadArray[i].time.replace(',', '')}`;
-      //   }
-      // }
-      cell6.textContent = cellDownload;
+      cell5.innerHTML = upDownloadBox(uploadArray);
+      cell6.innerHTML = upDownloadBox(downloadArray);
     }
   }
   hideColumns(2);
@@ -102,35 +112,61 @@ function printLog(iotaLogArray, logsDb) {
 }
 
 async function loadInfoFromTangle(logsDb) {
-  const iotaLogArray = [];
-  // const iota = new Iota();
-  // const sig = new Signature();
-  // const logFlags = {};
+  const logFlags = {};
+  const awaitTransactions = [];
+  const mostRecentDayNumber = createDayNumber();
+  let dayNumber = mostRecentDayNumber;
+  let daysLoaded = window.localStorage.getItem(STORAGEKEY);
+  daysLoaded = daysToLoadNr(daysLoaded);
+  // TODO: downloads of others don't show up and two downloads at the exact same time
+  for (let i = 0; i < logsDb.length; i += 1) {
+    const logObject = logsDb[i];
+    if (!logFlags[logObject.fileId]) {
+      logFlags[logObject.fileId] = true;
+      if (logObject.isPrivate) {
+        const address = iota.convertHashToAddress(logObject.fileId);
+        while (dayNumber >= daysLoaded) {
+          const tag = `PD${iota.createTimeTag(dayNumber)}`; // PD = Private Download
+          awaitTransactions.push(iota.getTransactionByAddressAndTag(address, tag));
+          dayNumber -= 1;
+        }
+      }
+    }
+  }
 
-  // TODO: only new downloads need to be loaded from IOTA
-  // await Promise.all(
-  //   logsDb.map(async (logObject) => {
-  //     if (!logFlags[logObject.fileId]) {
-  //       logFlags[logObject.fileId] = true;
-  //       const privateTransactions = await iota.getTransactionByHash(logObject.fileId);
-  //       await Promise.all(
-  //         privateTransactions.map(async (transaction) => {
-  //           let logObj = await iota.getMessage(transaction);
-  //           const publicKey = await sig.importPublicKey(logObj.publicHexKey);
-  //           const { signature } = logObj;
-  //           logObj = prepObjectForSignature(logObj);
-  //           const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
-  //           if (isVerified) {
-  //             iotaLogArray.push(logObj);
-  //           }
-  //         }),
-  //       );
-  //     }
-  //   }),
-  // );
+  const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
+  const transactions = [].concat(...transactionsArrays);
+  await Promise.all(
+    transactions.map(async (transaction) => {
+      let logObj = await iota.getMessage(transaction);
+      const publicKey = await sig.importPublicKey(logObj.publicHexKey);
+      const { signature } = logObj;
+      logObj = prepObjectForSignature(logObj);
+      const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
+      if (isVerified) {
+        const newEntry = {
+          fileId: logObj.fileId,
+          filename: 'na',
+          time: logObj.time,
+          isUpload: false,
+          isPrivate: true,
+          folder: 'none',
+        };
+
+        logsDb.push(newEntry);
+        // only add to logsDb if no download at the exact same time
+        const count = await db.log.where('time').equals(logObj.time).count();
+        if (count === 0) {
+          await db.log.add(newEntry);
+        }
+      }
+    }),
+  );
+
+  window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
   document.getElementById('loader').style.visibility = 'hidden';
   if (logsDb.length > 0) {
-    printLog(iotaLogArray, logsDb);
+    printLog(logsDb);
   }
 }
 
@@ -140,19 +176,20 @@ document.getElementById('clearHistory').addEventListener('click', async () => {
 });
 
 document.getElementById('toFile').addEventListener('click', async () => {
+  tangleExplorerAddress = await getTangleExplorer();
   await iota.nodeInitialization();
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
+  publicLink = `${tangleExplorerAddress}${publicTryteKey.slice(0, 81)}`;
   document.getElementById('publicTryteKey').textContent = publicTryteKey;
-  document.getElementById('publicTryteKey').setAttribute('href', `https://thetangle.org/address/${publicTryteKey.slice(0, 81)}`);
+  document.getElementById('publicTryteKey').setAttribute('href', publicLink);
   try {
     const logsDb = await db.log.toArray();
     if (logsDb == null) {
       document.getElementById('csvDownload').style.visibility = 'hidden';
       document.getElementById('clearHistory').style.visibility = 'hidden';
     } else {
-      console.log(logsDb);
       document.getElementById('loader').style.visibility = 'visible';
       loadInfoFromTangle(logsDb);
     }
@@ -163,25 +200,18 @@ document.getElementById('toFile').addEventListener('click', async () => {
 });
 
 function sortTable(n) {
-  console.log('start');
-  let rows; let switching; let i; let x; let y; let shouldSwitch; let dir; let
+  let switching; let i; let x; let y; let shouldSwitch; let dir; let
     switchcount = 0;
   const table = document.getElementById('table');
   switching = true;
   dir = 'asc';
   while (switching) {
     switching = false;
-    rows = table.rows;
-    /* Loop through all table rows (except the
-    first, which contains table headers): */
+    const { rows } = table;
     for (i = 1; i < (rows.length - 1); i += 1) {
       shouldSwitch = false;
-      /* Get the two elements you want to compare,
-      one from current row and one from the next: */
       x = rows[i].getElementsByTagName('TD')[n];
       y = rows[i + 1].getElementsByTagName('TD')[n];
-      /* Check if the two rows should switch place,
-      based on the direction, asc or desc: */
       if (dir === 'asc') {
         const arrowDown = '<i class="fas fa-arrow-down"></i>';
         if (n === 1) {
@@ -210,15 +240,12 @@ function sortTable(n) {
           document.getElementById('sortDownloadIcon').innerHTML = arrowUp;
         }
         if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
           shouldSwitch = true;
           break;
         }
       }
     }
     if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark that a switch has been done: */
       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
       switching = true;
       switchcount += 1;
@@ -240,4 +267,9 @@ document.getElementById('uploadName').addEventListener('click', async () => {
 });
 document.getElementById('downloadName').addEventListener('click', async () => {
   sortTable(5);
+});
+
+document.getElementById('historyLongText').addEventListener('scroll', function scroll() {
+  const translate = `translate(0,${this.scrollTop}px)`;
+  this.querySelector('thead').style.transform = translate;
 });

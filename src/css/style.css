@@ -261,6 +261,7 @@ pre {
 
 #historyLongText{
   margin-top: 52px;
+  padding-top: 0px;
 }
 
 .longText {
@@ -270,7 +271,7 @@ pre {
   padding-right: 1.5vw;
   padding-bottom: 4vh;
   overflow: auto;
-  height: 87vh;
+  height: 89vh;
   text-align: left;
   border-radius: .7rem;
   margin-left: auto;

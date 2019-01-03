@@ -32,11 +32,8 @@ export default async function getHealthyNode() {
     try {
       // eslint-disable-next-line no-await-in-loop
       const nodeHealth = await getHealthStatus(iotaNode);
-      console.log(nodeHealth);
       if (nodeHealth.latestMilestone === nodeHealth.latestSolidSubtangleMilestone
         && nodeHealth.latestMilestoneIndex === nodeHealth.latestSolidSubtangleMilestoneIndex) {
-        console.log('healthy');
-        console.log(node);
         return iotaNode;
       }
     } catch (error) {

@@ -10,6 +10,7 @@ import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
 import prepSearchText from './prepSearchText';
 
+// TODO: invalid hex string
 // Max length Array
 const maxArrayLength = 1000;
 
