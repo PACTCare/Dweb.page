@@ -10,7 +10,6 @@ import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
 import prepSearchText from './prepSearchText';
 
-// TODO: invalid hex string
 // Max length Array
 const maxArrayLength = 1000;
 
@@ -97,10 +96,17 @@ async function updateDatabase(databaseWorks) {
       metaObject.address = address;
       if (isVerified) {
         if (databaseWorks) {
-          const metadata = await searchDb.metadata.get({ fileId: metaObject.fileId });
-          if (typeof metadata === 'undefined') {
+          const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
+          if (metadataCount === 0) {
+            if (metaObject.description === '&Unavailable on Dweb.page&') {
+              metaObject.available = 0;
+            } else {
+              metaObject.available = 1;
+            }
             await searchDb.metadata.add(metaObject);
             addMetaData(metaObject);
+          } else if (metaObject.description === '&Unavailable on Dweb.page&') {
+            await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
           }
         } else {
           addMetaData(metaObject);
@@ -115,7 +121,7 @@ async function updateDatabase(databaseWorks) {
 
 async function startSearch() {
   try {
-    window.metadata = await searchDb.metadata.toArray();
+    window.metadata = await searchDb.metadata.where('available').equals(1).toArray();
     window.miniSearch.addAll(window.metadata);
     updateDatabase(true);
   } catch (err) {
@@ -156,7 +162,7 @@ function autocomplete(inp) {
     let val = this.value;
     closeAllLists();
     if (!val) {
-      window.searchSelection = { fileId: 'na', subscribeAddress: 'na' };
+      window.searchSelection = { fileId: 'na' };
       return false;
     }
     val = fileTypePreselection(val);
@@ -192,6 +198,7 @@ function autocomplete(inp) {
     for (i = 0; i < searchItems.length; i += 1) {
       if (maxAddedWordCount < 6) {
         if (maxAddedWordCount === 0) {
+          console.log(searchItems[i]);
           window.searchSelection = searchItems[i];
         }
         maxAddedWordCount += 1;
@@ -200,8 +207,7 @@ function autocomplete(inp) {
         const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
         const span = document.createElement('SPAN');
-        const icon = FileType.returnFileIcon(searchItems[i].fileType);
-        span.innerHTML = `<strong>${icon} ${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
+        span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
         span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
         span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
         span.addEventListener('click', function valueToInput() {

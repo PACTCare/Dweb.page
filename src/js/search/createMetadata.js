@@ -7,11 +7,11 @@ import db from '../log/logDb';
 /**
  * Prepares and sends metadata to the tangle for public files
  * @param {string} fileId
- * @param {string} filename
+ * @param {string} fileNameType
  * @param {string} gateway
- * @param {string} description
+ * @param {string} description for Not available metadata == '&Unavailable on Dweb.page&'
  */
-export default async function createMetadata(fileId, filename, gateway, description) {
+export default async function createMetadata(fileId, fileNameType, gateway, description) {
   const iota = new Iota();
   await iota.nodeInitialization();
   const time = new Date().toUTCString();
@@ -19,9 +19,9 @@ export default async function createMetadata(fileId, filename, gateway, descript
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
-  const [, fileNamePart, fileTypePart] = filename.match(/(.*)\.(.*)/);
+  const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
   await db.log.add({
-    fileId, filename, time, isUpload: true, isPrivate: false, folder: 'none',
+    fileId, filename: fileNameType, time, isUpload: true, isPrivate: false, folder: 'none',
   });
   let metadata = {
     fileId,
