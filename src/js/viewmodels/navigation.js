@@ -135,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParameter = getURLParameter('par');
   const fileIdPar = getURLParameter('id');
   const passwordPar = getURLParameter('password');
-  console.log(passwordPar);
   const namePar = getURLParameter('name');
   if (urlParameter === 'terms' || urlParameter === 'privacy') {
     document.getElementById('dialog-ovelay').style.display = 'none';

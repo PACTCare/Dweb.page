@@ -43,14 +43,17 @@ function output(msg) {
   }
 }
 
-function reset() {
+/**
+ * Resets after loading
+ */
+function resetLoading() {
   fakeProgress = 0;
   hideLoadProgress();
   window.history.replaceState(null, null, window.location.pathname);
 }
 
 function downloadFile(fileName, blob) {
-  reset();
+  resetLoading();
   saveAs(blob, fileName);
 }
 
@@ -80,23 +83,18 @@ function propagationError() {
       GATEWAY,
       '=Unavailable on Dweb.page=');
   }
-  reset();
+  resetLoading();
   output('The file you’re requesting is difficult to load or not available at all!');
 }
 
+/**
+ * Shows fake progress for the first 50 percent = 30 seconds
+ * After that sets 10 seconds time out
+ */
 function propagationProgress() {
-  if (fakeProgress >= 45) {
+  if (fakeProgress >= 50) {
     clearInterval(progressId);
     timeOutPropagation = setTimeout(propagationError, 10000);
-  } else {
-    fakeProgress += 0.5;
-    progressBar(fakeProgress);
-  }
-}
-
-function iotaDecryptionProgress() {
-  if (fakeProgress >= 100) {
-    clearInterval(progressId);
   } else {
     fakeProgress += 0.5;
     progressBar(fakeProgress);
@@ -106,7 +104,6 @@ function iotaDecryptionProgress() {
 async function load() {
   const passwordInput = document.getElementById('passwordField').value.trim();
   let fileInput = document.getElementById('firstField').value.trim();
-  // that's bullshit
   if (fileInput.length !== 46
     && typeof fileInput !== 'undefined') {
     fileInput = window.searchSelection.fileId;
@@ -128,9 +125,11 @@ async function load() {
       progressId = setInterval(propagationProgress, 300);
     };
     oReq.onload = async function onload() {
+      if (typeof timeOutPropagation !== 'undefined') {
+        clearTimeout(timeOutPropagation);
+      }
       const arrayBuffer = oReq.response;
-      fakeProgress = 95;
-      progressId = setInterval(iotaDecryptionProgress, 100);
+
       // encrypted
       if (passwordInput !== '' && passwordInput !== 'np') {
         const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
@@ -164,31 +163,28 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        // await new Subscription().addSubscribtion(window.searchSelection.address);
+        await new Subscription().addSubscribtion(window.searchSelection.address);
         const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser
-        // if (checkBrowserDirectOpen(name)) {
-        //   window.open(GATEWAY + fileInput, '_self');
-        // } else {
-        const typeM = MIME.getType(name);
-        const blob = new Blob([arrayBuffer], { type: typeM });
-        blob.name = name;
-        downloadFile(name, blob);
-        // }
+        if (checkBrowserDirectOpen(name)) {
+          window.open(GATEWAY + fileInput, '_self');
+        } else {
+          const typeM = MIME.getType(name);
+          const blob = new Blob([arrayBuffer], { type: typeM });
+          blob.name = name;
+          downloadFile(name, blob);
+        }
       }
     };
     oReq.onprogress = function onprogress(e) {
-      if (typeof timeOutPropagation !== 'undefined') {
-        clearTimeout(timeOutPropagation);
-      }
-      if (fakeProgress < 45) {
+      if (fakeProgress < 50) {
         clearInterval(progressId);
-        fakeProgress = 45;
+        fakeProgress = 50;
       }
       if (e.lengthComputable) {
         const per = Math.round((e.loaded * 100) / e.total);
-        progressBar(40 + (per / 2));
+        progressBar(50 + (per / 2));
       }
     };
     oReq.onreadystatechange = function onreadystatechange() {

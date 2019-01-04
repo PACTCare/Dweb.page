@@ -66,19 +66,20 @@ body,
 .autocomplete-items div {
   word-break: break-word;
   padding: 7px 15px;
-  cursor: pointer;
   text-align: left;
   border-bottom: 1px solid #e9e9e9;
 }
-.autocomplete-items div:hover {
-  background-color: #e9e9e9;
-  border-radius: 0.4rem;
+
+.autocomplete-items>div>span {
+  cursor: pointer;
+}
+.autocomplete-items>div>span:hover {
+  text-decoration: underline;
 }
 .autocomplete-active {
   background-color: #e9e9e9 !important;
   border-radius: 0.4rem;
 }
-
 
 #right {
   position: absolute;

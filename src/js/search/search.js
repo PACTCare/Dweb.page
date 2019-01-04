@@ -50,6 +50,7 @@ function inputValToWinDowSearchSelection(inputVal) {
  * @param {boolean} databaseWorks
  */
 async function updateDatabase(databaseWorks) {
+  console.log('update database');
   const iota = new Iota();
   await iota.nodeInitialization();
   const sig = new Signature();
@@ -57,27 +58,31 @@ async function updateDatabase(databaseWorks) {
 
   // returns the highest number!
   const mostRecentDayNumber = createDayNumber();
+  let dayNumber = mostRecentDayNumber;
   const awaitTransactions = [];
   let firstTime = false;
   let recentDaysLoaded = 0;
   let maxRecentDayLoad = 1;
 
-  const subscribeArray = subscription.loadActiveSubscription();
-  if (subscribeArray.length === 0) {
-    firstTime = true;
-    maxRecentDayLoad = 10;
-  }
+  if (databaseWorks) {
+    const subscribeArray = await subscription.loadActiveSubscription();
+    console.log(subscribeArray);
+    if (subscribeArray.length === 0) {
+      console.log('first time');
+      firstTime = true;
+      maxRecentDayLoad = 10;
+    }
 
-  let dayNumber = mostRecentDayNumber;
-  if (!firstTime) {
-    for (let i = 0; i < subscribeArray.length; i += 1) {
-      const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
-      while (dayNumber >= daysLoaded) {
-        const tag = iota.createTimeTag(dayNumber);
-        console.log(tag);
-        awaitTransactions.push(iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag));
-        recentDaysLoaded += 1;
-        dayNumber -= 1;
+    if (!firstTime) {
+      for (let i = 0; i < subscribeArray.length; i += 1) {
+        const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
+        while (dayNumber >= daysLoaded) {
+          const tag = iota.createTimeTag(dayNumber);
+          console.log(tag);
+          awaitTransactions.push(iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag));
+          recentDaysLoaded += 1;
+          dayNumber -= 1;
+        }
       }
     }
   }
@@ -86,6 +91,7 @@ async function updateDatabase(databaseWorks) {
   recentDaysLoaded = 0;
   while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
     const tag = iota.createTimeTag(dayNumber);
+    console.log(tag);
     awaitTransactions.push(iota.getTransactionByTag(tag));
     recentDaysLoaded += 1;
     dayNumber -= 1;
@@ -94,6 +100,7 @@ async function updateDatabase(databaseWorks) {
   const transactionsArrays = await Promise.all(awaitTransactions);
   let transactions = [].concat(...transactionsArrays);
   transactions = transactions.slice(0, maxArrayLength);
+  console.log(transactions);
   transactions.map(async (transaction) => {
     let metaObject = await iota.getMessage(transaction);
     if (!logFlags[metaObject.fileId]) {
@@ -125,17 +132,23 @@ async function updateDatabase(databaseWorks) {
     }
   });
 
-  subscription.updateDaysLoaded(mostRecentDayNumber);
+  if (databaseWorks) {
+    await subscription.updateDaysLoaded(mostRecentDayNumber);
+  }
 }
 
+/**
+ * Initialization search
+ */
 async function startSearch() {
   try {
     window.metadata = await searchDb.metadata.where('available').equals(1).toArray();
     window.miniSearch.addAll(window.metadata);
     updateDatabase(true);
   } catch (err) {
+    console.log(err);
     window.metadata = [];
-    updateDatabase(true);
+    updateDatabase(false);
   }
 }
 
@@ -161,8 +174,10 @@ function autocomplete(inp) {
 
   function closeAllLists(elmnt) {
     const x = document.getElementsByClassName('autocomplete-items');
+    console.log('element');
+    console.log(elmnt);
     for (let i = 0; i < x.length; i += 1) {
-      if (elmnt != x[i] && elmnt != inp) {
+      if (elmnt !== x[i] && elmnt !== inp) {
         x[i].parentNode.removeChild(x[i]);
       }
     }
@@ -222,25 +237,25 @@ function autocomplete(inp) {
         span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
         span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
         span.addEventListener('click', function valueToInput() {
+          console.log('click');
           const inputVal = this.getElementsByTagName('input')[0].value;
           inputValToWinDowSearchSelection(inputVal);
           inp.value = window.searchSelection.fileId;
-          // window.searchSelection = { address: this.getElementsByTagName('input')[0].value.split('=')[1] };
           closeAllLists();
           document.getElementById('searchload').click();
         });
-        b.appendChild(span);
         const spanTwo = document.createElement('SPAN');
         spanTwo.innerHTML = '<i class="fas fa-ban"></i>';
         spanTwo.style.cssFloat = 'right';
         spanTwo.style.color = '#db3e4d';
-        const { address } = searchItems[i];
         // eslint-disable-next-line no-loop-func
         spanTwo.addEventListener('click', async () => {
           console.log('ban click');
-          subscription.removeSubscription(address);
+          console.log(window.searchSelection.address);
+          subscription.removeSubscription(window.searchSelection.address);
         });
         b.appendChild(spanTwo);
+        b.appendChild(span);
         a.appendChild(b);
       }
     }
@@ -255,10 +270,6 @@ function autocomplete(inp) {
       currentFocus -= 1;
       addActive(x);
     }
-  });
-
-  document.addEventListener('click', (e) => {
-    closeAllLists(e.target);
   });
 }
 
