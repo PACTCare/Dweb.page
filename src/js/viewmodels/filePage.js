@@ -128,29 +128,28 @@ async function loadInfoFromTangle(logsDb) {
     }
   }
 
-  const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
+  const transactionsArrays = await Promise.all(awaitTransactions);
   const transactions = [].concat(...transactionsArrays);
   await Promise.all(
     transactions.map(async (transaction) => {
       let logObj = await iota.getMessage(transaction);
-      const publicKey = await sig.importPublicKey(logObj.publicHexKey);
-      const { signature } = logObj;
-      logObj = prepObjectForSignature(logObj);
-      const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
-      if (isVerified) {
-        const newEntry = {
-          fileId: logObj.fileId,
-          filename: 'na',
-          time: logObj.time,
-          isUpload: false,
-          isPrivate: true,
-          folder: 'none',
-        };
-
-        logsDb.push(newEntry);
-        // only add to logsDb if no download at the exact same time
-        const count = await db.log.where('time').equals(logObj.time).count();
-        if (count === 0) {
+      // only add if it's not already part of the logsDB
+      const count = await db.log.where('time').equals(logObj.time).count();
+      if (count === 0) {
+        const publicKey = await sig.importPublicKey(logObj.publicHexKey);
+        const { signature } = logObj;
+        logObj = prepObjectForSignature(logObj);
+        const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
+        if (isVerified) {
+          const newEntry = {
+            fileId: logObj.fileId,
+            filename: 'na',
+            time: logObj.time,
+            isUpload: false,
+            isPrivate: true,
+            folder: 'none',
+          };
+          logsDb.push(newEntry);
           await db.log.add(newEntry);
         }
       }

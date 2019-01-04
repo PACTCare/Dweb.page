@@ -24,7 +24,7 @@ window.miniSearch = new MiniSearch({
   },
 });
 
-// Todo: improve file types preselection
+// TODO: improve file types preselection
 function fileTypePreselection(val) {
   if (window.searchKind === 'images') {
     return `${val} jpg png gif svg bmp webp tiff`;
@@ -50,7 +50,6 @@ function inputValToWinDowSearchSelection(inputVal) {
  * @param {boolean} databaseWorks
  */
 async function updateDatabase(databaseWorks) {
-  console.log('update database');
   const iota = new Iota();
   await iota.nodeInitialization();
   const sig = new Signature();
@@ -66,9 +65,7 @@ async function updateDatabase(databaseWorks) {
 
   if (databaseWorks) {
     const subscribeArray = await subscription.loadActiveSubscription();
-    console.log(subscribeArray);
     if (subscribeArray.length === 0) {
-      console.log('first time');
       firstTime = true;
       maxRecentDayLoad = 10;
     }
@@ -78,8 +75,9 @@ async function updateDatabase(databaseWorks) {
         const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
         while (dayNumber >= daysLoaded) {
           const tag = iota.createTimeTag(dayNumber);
-          console.log(tag);
-          awaitTransactions.push(iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag));
+          awaitTransactions.push(
+            iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag),
+          );
           recentDaysLoaded += 1;
           dayNumber -= 1;
         }
@@ -91,7 +89,6 @@ async function updateDatabase(databaseWorks) {
   recentDaysLoaded = 0;
   while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
     const tag = iota.createTimeTag(dayNumber);
-    console.log(tag);
     awaitTransactions.push(iota.getTransactionByTag(tag));
     recentDaysLoaded += 1;
     dayNumber -= 1;
@@ -100,7 +97,6 @@ async function updateDatabase(databaseWorks) {
   const transactionsArrays = await Promise.all(awaitTransactions);
   let transactions = [].concat(...transactionsArrays);
   transactions = transactions.slice(0, maxArrayLength);
-  console.log(transactions);
   transactions.map(async (transaction) => {
     let metaObject = await iota.getMessage(transaction);
     if (!logFlags[metaObject.fileId]) {
@@ -174,8 +170,6 @@ function autocomplete(inp) {
 
   function closeAllLists(elmnt) {
     const x = document.getElementsByClassName('autocomplete-items');
-    console.log('element');
-    console.log(elmnt);
     for (let i = 0; i < x.length; i += 1) {
       if (elmnt !== x[i] && elmnt !== inp) {
         x[i].parentNode.removeChild(x[i]);
@@ -237,7 +231,6 @@ function autocomplete(inp) {
         span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
         span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
         span.addEventListener('click', function valueToInput() {
-          console.log('click');
           const inputVal = this.getElementsByTagName('input')[0].value;
           inputValToWinDowSearchSelection(inputVal);
           inp.value = window.searchSelection.fileId;
@@ -250,8 +243,6 @@ function autocomplete(inp) {
         spanTwo.style.color = '#db3e4d';
         // eslint-disable-next-line no-loop-func
         spanTwo.addEventListener('click', async () => {
-          console.log('ban click');
-          console.log(window.searchSelection.address);
           subscription.removeSubscription(window.searchSelection.address);
         });
         b.appendChild(spanTwo);
