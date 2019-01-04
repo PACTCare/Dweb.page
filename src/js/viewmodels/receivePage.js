@@ -5,8 +5,8 @@ import getGateway from '../helperFunctions/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
+import Subscription from '../search/Subscription';
 import createLog from '../log/createLog';
-import searchDb from '../search/searchDb';
 import createMetadata from '../search/createMetadata';
 
 const GATEWAY = getGateway();
@@ -106,21 +106,10 @@ function iotaDecryptionProgress() {
 async function load() {
   const passwordInput = document.getElementById('passwordField').value.trim();
   let fileInput = document.getElementById('firstField').value.trim();
+  // that's bullshit
   if (fileInput.length !== 46
-    && typeof fileInput !== 'undefined'
-    && typeof window.searchSelection !== 'undefined'
-    && window.searchSelection.fileId !== 'na') {
+    && typeof fileInput !== 'undefined') {
     fileInput = window.searchSelection.fileId;
-    // TODO: remove subscriber if there are too many
-    const count = await searchDb.subscription.where('address').equals(window.searchSelection.address).count();
-    // only add new addresses
-    if (count < 1) {
-      await searchDb.subscription.add({
-        address: window.searchSelection.address,
-        blocked: 0, // 0 = false, 1 = true
-        daysLoaded: 0,
-      });
-    }
   }
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!
@@ -175,17 +164,18 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
+        // await new Subscription().addSubscribtion(window.searchSelection.address);
         const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser
-        if (checkBrowserDirectOpen(name)) {
-          window.open(GATEWAY + fileInput, '_self');
-        } else {
-          const typeM = MIME.getType(name);
-          const blob = new Blob([arrayBuffer], { type: typeM });
-          blob.name = name;
-          downloadFile(name, blob);
-        }
+        // if (checkBrowserDirectOpen(name)) {
+        //   window.open(GATEWAY + fileInput, '_self');
+        // } else {
+        const typeM = MIME.getType(name);
+        const blob = new Blob([arrayBuffer], { type: typeM });
+        blob.name = name;
+        downloadFile(name, blob);
+        // }
       }
     };
     oReq.onprogress = function onprogress(e) {

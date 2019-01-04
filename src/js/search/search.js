@@ -9,9 +9,11 @@ import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
 import prepSearchText from './prepSearchText';
+import Subscription from './Subscription';
 
 // Max length Array
 const maxArrayLength = 1000;
+const subscription = new Subscription();
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -34,6 +36,15 @@ function fileTypePreselection(val) {
   return val;
 }
 
+function inputValToWinDowSearchSelection(inputVal) {
+  window.searchSelection = {
+    fileId: inputVal.split('=')[0],
+    fileName: inputVal.split('=')[1],
+    fileType: inputVal.split('=')[2],
+    address: inputVal.split('=')[3],
+  };
+}
+
 /**
  * Load most recent database entries
  * @param {boolean} databaseWorks
@@ -51,8 +62,7 @@ async function updateDatabase(databaseWorks) {
   let recentDaysLoaded = 0;
   let maxRecentDayLoad = 1;
 
-  // Don't load block subscriptions
-  const subscribeArray = await searchDb.subscription.where('blocked').equals(0).toArray();
+  const subscribeArray = subscription.loadActiveSubscription();
   if (subscribeArray.length === 0) {
     firstTime = true;
     maxRecentDayLoad = 10;
@@ -115,8 +125,7 @@ async function updateDatabase(databaseWorks) {
     }
   });
 
-  // update most recent day for all subscribers
-  await searchDb.subscription.where('daysLoaded').aboveOrEqual(0).modify({ daysLoaded: mostRecentDayNumber });
+  subscription.updateDaysLoaded(mostRecentDayNumber);
 }
 
 async function startSearch() {
@@ -144,7 +153,10 @@ function autocomplete(inp) {
     if (currentFocus >= x.length) currentFocus = 0;
     if (currentFocus < 0) currentFocus = (x.length - 1);
     x[currentFocus].classList.add('autocomplete-active');
-    document.getElementById('firstField').value = x[currentFocus].children[3].value;
+    const inputVal = x[currentFocus].children[0].children[2].value;
+    inputValToWinDowSearchSelection(inputVal);
+    document.getElementById('firstField').value = window.searchSelection.fileId;
+    return true;
   }
 
   function closeAllLists(elmnt) {
@@ -198,7 +210,6 @@ function autocomplete(inp) {
     for (i = 0; i < searchItems.length; i += 1) {
       if (maxAddedWordCount < 6) {
         if (maxAddedWordCount === 0) {
-          console.log(searchItems[i]);
           window.searchSelection = searchItems[i];
         }
         maxAddedWordCount += 1;
@@ -207,12 +218,14 @@ function autocomplete(inp) {
         const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
         const span = document.createElement('SPAN');
-        console.log(searchItems[i].description);
         span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
         span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
-        span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
+        span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
         span.addEventListener('click', function valueToInput() {
-          inp.value = this.getElementsByTagName('input')[0].value;
+          const inputVal = this.getElementsByTagName('input')[0].value;
+          inputValToWinDowSearchSelection(inputVal);
+          inp.value = window.searchSelection.fileId;
+          // window.searchSelection = { address: this.getElementsByTagName('input')[0].value.split('=')[1] };
           closeAllLists();
           document.getElementById('searchload').click();
         });
@@ -225,11 +238,7 @@ function autocomplete(inp) {
         // eslint-disable-next-line no-loop-func
         spanTwo.addEventListener('click', async () => {
           console.log('ban click');
-          // TODO: entries need to be removed from metadata as well as don't load additional meta from this subscriber
-          // window.metadata
-          // window.miniSearch
-          await searchDb.subscription.where('address').equals(address).modify({ blocked: 1 }); // 1 = true
-          await searchDb.metadata.where('address').equals(address).delete();
+          subscription.removeSubscription(address);
         });
         b.appendChild(spanTwo);
         a.appendChild(b);
