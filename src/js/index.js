@@ -1,26 +1,25 @@
 import '@babel/polyfill';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
-  faEnvelope, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
-  faExclamationCircle, faFileSignature, faBars, faBan,
+  faArrowDown, faArrowUp, faVideo, faMusic, faMobileAlt, faFileUpload, faShieldAlt, faPlayCircle,
+  faExclamationCircle, faBars, faBan,
 } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faImage } from '@fortawesome/free-regular-svg-icons';
+import {
+  faEnvelope, faFile, faFolderOpen, faCopy, faImage,
+} from '@fortawesome/free-regular-svg-icons';
 import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
 import './viewmodels/copy';
-import './polyfill/webcrypto-shim';
 import './polyfill/remove';
 import './viewmodels/background';
 import './viewmodels/alert';
 import './viewmodels/steps';
-import './viewmodels/historyPage';
+import './viewmodels/filePage';
 import './viewmodels/receivePage';
 import './viewmodels/navigation';
 import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
-import FileType from './services/FileType';
-import Log from './log/Log';
-import Encryption from './services/Encryption';
+import Encryption from './crypto/Encryption';
 import getGateway from './helperFunctions/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
@@ -35,10 +34,12 @@ import '../css/menu.css';
 import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
+import createMetadata from './search/createMetadata';
+import createLog from './log/createLog';
 
-
-library.add(faEnvelope, faMobileAlt, faCopy, faFileUpload, faShieldAlt,
-  faPlayCircle, faExclamationCircle, faFileSignature, faBars, faBan,
+library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
+  faMobileAlt, faCopy, faFileUpload, faShieldAlt,
+  faPlayCircle, faExclamationCircle, faBars, faBan,
   faWhatsapp, faTelegramPlane, faImage);
 dom.watch();
 document.getElementById('logo1').src = logo;
@@ -68,6 +69,10 @@ function progressBar(percent) {
   }
 }
 
+/**
+ * Output messages
+ * @param {string} msg
+ */
 function output(msg) {
   document.getElementById('messages').textContent = msg;
 }
@@ -125,7 +130,7 @@ function unencryptedLayout(fileId) {
   document.getElementById('passwordTab').style.display = 'none';
   let link = `${
     window.location.href
-  }?id=${fileId}&password=nopass`;
+  }?id=${fileId}&password=np&name=${filename}`;
   if (checkBrowserDirectOpen(filename)) {
     link = GATEWAY + fileId;
   }
@@ -176,9 +181,10 @@ function tagLayout(fileId) {
     if (describtion === 'Not yet available' && tagsString.length > 0) {
       describtion = tagsString.trim();
     } else {
-      describtion = tagsString.trim() + describtion;
+      // && marks the beginning of the describtion/end of tags
+      describtion = `${tagsString.trim()}&&${describtion}`;
     }
-    new Log().createLog(fileId, filename, true, GATEWAY, false, describtion);
+    createMetadata(fileId, filename, GATEWAY, describtion);
   });
 }
 
@@ -209,7 +215,7 @@ function encryptedLayout(fileId) {
   }
 }
 
-function uploadToIPFS(buf, isEncrypted) {
+async function uploadToIPFS(buf, isEncrypted) {
   const xhr = new XMLHttpRequest();
   xhr.open('POST', GATEWAY, true);
   xhr.responseType = 'arraybuffer';
@@ -222,21 +228,14 @@ function uploadToIPFS(buf, isEncrypted) {
         errorMessage("The current IPFS gateway you are using  isn't writable!");
       } else {
         // if image/video create thumbnail
-        const [, , fileTypePart] = filename.match(/(.*)\.(.*)/);
-        if (FileType.imageTypes().indexOf(fileTypePart.toLowerCase()) > -1) {
-          // 1. resize
-          // upload on ipfs
-          // only make sense if it loads faster!
-        }
+        // const [, , fileTypePart] = filename.match(/(.*)\.(.*)/);
+        // if (FileType.imageTypes().indexOf(fileTypePart.toLowerCase()) > -1) {
+        //   // 1. resize
+        //   // upload on ipfs
+        //   // only make sense if it loads faster!
+        // }
         if (isEncrypted) {
-          new Log().createLog(
-            fileId,
-            filename,
-            true,
-            GATEWAY,
-            isEncrypted,
-            describtion,
-          );
+          createLog(fileId, filename, true);
           encryptedLayout(fileId);
         } else {
           tagLayout(fileId);
@@ -307,7 +306,6 @@ function readFile(e) {
 
   const files = e.target.files || e.dataTransfer.files;
   if (files.length > 1) {
-    // zip it
     const zip = new JSZip();
     for (let i = 0; i < files.length; i += 1) {
       zip.file(files[i].name.replace(/[^A-Za-z0-9. _\-]/g, ''), files[i]);

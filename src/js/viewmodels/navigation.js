@@ -3,7 +3,7 @@ import getURLParameter from '../helperFunctions/urlParameter';
 function menuAnimation(inputId) {
   // reset upload page, receive etc.
   document.getElementById('show-menu').checked = false;
-  const ids = ['receivePage', 'historyPage', 'index', 'aboutPage'];
+  const ids = ['receivePage', 'filePage', 'index', 'aboutPage'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       document.getElementById(ids[i]).style.transition = 'visibility 0.2s,transform 0.2s, opacity 0.2s cubic-bezier(0.0, 0.0, 0.2, 1)';
@@ -23,24 +23,33 @@ function menuAnimation(inputId) {
   }
 }
 
+function isIE() {
+  const ua = window.navigator.userAgent;
+  const msie = ua.indexOf('MSIE '); // IE 10 or older
+  const trident = ua.indexOf('Trident/'); // IE 11
+  return (msie > 0 || trident > 0);
+}
+
 function searchMenu(inputId) {
   const ids = ['all', 'images', 'videos', 'music'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       // global object used in the search.js
       window.searchKind = ids[i];
+      // trigger input event
+      const event = document.createEvent('Event');
+      event.initEvent('input', true, true);
+      document.getElementById('firstField').dispatchEvent(event);
+      if (!isIE()) {
+        window.setTimeout(() => {
+          document.getElementById('firstField').focus();
+        }, 100);
+      }
       document.getElementById(ids[i]).style.textDecoration = 'underline';
     } else {
       document.getElementById(ids[i]).style.textDecoration = 'none';
     }
   }
-}
-
-function isIE() {
-  const ua = window.navigator.userAgent;
-  const msie = ua.indexOf('MSIE '); // IE 10 or older
-  const trident = ua.indexOf('Trident/'); // IE 11
-  return (msie > 0 || trident > 0);
 }
 
 function indexInit() {
@@ -84,7 +93,6 @@ function searchInit() {
       }
     });
   document.getElementById('messagesReceivePage').textContent = '';
-  document.getElementById('currentSelectedHiddenHash').textContent = 'nix';
   document.getElementById('loadProgressSearch').style.display = 'none';
   document.getElementById('firstField').value = '';
   window.history.replaceState(null, null, window.location.pathname);
@@ -109,17 +117,12 @@ function aboutInit() {
 }
 
 function currentPage(inputId) {
-  const ids = ['toIndex', 'toReceive', 'toHistory', 'toAbout'];
+  const ids = ['toIndex', 'toReceive', 'toFile', 'toAbout'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       document.getElementById(ids[i]).classList.add('currentPage');
       if (ids[i] === 'toReceive') {
         searchInit();
-        if (!isIE()) {
-          window.setTimeout(() => {
-            document.getElementById('firstField').focus();
-          }, 100);
-        }
       } else if (ids[i] === 'toIndex') {
         indexInit();
       } else if (ids[i] === 'toAbout') {
@@ -132,11 +135,11 @@ function currentPage(inputId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialization
   indexInit();
   const urlParameter = getURLParameter('par');
   const fileIdPar = getURLParameter('id');
   const passwordPar = getURLParameter('password');
+  const namePar = getURLParameter('name');
   if (urlParameter === 'terms' || urlParameter === 'privacy') {
     document.getElementById('dialog-ovelay').style.display = 'none';
     menuAnimation('aboutPage');
@@ -151,6 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage('');
     linkInit();
     document.getElementById('firstField').value = fileIdPar;
+    if (typeof namePar !== 'undefined') {
+      const [, fileNamePart, fileTypePart] = namePar.match(/(.*)\.(.*)/);
+      window.searchSelection = { fileName: fileNamePart, fileType: fileTypePart };
+    }
     if (typeof passwordPar !== 'undefined') {
       document.getElementById('passwordField').value = passwordPar;
       document.getElementById('passwordField').style.display = 'none';
@@ -164,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.openHistory = function openHistory() {
-  menuAnimation('historyPage');
-  currentPage('toHistory');
+  menuAnimation('filePage');
+  currentPage('toFile');
 };
 
 document.getElementById('toIndex').addEventListener('click', () => {
@@ -182,7 +189,7 @@ document.getElementById('toReceive').addEventListener('click', () => {
   menuAnimation('receivePage');
   currentPage('toReceive');
 });
-document.getElementById('toHistory').addEventListener('click', () => {
+document.getElementById('toFile').addEventListener('click', () => {
   window.openHistory();
 });
 

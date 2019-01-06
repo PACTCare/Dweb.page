@@ -1,19 +1,19 @@
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
-import Iota from '../log/Iota';
-import Encryption from '../services/Encryption';
+import Encryption from '../crypto/Encryption';
 import getGateway from '../helperFunctions/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
-import Log from '../log/Log';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
+import Subscription from '../search/Subscription';
+import createLog from '../log/createLog';
+import createMetadata from '../search/createMetadata';
 
 const GATEWAY = getGateway();
 let fakeProgress = 0;
 let progressId;
 let timeOutPropagation;
 let isSearch = false;
-
 
 function showLoadProgress() {
   if (isSearch) {
@@ -37,22 +37,23 @@ function hideLoadProgress() {
  */
 function output(msg) {
   if (isSearch) {
-    console.log(msg);
     document.getElementById('messagesSearch').textContent = msg;
   } else {
     document.getElementById('messagesReceivePage').textContent = msg;
   }
 }
 
-function reset() {
+/**
+ * Resets after loading
+ */
+function resetLoading() {
   fakeProgress = 0;
   hideLoadProgress();
   window.history.replaceState(null, null, window.location.pathname);
 }
 
-
 function downloadFile(fileName, blob) {
-  reset();
+  resetLoading();
   saveAs(blob, fileName);
 }
 
@@ -68,25 +69,32 @@ function progressBar(percent) {
 }
 
 function propagationError() {
-  reset();
+  // TODO: create availability metha data propagation error
+  // Avilibility metadata can only be created on public IPFS nodes
+  // otherwise it's too reliable on the local network
+  if (!GATEWAY.includes('localhost')
+    && !GATEWAY.includes('127.0.0.1')
+    && typeof window.searchSelection !== 'undefined'
+    && window.searchSelection.fileId !== 'na') {
+    // probably better integrate a button
+    console.log('Unavailable metadata');
+    createMetadata(window.searchSelection.fileId,
+      window.searchSelection.fileName + window.searchSelection.fileType,
+      GATEWAY,
+      '=Unavailable on Dweb.page=');
+  }
+  resetLoading();
   output('The file you’re requesting is difficult to load or not available at all!');
 }
 
+/**
+ * Shows fake progress for the first 50 percent = 30 seconds
+ * After that sets 10 seconds time out
+ */
 function propagationProgress() {
-  if (fakeProgress >= 45) {
-    // todo propagation error
-    // if this happens often let people know this file no longer exists
+  if (fakeProgress >= 50) {
     clearInterval(progressId);
     timeOutPropagation = setTimeout(propagationError, 10000);
-  } else {
-    fakeProgress += 0.5;
-    progressBar(fakeProgress);
-  }
-}
-
-function iotaDecryptionProgress() {
-  if (fakeProgress >= 100) {
-    clearInterval(progressId);
   } else {
     fakeProgress += 0.5;
     progressBar(fakeProgress);
@@ -96,13 +104,14 @@ function iotaDecryptionProgress() {
 async function load() {
   const passwordInput = document.getElementById('passwordField').value.trim();
   let fileInput = document.getElementById('firstField').value.trim();
-  if (fileInput.length !== 46 && typeof fileInput !== 'undefined' && document.getElementById('currentSelectedHiddenHash').textContent !== 'nix') {
-    fileInput = document.getElementById('currentSelectedHiddenHash').textContent;
+  if (fileInput.length !== 46
+    && typeof fileInput !== 'undefined') {
+    fileInput = window.searchSelection.fileId;
   }
   if (fileInput === 'wrongName' || (passwordInput.length === 43 && fileInput.length !== 46)) {
     // unencrypted files can be downloaded by name instead of file id!
     output('You have entered an invalid filename!');
-  } else if (passwordInput.length !== 43 && passwordInput !== '' && passwordInput !== 'nopass') {
+  } else if (passwordInput.length !== 43 && passwordInput !== '' && passwordInput !== 'np') {
     output('You have entered an invalid password!');
   } else if (!/^[a-zA-Z0-9_.-]*$/.test(passwordInput)) {
     output('You have entered an invalid password!');
@@ -111,20 +120,18 @@ async function load() {
   } else {
     output('');
     const oReq = new XMLHttpRequest();
-    // not encrypted, get information from IOTA,
-    // but start already here, for parallel loading
-    const iota = new Iota();
-    const transactionPromise = iota.getTransaction(fileInput);
     oReq.onloadstart = function onloadstart() {
       showLoadProgress();
       progressId = setInterval(propagationProgress, 300);
     };
     oReq.onload = async function onload() {
+      if (typeof timeOutPropagation !== 'undefined') {
+        clearTimeout(timeOutPropagation);
+      }
       const arrayBuffer = oReq.response;
-      fakeProgress = 95;
-      progressId = setInterval(iotaDecryptionProgress, 100);
+
       // encrypted
-      if (passwordInput !== '' && passwordInput !== 'nopass') {
+      if (passwordInput !== '' && passwordInput !== 'np') {
         const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
         const fileName = new TextDecoder('utf-8').decode(
           arrayBuffer.slice(4, fileNameLength + 4),
@@ -145,8 +152,7 @@ async function load() {
                 const typeM = MIME.getType(fileName);
                 const blob = new Blob([decrypted], { type: typeM });
                 blob.name = fileName;
-                // logging of download only for private files
-                new Log().createLog(fileInput, fileName, false, GATEWAY, true, 'Not yet available');
+                createLog(fileInput, fileName, false);
                 downloadFile(fileName, blob);
               })
               .catch(() => {
@@ -157,9 +163,8 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        const transactions = await transactionPromise;
-        const logObj = await iota.getLog(transactions[transactions.length - 1]);
-        const name = `${logObj.fileName}.${logObj.fileType}`;
+        await new Subscription().addSubscribtion(window.searchSelection.address);
+        const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser
         if (checkBrowserDirectOpen(name)) {
@@ -173,18 +178,13 @@ async function load() {
       }
     };
     oReq.onprogress = function onprogress(e) {
-      // progress starts only when file is loaded via IPFS
-      // for search it take a load of time to actually start the loading
-      if (typeof timeOutPropagation !== 'undefined') {
-        clearTimeout(timeOutPropagation);
-      }
-      if (fakeProgress < 45) {
+      if (fakeProgress < 50) {
         clearInterval(progressId);
-        fakeProgress = 45;
+        fakeProgress = 50;
       }
       if (e.lengthComputable) {
         const per = Math.round((e.loaded * 100) / e.total);
-        progressBar(40 + (per / 2));
+        progressBar(50 + (per / 2));
       }
     };
     oReq.onreadystatechange = function onreadystatechange() {

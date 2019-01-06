@@ -1,24 +1,20 @@
-
 import MiniSearch from 'minisearch';
-import Iota from '../log/Iota';
+import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
+import searchDb from './searchDb';
+import Signature from '../crypto/Signature';
+import prepObjectForSignature from '../crypto/prepObjectForSignature';
+import daysToLoadNr from './dayToLoadNr';
+import prepSearchText from './prepSearchText';
+import Subscription from './Subscription';
 
-const storeNames = 'SearchStore';
-const request = indexedDB.open('SearchDB', 1);
-const STORAGEKEY = 'loadedMetadataNumber';
-
-// first search metadata was stored at day zero
-// but the first few days was all about testing
-const startDay = 4;
-
-// the bigger maxDaysLoaded the more search data is loaded parallel
-// storage should get too big offer time
-const maxDaysToLoad = 30;
-
-let db;
+// Max length Array
+const maxArrayLength = 1000;
+const maxFirstTimeLoad = 20;
+const subscription = new Subscription();
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -29,7 +25,7 @@ window.miniSearch = new MiniSearch({
   },
 });
 
-// Todo: improve file types preselection
+// TODO: improve file types preselection
 function fileTypePreselection(val) {
   if (window.searchKind === 'images') {
     return `${val} jpg png gif svg bmp webp tiff`;
@@ -41,93 +37,124 @@ function fileTypePreselection(val) {
   return val;
 }
 
+function inputValToWinDowSearchSelection(inputVal) {
+  window.searchSelection = {
+    fileId: inputVal.split('=')[0],
+    fileName: inputVal.split('=')[1],
+    fileType: inputVal.split('=')[2],
+    address: inputVal.split('=')[3],
+  };
+}
+
 /**
- *
+ * Load most recent database entries
  * @param {boolean} databaseWorks
  */
 async function updateDatabase(databaseWorks) {
   const iota = new Iota();
+  await iota.nodeInitialization();
+  const sig = new Signature();
   const logFlags = {};
 
   // returns the highest number!
   const mostRecentDayNumber = createDayNumber();
   let dayNumber = mostRecentDayNumber;
   const awaitTransactions = [];
-  let daysLoaded = window.localStorage.getItem(STORAGEKEY);
+  let firstTime = false;
+  let recentDaysLoaded = 0;
+  let maxRecentDayLoad = 1;
 
-  // first time user
-  if (daysLoaded === null) {
-    if (mostRecentDayNumber + startDay > maxDaysToLoad) {
-      daysLoaded = mostRecentDayNumber - maxDaysToLoad; // load the max number of days
-    } else {
-      daysLoaded = startDay;
+  if (databaseWorks) {
+    const subscribeArray = await subscription.loadActiveSubscription();
+    if (subscribeArray.length === 0) {
+      firstTime = true;
+      maxRecentDayLoad = maxFirstTimeLoad;
     }
-  } else if (mostRecentDayNumber - daysLoaded > maxDaysToLoad) {
-    // means the last time the page was open is quite some time ago
-    daysLoaded = mostRecentDayNumber - maxDaysToLoad;
+
+    if (!firstTime) {
+      for (let i = 0; i < subscribeArray.length; i += 1) {
+        const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
+        while (dayNumber >= daysLoaded) {
+          const tag = iota.createTimeTag(dayNumber);
+          awaitTransactions.push(
+            iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag),
+          );
+          recentDaysLoaded += 1;
+          dayNumber -= 1;
+        }
+      }
+    }
+  } else {
+    maxRecentDayLoad = maxFirstTimeLoad;
   }
 
-  while (dayNumber >= daysLoaded) {
-    const dayTag = iota.createTimeTag(dayNumber);
-    awaitTransactions.push(iota.getTransactionByTag(`DWEBPUU${dayTag}`));
+  dayNumber = mostRecentDayNumber;
+  recentDaysLoaded = 0;
+  while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
+    const tag = iota.createTimeTag(dayNumber);
+    awaitTransactions.push(iota.getTransactionByTag(tag));
+    recentDaysLoaded += 1;
     dayNumber -= 1;
   }
-  const transactionsArrays = await Promise.all(awaitTransactions); // array of arrays!
-  const transactions = [].concat(...transactionsArrays);
 
+  const transactionsArrays = await Promise.all(awaitTransactions);
+  let transactions = [].concat(...transactionsArrays);
+  transactions = transactions.slice(0, maxArrayLength);
   transactions.map(async (transaction) => {
-    const logObj = await iota.getLog(transaction);
-    if (!logFlags[logObj.fileId]) {
-      logFlags[logObj.fileId] = true;
-      if (databaseWorks) {
-        const tx = db.transaction([storeNames], 'readwrite');
-        const store = tx.objectStore(storeNames);
-        const countRequest = store.count(logObj.fileId);
-        countRequest.onsuccess = function checkExistens() {
-          if (countRequest.result === 0) {
-            tx.objectStore(storeNames).put(logObj, logObj.fileId);
-            // if it's new immidiatly update search engine
-            addMetaData(logObj);
+    let metaObject = await iota.getMessage(transaction);
+    if (!logFlags[metaObject.fileId]) {
+      logFlags[metaObject.fileId] = true;
+      metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
+      const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
+      if (typeof publicKey !== 'undefined') {
+        const { signature, address } = metaObject;
+        metaObject = prepObjectForSignature(metaObject);
+        const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
+        metaObject.address = address;
+        if (isVerified) {
+          if (databaseWorks) {
+            const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
+            if (metadataCount === 0) {
+              if (metaObject.description === '&Unavailable on Dweb.page&') {
+                metaObject.available = 0;
+              } else {
+                metaObject.available = 1;
+              }
+              await searchDb.metadata.add(metaObject);
+              addMetaData(metaObject);
+            } else if (metaObject.description === '&Unavailable on Dweb.page&') {
+              await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
+            }
+          } else {
+            addMetaData(metaObject);
           }
-        };
-      } else {
-        addMetaData(logObj);
+        }
       }
     }
   });
 
-  window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
+  if (databaseWorks) {
+    await subscription.updateDaysLoaded(mostRecentDayNumber);
+  }
 }
 
-request.onupgradeneeded = function databaseUpgrade(e) {
-  const dbLocal = e.target.result;
-  dbLocal.createObjectStore(storeNames);
-};
-
-request.onsuccess = async function startSearch(event) {
-  db = event.target.result;
-  const tx = db.transaction([storeNames]);
-  const metadataTx = tx.objectStore(storeNames).getAll();
-  metadataTx.onsuccess = function addMetaDataToSearch() {
-    window.metadata = metadataTx.result;
+/**
+ * Initialization search
+ */
+async function startSearch() {
+  try {
+    window.metadata = await searchDb.metadata.where('available').equals(1).toArray();
     window.miniSearch.addAll(window.metadata);
     updateDatabase(true);
-  };
-};
-
-request.onerror = function databaseError(e) {
-  console.log('SearchDB error - Private mode');
-  window.metadata = [];
-  updateDatabase(false);
-};
-
-function capFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  } catch (err) {
+    console.log(err);
+    window.metadata = [];
+    updateDatabase(false);
+  }
 }
 
 function autocomplete(inp) {
   let currentFocus;
-
   function removeActive(x) {
     for (let i = 0; i < x.length; i += 1) {
       x[i].classList.remove('autocomplete-active');
@@ -140,25 +167,28 @@ function autocomplete(inp) {
     if (currentFocus >= x.length) currentFocus = 0;
     if (currentFocus < 0) currentFocus = (x.length - 1);
     x[currentFocus].classList.add('autocomplete-active');
-    document.getElementById('firstField').value = x[currentFocus].children[3].value;
+    const inputVal = x[currentFocus].children[0].children[2].value;
+    inputValToWinDowSearchSelection(inputVal);
+    document.getElementById('firstField').value = window.searchSelection.fileId;
+    return true;
   }
 
   function closeAllLists(elmnt) {
     const x = document.getElementsByClassName('autocomplete-items');
     for (let i = 0; i < x.length; i += 1) {
-      if (elmnt != x[i] && elmnt != inp) {
+      if (elmnt !== x[i] && elmnt !== inp) {
         x[i].parentNode.removeChild(x[i]);
       }
     }
   }
 
-  inp.addEventListener('input', async function inputFunction(e) {
+  inp.addEventListener('input', async function inputFunction() {
     let b; let i;
     let maxAddedWordCount = 0;
     let val = this.value;
     closeAllLists();
     if (!val) {
-      document.getElementById('currentSelectedHiddenHash').innerText = 'nix';
+      window.searchSelection = { fileId: 'na' };
       return false;
     }
     val = fileTypePreselection(val);
@@ -194,17 +224,34 @@ function autocomplete(inp) {
     for (i = 0; i < searchItems.length; i += 1) {
       if (maxAddedWordCount < 6) {
         if (maxAddedWordCount === 0) {
-          document.getElementById('currentSelectedHiddenHash').innerText = searchItems[i].fileId;
+          window.searchSelection = searchItems[i];
         }
         maxAddedWordCount += 1;
+
+        const timeArray = searchItems[i].time.split(' ');
+        const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
-        b.innerHTML = `<span style='color:#db3e4d'>[${searchItems[i].fileType}]</span> <strong>${capFirstLetter(searchItems[i].fileName)}</strong> <span style='font-size: 12px;'>${searchItems[i].time}<br>${searchItems[i].fileId}</span>`;
-        b.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}'>`;
-        b.addEventListener('click', function valueToInput(e) {
-          inp.value = this.getElementsByTagName('input')[0].value;
+        const span = document.createElement('SPAN');
+        span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
+        span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
+        span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
+        span.addEventListener('click', function valueToInput() {
+          const inputVal = this.getElementsByTagName('input')[0].value;
+          inputValToWinDowSearchSelection(inputVal);
+          inp.value = window.searchSelection.fileId;
           closeAllLists();
           document.getElementById('searchload').click();
         });
+        const spanTwo = document.createElement('SPAN');
+        spanTwo.innerHTML = '<i class="fas fa-ban"></i>';
+        spanTwo.style.cssFloat = 'right';
+        spanTwo.style.color = '#db3e4d';
+        // eslint-disable-next-line no-loop-func
+        spanTwo.addEventListener('click', async () => {
+          subscription.removeSubscription(window.searchSelection.address);
+        });
+        b.appendChild(spanTwo);
+        b.appendChild(span);
         a.appendChild(b);
       }
     }
@@ -220,10 +267,8 @@ function autocomplete(inp) {
       addActive(x);
     }
   });
-
-  document.addEventListener('click', (e) => {
-    closeAllLists(e.target);
-  });
 }
 
 autocomplete(document.getElementById('firstField'));
+
+startSearch();

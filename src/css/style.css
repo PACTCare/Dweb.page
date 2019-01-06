@@ -8,7 +8,7 @@ body,
   font-size: 17px;
   line-height: 1.4em;
 }
-#receivePage, #historyPage, #aboutPage{
+#receivePage, #filePage, #aboutPage{
   transition: none;
   visibility: hidden;
   transform: scale(0.9);
@@ -16,7 +16,7 @@ body,
   width: 0%;
   opacity: 0%;
 }
-#receivePage, #historyPage, #aboutPage, #index{
+#receivePage, #filePage, #aboutPage, #index{
   overflow: hidden;
 }
 
@@ -26,9 +26,15 @@ body,
 .lead{
   font-weight: 600;
 }
-.clearfix, .textBox, p, table{
+.clearfix, .textBox, p, table {
   font-family: Roboto,sans-serif;
 }
+#pubKey, #publicTryteKey{
+  font-size: 12px;
+  word-break: break-all;
+  margin-top: 0.5rem;
+}
+
 .clearfix{
   max-width: 480px;
   width: 100%;
@@ -58,21 +64,22 @@ body,
   border-radius: 0.4rem;
 }
 .autocomplete-items div {
-  word-break: break-all;
+  word-break: break-word;
   padding: 7px 15px;
-  cursor: pointer;
   text-align: left;
   border-bottom: 1px solid #e9e9e9;
 }
-.autocomplete-items div:hover {
-  background-color: #e9e9e9;
-  border-radius: 0.4rem;
+
+.autocomplete-items>div>span {
+  cursor: pointer;
+}
+.autocomplete-items>div>span:hover {
+  text-decoration: underline;
 }
 .autocomplete-active {
   background-color: #e9e9e9 !important;
   border-radius: 0.4rem;
 }
-
 
 #right {
   position: absolute;
@@ -96,7 +103,6 @@ body,
   opacity: 0.6;
 }
 
-#currentSelectedHiddenHash,
 #backgroundUpload {
   display: none;
 }
@@ -256,6 +262,7 @@ pre {
 
 #historyLongText{
   margin-top: 52px;
+  padding-top: 0px;
 }
 
 .longText {
@@ -265,7 +272,7 @@ pre {
   padding-right: 1.5vw;
   padding-bottom: 4vh;
   overflow: auto;
-  height: 87vh;
+  height: 89vh;
   text-align: left;
   border-radius: .7rem;
   margin-left: auto;

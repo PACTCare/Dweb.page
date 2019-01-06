@@ -114,7 +114,7 @@
 }
 
 #logResult > a {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .table-responsive-vertical {
@@ -128,7 +128,6 @@ td > a {
 }
 td {
   word-break: break-all;
-  min-width: 6rem;
   white-space: pre-line;
 }
 
@@ -240,6 +239,27 @@ td {
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {
   background-color: rgba(0, 0, 0, 0.12);
+}
+th > span {
+  font-size: 10px;
+}
+@media screen and (min-width: 768px) {
+  #sortName, #modeName, #uploadName, #downloadName{
+    cursor: pointer;
+    min-width: 6.2rem;
+  }
+  thead{
+    background-color: white;
+  }
+  .table>thead>tr>th{
+    padding-top: 1.2rem !important;
+  }
+
+}
+@media screen and (min-width: 768px) {
+  .table-responsive-vertical {
+  margin-top: -2px;
+}
 }
 @media screen and (max-width: 768px) {
   .table-responsive-vertical > .table {
