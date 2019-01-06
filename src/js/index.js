@@ -10,7 +10,6 @@ import {
 import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
 import './viewmodels/copy';
-import './polyfill/webcrypto-shim';
 import './polyfill/remove';
 import './viewmodels/background';
 import './viewmodels/alert';
@@ -20,7 +19,6 @@ import './viewmodels/receivePage';
 import './viewmodels/navigation';
 import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
-import FileType from './services/FileType';
 import Encryption from './crypto/Encryption';
 import getGateway from './helperFunctions/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';

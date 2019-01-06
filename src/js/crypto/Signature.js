@@ -10,7 +10,8 @@ export default class Signature {
     this.signatureName = 'ECDSA';
     this.nameCurve = 'P-256'; // secp256r1
     this.nameHash = 'SHA-256';
-    this.keyFormat = 'jwk'; // jwk, spki => 86 characters base 64
+    this.keyFormat = 'jwk';
+    this.extractable = false;
   }
 
   /**
@@ -22,6 +23,7 @@ export default class Signature {
     try {
       cryptoKey = await sigDb.key.get({ id: 1 });
     } catch (error) {
+      console.log(error);
       databaseWorks = false;
       cryptoKey = undefined;
     }
@@ -31,10 +33,11 @@ export default class Signature {
           name: this.signatureName,
           namedCurve: this.nameCurve,
         },
-        false,
+        this.extractable,
         ['sign', 'verify'],
       );
       if (databaseWorks) {
+        // TODO: Doesn't work on firefox
         await sigDb.key.add(cryptoKey);
       }
     }
@@ -59,11 +62,17 @@ export default class Signature {
    * @param {string} key as hex string
    * @returns {object} public key
    */
-  importPublicKey(key) {
-    const keydata = SigCompression.ECPointDecompress(key);
+  async importPublicKey(key) {
+    let keydata;
+    try {
+      keydata = SigCompression.ECPointDecompress(key);
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
     return window.crypto.subtle.importKey(
       this.keyFormat,
-      { // this is an example jwk key, other key types are Uint8Array objects
+      {
         kty: 'EC',
         crv: this.nameCurve,
         x: keydata.x,
@@ -74,7 +83,7 @@ export default class Signature {
         name: this.signatureName,
         namedCurve: this.nameCurve,
       },
-      false, // whether the key is extractable (i.e. can be used in exportKey)
+      this.extractable, // extractable
       ['verify'],
     );
   }

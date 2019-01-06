@@ -92,7 +92,6 @@ async function updateDatabase(databaseWorks) {
   recentDaysLoaded = 0;
   while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
     const tag = iota.createTimeTag(dayNumber);
-    console.log(tag);
     awaitTransactions.push(iota.getTransactionByTag(tag));
     recentDaysLoaded += 1;
     dayNumber -= 1;
@@ -107,26 +106,28 @@ async function updateDatabase(databaseWorks) {
       logFlags[metaObject.fileId] = true;
       metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
       const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
-      const { signature, address } = metaObject;
-      metaObject = prepObjectForSignature(metaObject);
-      const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
-      metaObject.address = address;
-      if (isVerified) {
-        if (databaseWorks) {
-          const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
-          if (metadataCount === 0) {
-            if (metaObject.description === '&Unavailable on Dweb.page&') {
-              metaObject.available = 0;
-            } else {
-              metaObject.available = 1;
+      if (typeof publicKey !== 'undefined') {
+        const { signature, address } = metaObject;
+        metaObject = prepObjectForSignature(metaObject);
+        const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
+        metaObject.address = address;
+        if (isVerified) {
+          if (databaseWorks) {
+            const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
+            if (metadataCount === 0) {
+              if (metaObject.description === '&Unavailable on Dweb.page&') {
+                metaObject.available = 0;
+              } else {
+                metaObject.available = 1;
+              }
+              await searchDb.metadata.add(metaObject);
+              addMetaData(metaObject);
+            } else if (metaObject.description === '&Unavailable on Dweb.page&') {
+              await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
             }
-            await searchDb.metadata.add(metaObject);
+          } else {
             addMetaData(metaObject);
-          } else if (metaObject.description === '&Unavailable on Dweb.page&') {
-            await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
           }
-        } else {
-          addMetaData(metaObject);
         }
       }
     }

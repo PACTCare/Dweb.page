@@ -171,8 +171,7 @@ document.getElementById('clearHistory').addEventListener('click', async () => {
 document.getElementById('toFile').addEventListener('click', async () => {
   tangleExplorerAddress = await getTangleExplorer();
   await iota.nodeInitialization();
-  const keys = await sig.getKeys();
-  console.log(keys);
+  const keys = await sig.getKeys(); // data clone error!
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
   publicLink = `${tangleExplorerAddress}${publicTryteKey.slice(0, 81)}`;
