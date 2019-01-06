@@ -41,7 +41,7 @@ async function setBackgroundImage() {
       document
         .getElementsByTagName('body')[0]
         .style
-        .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${getStoredImage.result}")`;
+        .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${getStoredImage.imageUrl}")`;
     }
     document.getElementById('filtersubmit').addEventListener('click', () => {
       document.getElementById('backgroundUpload').click();
