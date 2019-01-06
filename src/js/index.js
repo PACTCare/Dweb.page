@@ -230,12 +230,12 @@ async function uploadToIPFS(buf, isEncrypted) {
         errorMessage("The current IPFS gateway you are using  isn't writable!");
       } else {
         // if image/video create thumbnail
-        const [, , fileTypePart] = filename.match(/(.*)\.(.*)/);
-        if (FileType.imageTypes().indexOf(fileTypePart.toLowerCase()) > -1) {
-          // 1. resize
-          // upload on ipfs
-          // only make sense if it loads faster!
-        }
+        // const [, , fileTypePart] = filename.match(/(.*)\.(.*)/);
+        // if (FileType.imageTypes().indexOf(fileTypePart.toLowerCase()) > -1) {
+        //   // 1. resize
+        //   // upload on ipfs
+        //   // only make sense if it loads faster!
+        // }
         if (isEncrypted) {
           createLog(fileId, filename, true);
           encryptedLayout(fileId);

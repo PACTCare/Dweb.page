@@ -1,5 +1,5 @@
 import SigCompression from './SigCompression';
-import db from './sigDb';
+import sigDb from './sigDb';
 
 /**
  * Curves and their primes
@@ -17,7 +17,14 @@ export default class Signature {
    * Loads public & private key from database or generates new key
    */
   async getKeys() {
-    let cryptoKey = await db.key.get({ id: 1 });
+    let cryptoKey;
+    let databaseWorks = true;
+    try {
+      cryptoKey = await sigDb.key.get({ id: 1 });
+    } catch (error) {
+      databaseWorks = false;
+      cryptoKey = undefined;
+    }
     if (typeof cryptoKey === 'undefined') {
       cryptoKey = await window.crypto.subtle.generateKey(
         {
@@ -27,7 +34,9 @@ export default class Signature {
         false,
         ['sign', 'verify'],
       );
-      await db.key.add(cryptoKey);
+      if (databaseWorks) {
+        await sigDb.key.add(cryptoKey);
+      }
     }
     return cryptoKey;
   }

@@ -1,6 +1,7 @@
 .tags-input {
   border-bottom: 1px solid #ccc;
   display: inline-block;
+  width: 100%;
 }
 
 .tags-input .tag {
@@ -30,6 +31,7 @@
   border: 0;
   outline: 0;
   padding: 0.5em 0.1em;
+  width: 100%;
 }
 
 #tagHeadline {

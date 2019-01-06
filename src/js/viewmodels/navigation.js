@@ -23,24 +23,33 @@ function menuAnimation(inputId) {
   }
 }
 
+function isIE() {
+  const ua = window.navigator.userAgent;
+  const msie = ua.indexOf('MSIE '); // IE 10 or older
+  const trident = ua.indexOf('Trident/'); // IE 11
+  return (msie > 0 || trident > 0);
+}
+
 function searchMenu(inputId) {
   const ids = ['all', 'images', 'videos', 'music'];
   for (let i = 0; i < ids.length; i += 1) {
     if (ids[i] === inputId) {
       // global object used in the search.js
       window.searchKind = ids[i];
+      // trigger input event
+      const event = document.createEvent('Event');
+      event.initEvent('input', true, true);
+      document.getElementById('firstField').dispatchEvent(event);
+      if (!isIE()) {
+        window.setTimeout(() => {
+          document.getElementById('firstField').focus();
+        }, 100);
+      }
       document.getElementById(ids[i]).style.textDecoration = 'underline';
     } else {
       document.getElementById(ids[i]).style.textDecoration = 'none';
     }
   }
-}
-
-function isIE() {
-  const ua = window.navigator.userAgent;
-  const msie = ua.indexOf('MSIE '); // IE 10 or older
-  const trident = ua.indexOf('Trident/'); // IE 11
-  return (msie > 0 || trident > 0);
 }
 
 function indexInit() {
@@ -114,11 +123,6 @@ function currentPage(inputId) {
       document.getElementById(ids[i]).classList.add('currentPage');
       if (ids[i] === 'toReceive') {
         searchInit();
-        if (!isIE()) {
-          window.setTimeout(() => {
-            document.getElementById('firstField').focus();
-          }, 100);
-        }
       } else if (ids[i] === 'toIndex') {
         indexInit();
       } else if (ids[i] === 'toAbout') {

@@ -4,7 +4,7 @@ import FileType from '../services/FileType';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import '../polyfill/remove';
-import db from '../log/logDb';
+import logDb from '../log/logDb';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import getTangleExplorer from '../iota/getTangleExplorer';
@@ -134,7 +134,7 @@ async function loadInfoFromTangle(logsDb) {
     transactions.map(async (transaction) => {
       let logObj = await iota.getMessage(transaction);
       // only add if it's not already part of the logsDB
-      const count = await db.log.where('time').equals(logObj.time).count();
+      const count = await logDb.log.where('time').equals(logObj.time).count();
       if (count === 0) {
         const publicKey = await sig.importPublicKey(logObj.publicHexKey);
         const { signature } = logObj;
@@ -150,7 +150,7 @@ async function loadInfoFromTangle(logsDb) {
             folder: 'none',
           };
           logsDb.push(newEntry);
-          await db.log.add(newEntry);
+          await logDb.log.add(newEntry);
         }
       }
     }),
@@ -164,7 +164,7 @@ async function loadInfoFromTangle(logsDb) {
 }
 
 document.getElementById('clearHistory').addEventListener('click', async () => {
-  await db.log.clear();
+  await logDb.log.clear();
   window.location.reload();
 });
 
@@ -172,13 +172,14 @@ document.getElementById('toFile').addEventListener('click', async () => {
   tangleExplorerAddress = await getTangleExplorer();
   await iota.nodeInitialization();
   const keys = await sig.getKeys();
+  console.log(keys);
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
   publicLink = `${tangleExplorerAddress}${publicTryteKey.slice(0, 81)}`;
   document.getElementById('publicTryteKey').textContent = publicTryteKey;
   document.getElementById('publicTryteKey').setAttribute('href', publicLink);
   try {
-    const logsDb = await db.log.toArray();
+    const logsDb = await logDb.log.toArray();
     if (logsDb == null) {
       document.getElementById('csvDownload').style.visibility = 'hidden';
       document.getElementById('clearHistory').style.visibility = 'hidden';
@@ -187,8 +188,10 @@ document.getElementById('toFile').addEventListener('click', async () => {
       loadInfoFromTangle(logsDb);
     }
   } catch (error) {
-    console.log(error);
-    document.getElementById('logResult').innerHTML = 'Sorry, your browser does not support Web Storage.';
+    document.getElementById('tableDiv').style.margin = '1.5rem';
+    document.getElementById('tableDiv').style.font = 'font-family: Roboto,sans-serif';
+    document.getElementById('tableDiv').style.color = '#6f6f6f';
+    document.getElementById('tableDiv').textContent = 'It seems your browser doesn’t allow Dweb.page to store data locally (e.g., because of the Firefox private mode)! Therefore, your public key will constantly change and you won’t have access to your file history. ';
   }
 });
 

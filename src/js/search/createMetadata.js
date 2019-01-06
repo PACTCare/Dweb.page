@@ -2,7 +2,7 @@ import Iota from '../iota/Iota';
 import addMetaData from './addMetaData';
 import prepMetaData from './prepMetaData';
 import Signature from '../crypto/Signature';
-import db from '../log/logDb';
+import lobDb from '../log/logDb';
 
 /**
  * Prepares and sends metadata to the tangle for public files
@@ -20,9 +20,13 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
   const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
-  await db.log.add({
-    fileId, filename: fileNameType, time, isUpload: true, isPrivate: false, folder: 'none',
-  });
+  try {
+    await lobDb.log.add({
+      fileId, filename: fileNameType, time, isUpload: true, isPrivate: false, folder: 'none',
+    });
+  } catch (error) {
+    console.log(error);
+  }
   let metadata = {
     fileId,
     fileName: fileNamePart,

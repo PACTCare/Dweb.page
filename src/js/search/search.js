@@ -13,6 +13,7 @@ import Subscription from './Subscription';
 
 // Max length Array
 const maxArrayLength = 1000;
+const maxFirstTimeLoad = 20;
 const subscription = new Subscription();
 
 window.miniSearch = new MiniSearch({
@@ -67,7 +68,7 @@ async function updateDatabase(databaseWorks) {
     const subscribeArray = await subscription.loadActiveSubscription();
     if (subscribeArray.length === 0) {
       firstTime = true;
-      maxRecentDayLoad = 10;
+      maxRecentDayLoad = maxFirstTimeLoad;
     }
 
     if (!firstTime) {
@@ -83,12 +84,15 @@ async function updateDatabase(databaseWorks) {
         }
       }
     }
+  } else {
+    maxRecentDayLoad = maxFirstTimeLoad;
   }
 
   dayNumber = mostRecentDayNumber;
   recentDaysLoaded = 0;
   while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
     const tag = iota.createTimeTag(dayNumber);
+    console.log(tag);
     awaitTransactions.push(iota.getTransactionByTag(tag));
     recentDaysLoaded += 1;
     dayNumber -= 1;
