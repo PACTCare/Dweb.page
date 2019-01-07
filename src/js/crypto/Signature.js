@@ -19,12 +19,10 @@ export default class Signature {
    */
   async getKeys() {
     let cryptoKey;
-    let databaseWorks = true;
     try {
       cryptoKey = await sigDb.key.get({ id: 1 });
     } catch (error) {
       console.log(error);
-      databaseWorks = false;
       cryptoKey = undefined;
     }
     if (typeof cryptoKey === 'undefined') {
@@ -36,9 +34,14 @@ export default class Signature {
         this.extractable,
         ['sign', 'verify'],
       );
-      if (databaseWorks) {
-        // TODO: Doesn't work on firefox
+      // TODO:
+      // Although it’s part of the web crypto api. It’s currently not supported by Firefox and Edge
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1048931
+      // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/12782255/
+      try {
         await sigDb.key.add(cryptoKey);
+      } catch (error) {
+        console.log('error');
       }
     }
     return cryptoKey;

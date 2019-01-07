@@ -1,14 +1,14 @@
 import resizeImage from '../helperFunctions/resizeImage';
 import db from '../services/backgroundDb';
 
-const maxSize = 1600;
+const MAXSIZE = 1600;
 
 function readBackgroundImage(event) {
   const reader = new FileReader();
   reader.onloadend = function onloadend(readerEvent) {
     const image = new Image();
     image.onload = async function imageResized() {
-      const imageUrl = resizeImage(image, maxSize);
+      const imageUrl = resizeImage(image, MAXSIZE);
       await db.backgroundImg.add({ imageUrl });
       document.getElementById('resetImage').style.display = 'inherit';
       document

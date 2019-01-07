@@ -3,6 +3,8 @@ import addMetaData from './addMetaData';
 import prepMetaData from './prepMetaData';
 import Signature from '../crypto/Signature';
 import lobDb from '../log/logDb';
+import { UNAVAILABLE_DESC } from './searchConfig';
+import removeMetaData from './removeMetaData';
 
 /**
  * Prepares and sends metadata to the tangle for public files
@@ -20,12 +22,16 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
   const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
-  try {
-    await lobDb.log.add({
-      fileId, filename: fileNameType, time, isUpload: true, isPrivate: false, folder: 'none',
-    });
-  } catch (error) {
-    console.log(error);
+
+  // Unavailable metadata doesn't need to be stored in logDb
+  if (description !== UNAVAILABLE_DESC) {
+    try {
+      await lobDb.log.add({
+        fileId, filename: fileNameType, time, isUpload: true, isPrivate: false, folder: 'none',
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
   let metadata = {
     fileId,
@@ -40,6 +46,11 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const signature = await sig.sign(keys.privateKey, JSON.stringify(metadata));
   metadata.signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
   iota.sendMetadata(metadata);
-  // store direct in database!
-  addMetaData(metadata);
+
+  // store available data directly in database!
+  if (description !== UNAVAILABLE_DESC) {
+    addMetaData(metadata);
+  } else {
+    removeMetaData(metadata);
+  }
 }

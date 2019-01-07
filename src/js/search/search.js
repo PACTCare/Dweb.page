@@ -3,6 +3,7 @@ import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import addMetaData from './addMetaData';
+import removeMetaData from './removeMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
 import searchDb from './searchDb';
 import Signature from '../crypto/Signature';
@@ -10,10 +11,8 @@ import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
 import prepSearchText from './prepSearchText';
 import Subscription from './Subscription';
+import { UNAVAILABLE_DESC, MAX_LOAD_DAYS, MAX_LOAD_ARRAY } from './searchConfig';
 
-// Max length Array
-const maxArrayLength = 1000;
-const maxFirstTimeLoad = 20;
 const subscription = new Subscription();
 
 window.miniSearch = new MiniSearch({
@@ -68,7 +67,7 @@ async function updateDatabase(databaseWorks) {
     const subscribeArray = await subscription.loadActiveSubscription();
     if (subscribeArray.length === 0) {
       firstTime = true;
-      maxRecentDayLoad = maxFirstTimeLoad;
+      maxRecentDayLoad = MAX_LOAD_DAYS;
     }
 
     if (!firstTime) {
@@ -83,58 +82,62 @@ async function updateDatabase(databaseWorks) {
           dayNumber -= 1;
         }
       }
+    } else {
+      maxRecentDayLoad = MAX_LOAD_DAYS;
     }
-  } else {
-    maxRecentDayLoad = maxFirstTimeLoad;
-  }
 
-  dayNumber = mostRecentDayNumber;
-  recentDaysLoaded = 0;
-  while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
-    const tag = iota.createTimeTag(dayNumber);
-    awaitTransactions.push(iota.getTransactionByTag(tag));
-    recentDaysLoaded += 1;
-    dayNumber -= 1;
-  }
+    dayNumber = mostRecentDayNumber;
+    recentDaysLoaded = 0;
+    while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
+      const tag = iota.createTimeTag(dayNumber);
+      console.log(tag);
+      awaitTransactions.push(iota.getTransactionByTag(tag));
+      recentDaysLoaded += 1;
+      dayNumber -= 1;
+    }
 
-  const transactionsArrays = await Promise.all(awaitTransactions);
-  let transactions = [].concat(...transactionsArrays);
-  transactions = transactions.slice(0, maxArrayLength);
-  transactions.map(async (transaction) => {
-    let metaObject = await iota.getMessage(transaction);
-    if (!logFlags[metaObject.fileId]) {
-      logFlags[metaObject.fileId] = true;
-      metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
-      const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
-      if (typeof publicKey !== 'undefined') {
-        const { signature, address } = metaObject;
-        metaObject = prepObjectForSignature(metaObject);
-        const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
-        metaObject.address = address;
-        if (isVerified) {
-          if (databaseWorks) {
-            const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
-            if (metadataCount === 0) {
-              if (metaObject.description === '&Unavailable on Dweb.page&') {
-                metaObject.available = 0;
-              } else {
+    const transactionsArrays = await Promise.all(awaitTransactions);
+    let transactions = [].concat(...transactionsArrays);
+    transactions = transactions.slice(0, MAX_LOAD_ARRAY);
+    transactions.map(async (transaction) => {
+      let metaObject = await iota.getMessage(transaction);
+
+      // Unavailable data needs to be loaded even if the file id already exists
+      if (!logFlags[metaObject.fileId] || metaObject.description === UNAVAILABLE_DESC) {
+        logFlags[metaObject.fileId] = true;
+        metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
+        const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
+        if (typeof publicKey !== 'undefined') {
+          const { signature, address } = metaObject;
+          metaObject = prepObjectForSignature(metaObject);
+          const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
+          metaObject.address = address;
+          if (isVerified) {
+            if (databaseWorks) {
+              const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
+              // only available data is added to the search
+              if (metadataCount === 0 && metaObject.description !== UNAVAILABLE_DESC) {
                 metaObject.available = 1;
+                addMetaData(metaObject);
+                await searchDb.metadata.add(metaObject);
+              } else if (metadataCount === 0 && metaObject.description === UNAVAILABLE_DESC) {
+                metaObject.available = 0;
+                await searchDb.metadata.add(metaObject);
+              } else if (metaObject.description === UNAVAILABLE_DESC) {
+                await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
               }
-              await searchDb.metadata.add(metaObject);
+            } else if (metaObject.description !== UNAVAILABLE_DESC) {
+              // TODO: Available system doens't work without a database
               addMetaData(metaObject);
-            } else if (metaObject.description === '&Unavailable on Dweb.page&') {
-              await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
             }
-          } else {
-            addMetaData(metaObject);
           }
         }
       }
-    }
-  });
+    });
 
-  if (databaseWorks) {
-    await subscription.updateDaysLoaded(mostRecentDayNumber);
+    if (databaseWorks) {
+      await subscription.updateDaysLoaded(mostRecentDayNumber);
+    }
   }
 }
 
@@ -196,23 +199,25 @@ function autocomplete(inp) {
     const searchItems = [];
     for (let j = 0; j < searchResults.length; j += 1) {
       const item = window.metadata.find(o => o.fileId === searchResults[j].id);
-      item.score = searchResults[j].score;
+      if (typeof item !== 'undefined') {
+        item.score = searchResults[j].score;
 
-      // improve file types actual selection
-      if (window.searchKind === 'images') {
-        if (FileType.imageTypes().indexOf(item.fileType.toLowerCase()) > -1) {
+        // improve file types actual selection
+        if (window.searchKind === 'images') {
+          if (FileType.imageTypes().indexOf(item.fileType.toLowerCase()) > -1) {
+            searchItems.push(item);
+          }
+        } else if (window.searchKind === 'videos') {
+          if (FileType.videoTypes().indexOf(item.fileType.toLowerCase()) > -1) {
+            searchItems.push(item);
+          }
+        } else if (window.searchKind === 'music') {
+          if (FileType.musicTypes().indexOf(item.fileType.toLowerCase()) > -1) {
+            searchItems.push(item);
+          }
+        } else {
           searchItems.push(item);
         }
-      } else if (window.searchKind === 'videos') {
-        if (FileType.videoTypes().indexOf(item.fileType.toLowerCase()) > -1) {
-          searchItems.push(item);
-        }
-      } else if (window.searchKind === 'music') {
-        if (FileType.musicTypes().indexOf(item.fileType.toLowerCase()) > -1) {
-          searchItems.push(item);
-        }
-      } else {
-        searchItems.push(item);
       }
     }
     searchItems.sort(sortByScoreAndTime);
@@ -235,8 +240,8 @@ function autocomplete(inp) {
         span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
         span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
         span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
-        span.addEventListener('click', function valueToInput() {
-          const inputVal = this.getElementsByTagName('input')[0].value;
+        span.addEventListener('click', () => {
+          const inputVal = span.getElementsByTagName('input')[0].value;
           inputValToWinDowSearchSelection(inputVal);
           inp.value = window.searchSelection.fileId;
           closeAllLists();
@@ -246,8 +251,15 @@ function autocomplete(inp) {
         spanTwo.innerHTML = '<i class="fas fa-ban"></i>';
         spanTwo.style.cssFloat = 'right';
         spanTwo.style.color = '#db3e4d';
+        spanTwo.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
         // eslint-disable-next-line no-loop-func
         spanTwo.addEventListener('click', async () => {
+          const inputVal = spanTwo.getElementsByTagName('input')[0].value;
+          inputValToWinDowSearchSelection(inputVal);
+          closeAllLists();
+          // only removes immidiatly the blocked entry,
+          // not everything from this subscriber
+          removeMetaData(window.searchSelection);
           subscription.removeSubscription(window.searchSelection.address);
         });
         b.appendChild(spanTwo);

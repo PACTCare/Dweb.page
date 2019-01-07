@@ -1,6 +1,4 @@
-// the bigger maxDaysLoaded the more search data is loaded parallel
-// storage should get too big offer time
-const maxDaysToLoad = 20;
+import { MAX_LOAD_DAYS } from './searchConfig';
 
 /**
  * Returns number of the oldest day, which needs to be loaded
@@ -12,8 +10,8 @@ export default function (daysLoaded, mostRecentDayNumber) {
   if (mostRecentDayNumber < daysLoaded) {
     return undefined;
   }
-  if (mostRecentDayNumber - daysLoaded > maxDaysToLoad) {
-    return mostRecentDayNumber - maxDaysToLoad;
+  if (mostRecentDayNumber - daysLoaded > MAX_LOAD_DAYS) {
+    return mostRecentDayNumber - MAX_LOAD_DAYS;
   }
   return daysLoaded;
 }

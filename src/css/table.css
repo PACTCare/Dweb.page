@@ -260,6 +260,9 @@ th > span {
   .table-responsive-vertical {
   margin-top: -2px;
 }
+#historyLongText{
+  padding-top: 0px;
+}
 }
 @media screen and (max-width: 768px) {
   .table-responsive-vertical > .table {
