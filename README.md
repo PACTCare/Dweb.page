@@ -64,7 +64,6 @@ QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K
 * https://noreallyitis.me/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Donald Brown](https://noreallyitis.me))
 * https://ipfs.adder.black/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by anonymous)
 * https://pactcare.online/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Pact](https://pact.care/))
-* https://dweb.iota4earth.org/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K (by [http://iota4earth.org](http://iota4earth.org))
 
 ### Donate
 
