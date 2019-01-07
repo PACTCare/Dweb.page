@@ -5,7 +5,7 @@ export default class Encryption {
     this.keyFormat = 'jwk';
   }
 
-  // todo keys should not be extractable
+  // TODO: keys should not be extractable
   generateKey() {
     return window.crypto.subtle.generateKey(
       {
@@ -61,7 +61,7 @@ export default class Encryption {
         name: this.encryptionName,
         length: 256,
       },
-      true, // whether the key is extractable (i.e. can be used in exportKey)
+      true, // extractable
       ['encrypt', 'decrypt'],
     );
   }

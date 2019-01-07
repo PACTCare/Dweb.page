@@ -8,7 +8,6 @@ export default function keepIPFSStuffOnline(fileId) {
     'https://ipfs.infura.io/ipfs/',
     'https://pactcare.online/ipfs/',
     'https://ipfs.sopinka.com/ipfs/',
-    'https://untangle.care/ipfs/',
     'https://ipfs.adder.black/ipfs/',
     'https://noreallyitis.me/ipfs/'];
   function shuffle(a) {

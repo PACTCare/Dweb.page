@@ -50,22 +50,21 @@ You can also use [Dweb.page](https://dweb.page) to host your own distributed web
 [David Hawig](https://github.com/Noc2)
 
 ## Contributing
-You can either support this project by setting up an [IPFS Node](#ipfs-node), [donating](#donate) or by contributing to the [code](#code). 
+You can either support this project by setting up an [IPFS Node](#ipfs-node), [donating](#donate) or by contributing to the [code](#code).
 
 ### IPFS Node
 If you wish to participate you can simply [set up your own IPFS node with a writeable gateway](https://blog.florence.chat/tutorial-host-your-own-ipfs-node-and-help-the-next-generation-of-web-2860eb59e45e). You need to allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care or on our [discord server](https://discord.gg/VMj7PFN) so we then can integrate your side on our main page. Currently, we share the IOTA donations equally among all participants at the end of every month. For transparency, you can track all donations under the current IOTA donation address. In the future, we might set up an advertising model to make it more attractive for IPFS nodes to participate.
 
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49
+QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://noreallyitis.me/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Donald Brown](https://noreallyitis.me))
-* https://ipfs.adder.black/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by anonymous)
-* https://pactcare.online/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Pact](https://pact.care/))
-* https://untangle.care/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49/ (by [Pact](https://pact.care/))
-* https://dweb.iota4earth.org/ipfs/QmacCuBr7Areynv4KxgB5xJo4Hr7115Y4qZ9QXxsp6Ja49 (by [http://iota4earth.org](http://iota4earth.org))
+* https://ipfs.sopinka.com/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Sopinka Inc.](https://sopinka.com/))
+* https://noreallyitis.me/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Donald Brown](https://noreallyitis.me))
+* https://ipfs.adder.black/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by anonymous)
+* https://pactcare.online/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Pact](https://pact.care/))
+* https://dweb.iota4earth.org/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K (by [http://iota4earth.org](http://iota4earth.org))
 
 ### Donate
 
@@ -74,7 +73,7 @@ IOTA Donation address
 SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUYFZOTSAS9C
 ```
 
-### Code 
+### Code
 If you want to help either join our **[discord server](https://discord.gg/VMj7PFN)** or you can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository.
 
 If editing the README, please conform to the [standard-readme specification](https://github.com/RichardLitt/standard-readme).
