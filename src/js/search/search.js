@@ -124,6 +124,7 @@ async function updateDatabase(databaseWorks) {
                 metaObject.available = 0;
                 await searchDb.metadata.add(metaObject);
               } else if (metaObject.description === UNAVAILABLE_DESC) {
+                removeMetaData(metaObject);
                 await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
               }
             } else if (metaObject.description !== UNAVAILABLE_DESC) {

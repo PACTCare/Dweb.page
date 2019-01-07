@@ -70,21 +70,18 @@ function progressBar(percent) {
 }
 
 function propagationError() {
-  // TODO: create availability metha data propagation error
   // Avilibility metadata can only be created on public IPFS nodes
   // otherwise it's too reliable on the local network
-
-  // if (!GATEWAY.includes('localhost')
-  //   && !GATEWAY.includes('127.0.0.1')
-  //   && typeof window.searchSelection !== 'undefined'
-  //   && window.searchSelection.fileId !== 'na') {
-  // probably better integrate a button
-  console.log('Unavailable metadata');
-  createMetadata(window.searchSelection.fileId,
-    `${window.searchSelection.fileName}.${window.searchSelection.fileType}`,
-    GATEWAY,
-    UNAVAILABLE_DESC);
-  // }
+  if (!GATEWAY.includes('localhost')
+    && !GATEWAY.includes('127.0.0.1')
+    && typeof window.searchSelection !== 'undefined'
+    && window.searchSelection.fileId !== 'na') {
+    // TODO:  probably better integrate a button
+    createMetadata(window.searchSelection.fileId,
+      `${window.searchSelection.fileName}.${window.searchSelection.fileType}`,
+      GATEWAY,
+      UNAVAILABLE_DESC);
+  }
   resetLoading();
   output('The file you’re requesting is difficult to load or not available at all!');
 }

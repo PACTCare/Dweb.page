@@ -3,10 +3,13 @@
  * @param {object} metadata
  */
 export default function removeMetaData(metadata) {
-  console.log('remove started');
-  window.miniSearch.remove({
-    fileId: metadata.fileId,
-    fileName: metadata.fileName,
-    fileType: metadata.fileType,
-  });
+  try {
+    window.miniSearch.remove({
+      fileId: metadata.fileId,
+      fileName: metadata.fileName,
+      fileType: metadata.fileType,
+    });
+  } catch (error) {
+    // console.log(error);
+  }
 }
