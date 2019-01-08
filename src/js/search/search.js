@@ -105,7 +105,7 @@ async function updateDatabase(databaseWorks) {
       let metaObject = await iota.getMessage(transaction);
 
       // Unavailable data needs to be loaded even if the file id already exists
-      if (!logFlags[metaObject.fileId] || metaObject.description === UNAVAILABLE_DESC) {
+      if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.fileId] || metaObject.description === UNAVAILABLE_DESC)) {
         logFlags[metaObject.fileId] = true;
         metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
         const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));

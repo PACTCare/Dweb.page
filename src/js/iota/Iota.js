@@ -174,9 +174,17 @@ export default class Iota {
           const [usedMessage] = message.split(
             '999999999999999999999999999999999999999999',
           );
-          const obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
-          obj.tag = sucess2[0].tag;
-          obj.address = sucess2[0].address;
+          let obj;
+          if (usedMessage.length > 1) {
+            try {
+              obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
+              obj.tag = sucess2[0].tag;
+              obj.address = sucess2[0].address;
+            } catch (er) {
+              console.log(er);
+            }
+          }
+
           resolve(obj);
         }
       });

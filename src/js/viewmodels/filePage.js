@@ -134,23 +134,25 @@ async function loadInfoFromTangle(logsDb) {
     transactions.map(async (transaction) => {
       let logObj = await iota.getMessage(transaction);
       // only add if it's not already part of the logsDB
-      const count = await logDb.log.where('time').equals(logObj.time).count();
-      if (count === 0) {
-        const publicKey = await sig.importPublicKey(logObj.publicHexKey);
-        const { signature } = logObj;
-        logObj = prepObjectForSignature(logObj);
-        const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
-        if (isVerified) {
-          const newEntry = {
-            fileId: logObj.fileId,
-            filename: 'na',
-            time: logObj.time,
-            isUpload: false,
-            isPrivate: true,
-            folder: 'none',
-          };
-          logsDb.push(newEntry);
-          await logDb.log.add(newEntry);
+      if (typeof logObj !== 'undefined') {
+        const count = await logDb.log.where('time').equals(logObj.time).count();
+        if (count === 0) {
+          const publicKey = await sig.importPublicKey(logObj.publicHexKey);
+          const { signature } = logObj;
+          logObj = prepObjectForSignature(logObj);
+          const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
+          if (isVerified) {
+            const newEntry = {
+              fileId: logObj.fileId,
+              filename: 'na',
+              time: logObj.time,
+              isUpload: false,
+              isPrivate: true,
+              folder: 'none',
+            };
+            logsDb.push(newEntry);
+            await logDb.log.add(newEntry);
+          }
         }
       }
     }),
