@@ -62,7 +62,6 @@ QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K
 **List of participating nodes**
 * https://ipfs.sopinka.com/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Sopinka Inc.](https://sopinka.com/))
 * https://noreallyitis.me/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Donald Brown](https://noreallyitis.me))
-* https://ipfs.adder.black/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by anonymous)
 * https://pactcare.online/ipfs/QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K/ (by [Pact](https://pact.care/))
 
 ### Donate

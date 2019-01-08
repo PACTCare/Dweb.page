@@ -68,6 +68,7 @@ async function updateDatabase(databaseWorks) {
   if (databaseWorks) {
     const subscribeArray = await subscription.loadActiveSubscription();
     if (subscribeArray.length === 0) {
+      console.log('First Load');
       firstTime = true;
       maxRecentDayLoad = MAX_LOAD_DAYS;
     }
@@ -101,6 +102,7 @@ async function updateDatabase(databaseWorks) {
     const transactionsArrays = await Promise.all(awaitTransactions);
     let transactions = [].concat(...transactionsArrays);
     transactions = transactions.slice(0, MAX_LOAD_ARRAY);
+    console.log(transactions.length);
     transactions.map(async (transaction) => {
       let metaObject = await iota.getMessage(transaction);
 
@@ -114,7 +116,7 @@ async function updateDatabase(databaseWorks) {
           metaObject = prepObjectForSignature(metaObject);
           const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
           metaObject.address = address;
-          if (isVerified) {
+          if (isVerified && typeof metaObject.fileId !== 'undefined') {
             if (databaseWorks) {
               const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
               // only available data is added to the search
@@ -139,7 +141,9 @@ async function updateDatabase(databaseWorks) {
       }
     });
 
+    //
     if (databaseWorks) {
+      console.log(mostRecentDayNumber);
       await subscription.updateDaysLoaded(mostRecentDayNumber);
     }
   }

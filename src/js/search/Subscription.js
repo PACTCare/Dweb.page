@@ -42,6 +42,6 @@ export default class Subscription {
    * @param {number} mostRecentDayNumber
    */
   async updateDaysLoaded(mostRecentDayNumber) {
-    await this.searchDb.subscription.where('daysLoaded').aboveOrEqual(0).modify({ daysLoaded: mostRecentDayNumber });
+    await this.searchDb.subscription.toCollection().modify({ daysLoaded: mostRecentDayNumber });
   }
 }
