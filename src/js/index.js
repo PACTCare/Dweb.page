@@ -23,7 +23,7 @@ import Encryption from './crypto/Encryption';
 import getGateway from './helperFunctions/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
-import keepIPFSStuffOnline from './helperFunctions/keepIPFSStuffOnline';
+import keepIPFSStuffOnline from './ipfs/keepIPFSStuffOnline';
 import checkBrowserDirectOpen from './helperFunctions/checkBrowserDirectOpen';
 import extractMetadata from './search/extractMetadata';
 import '../css/style.css';
@@ -134,7 +134,7 @@ function unencryptedLayout(fileId) {
   if (checkBrowserDirectOpen(filename)) {
     link = GATEWAY + fileId;
   }
-  keepIPFSStuffOnline(fileId);
+  keepIPFSStuffOnline(fileId, GATEWAY);
   if (filename.includes('.htm')) {
     onlyLastTab();
     document.getElementById('doneHeadline').textContent = 'Your Dwebpage is Online!';

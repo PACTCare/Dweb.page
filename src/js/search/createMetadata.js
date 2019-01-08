@@ -46,7 +46,6 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const signature = await sig.sign(keys.privateKey, JSON.stringify(metadata));
   metadata.signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
   iota.sendMetadata(metadata);
-
   // store available data directly in database!
   if (description !== UNAVAILABLE_DESC) {
     addMetaData(metadata);

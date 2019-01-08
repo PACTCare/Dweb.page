@@ -17,6 +17,7 @@ export default class Iota {
   }
 
   createTimeTag(number) {
+    // TODO: add version number
     return `DWEB${this.iotaNode.utils.toTrytes(number.toString())}`;
   }
 

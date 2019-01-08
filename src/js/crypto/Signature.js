@@ -70,7 +70,7 @@ export default class Signature {
     try {
       keydata = SigCompression.ECPointDecompress(key);
     } catch (error) {
-      console.log(error);
+      console.log('Wrong key');
       return undefined;
     }
     return window.crypto.subtle.importKey(

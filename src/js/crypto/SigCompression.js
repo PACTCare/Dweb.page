@@ -1,4 +1,5 @@
 import Base64Url from './Base64Url';
+import addZeroIfLessThan64 from './addZeroIfLessThan64';
 
 const bigInt = require('big-integer');
 
@@ -30,7 +31,6 @@ export default class SigCompression {
     return `${prefix}${x}`;
   }
 
-
   /**
    * Point decompress secp256r1
    * @param {string} Compressed representation in hex string
@@ -44,8 +44,8 @@ export default class SigCompression {
       y = prime.subtract(y);
     }
     return {
-      x: Base64Url.FromHex(x.toString(16), 64),
-      y: Base64Url.FromHex(y.toString(16), 64),
+      x: Base64Url.FromHex(addZeroIfLessThan64(x.toString(16))),
+      y: Base64Url.FromHex(addZeroIfLessThan64(y.toString(16))),
     };
   }
 }

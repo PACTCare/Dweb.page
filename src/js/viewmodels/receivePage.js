@@ -7,6 +7,7 @@ import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import Subscription from '../search/Subscription';
 import createLog from '../log/createLog';
+import { LIST_OF_IPFS_GATEWAYS } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
 
@@ -70,17 +71,16 @@ function progressBar(percent) {
 }
 
 function propagationError() {
-  // Avilibility metadata can only be created on public IPFS nodes
-  // otherwise it's too reliable on the local network
-  if (!GATEWAY.includes('localhost')
-    && !GATEWAY.includes('127.0.0.1')
+  // Avilibility metadata can only be reliable created on participating IPFS nodes
+  console.log(LIST_OF_IPFS_GATEWAYS.includes(GATEWAY));
+  if (LIST_OF_IPFS_GATEWAYS.includes(GATEWAY)
     && typeof window.searchSelection !== 'undefined'
     && window.searchSelection.fileId !== 'na') {
     // TODO:  probably better integrate a button
-    createMetadata(window.searchSelection.fileId,
-      `${window.searchSelection.fileName}.${window.searchSelection.fileType}`,
-      GATEWAY,
-      UNAVAILABLE_DESC);
+    // createMetadata(window.searchSelection.fileId,
+    //   `${window.searchSelection.fileName}.${window.searchSelection.fileType}`,
+    //   GATEWAY,
+    //   UNAVAILABLE_DESC);
   }
   resetLoading();
   output('The file you’re requesting is difficult to load or not available at all!');

@@ -1,4 +1,4 @@
-const Explorer = ['https://thetangle.org', 'https://iotasear.ch'];
+import { TANGLE_EXPLORER } from './iotaConfig';
 
 function test(url) {
   return fetch(url, { mode: 'no-cors' });
@@ -9,8 +9,8 @@ function test(url) {
  */
 export default async function getTangleExplorer() {
   let tangleExplorerAddress;
-  for (let i = 0; i < Explorer.length; i += 1) {
-    tangleExplorerAddress = Explorer[i];
+  for (let i = 0; i < TANGLE_EXPLORER.length; i += 1) {
+    tangleExplorerAddress = TANGLE_EXPLORER[i];
     // eslint-disable-next-line no-await-in-loop
     const reply = await test(tangleExplorerAddress);
     if (reply.type === 'opaque') {
