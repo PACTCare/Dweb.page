@@ -11,7 +11,9 @@ import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import daysToLoadNr from './dayToLoadNr';
 import prepSearchText from './prepSearchText';
 import Subscription from './Subscription';
-import { UNAVAILABLE_DESC, MAX_LOAD_DAYS, MAX_LOAD_ARRAY } from './searchConfig';
+import {
+  UNAVAILABLE_DESC, MAX_LOAD_DAYS, MAX_LOAD_ARRAY, DEFAULT_DESCRIPTION,
+} from './searchConfig';
 
 const subscription = new Subscription();
 
@@ -116,6 +118,7 @@ async function updateDatabase(databaseWorks) {
             if (databaseWorks) {
               const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
               // only available data is added to the search
+              // TODO: at least two times market as unavailable
               if (metadataCount === 0 && metaObject.description !== UNAVAILABLE_DESC) {
                 metaObject.available = 1;
                 addMetaData(metaObject);
@@ -239,7 +242,13 @@ function autocomplete(inp) {
         b = document.createElement('DIV');
         const span = document.createElement('SPAN');
         span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
-        span.innerHTML += `<span style='font-size: 12px;'><br>${prepSearchText(searchItems[i].description, 140)}<br>${searchItems[i].fileId} - ${timeString}</span>`;
+        const description = prepSearchText(searchItems[i].description, 140);
+        console.log(`des: ${description}`);
+        if (description === DEFAULT_DESCRIPTION) {
+          span.innerHTML += `<span style='font-size: 12px;'><br>${searchItems[i].fileId} - ${timeString}</span>`;
+        } else {
+          span.innerHTML += `<span style='font-size: 12px;'><br>${description}<br>${searchItems[i].fileId} - ${timeString}</span>`;
+        }
         span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
         span.addEventListener('click', () => {
           const inputVal = span.getElementsByTagName('input')[0].value;

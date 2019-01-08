@@ -1,5 +1,5 @@
 import Cookie from '../services/Cookie';
-import getGateway from '../helperFunctions/getGateway';
+import getGateway from '../ipfs/getGateway';
 
 const GATEWAY = getGateway();
 const checkBoxCookie = new Cookie('Checkbox');

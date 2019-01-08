@@ -36,7 +36,6 @@ function searchMenu(inputId) {
     if (ids[i] === inputId) {
       // global object used in the search.js
       window.searchKind = ids[i];
-      // trigger input event
       const event = document.createEvent('Event');
       event.initEvent('input', true, true);
       document.getElementById('firstField').dispatchEvent(event);
@@ -92,6 +91,8 @@ function searchInit() {
         document.getElementById('searchload').click();
       }
     });
+  document.getElementById('messagesSearch').textContent = '';
+  document.getElementById('markUnavailable').style.display = 'none';
   document.getElementById('messagesReceivePage').textContent = '';
   document.getElementById('loadProgressSearch').style.display = 'none';
   document.getElementById('firstField').value = '';

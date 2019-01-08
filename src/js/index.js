@@ -20,7 +20,7 @@ import './viewmodels/navigation';
 import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
 import Encryption from './crypto/Encryption';
-import getGateway from './helperFunctions/getGateway';
+import getGateway from './ipfs/getGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
 import keepIPFSStuffOnline from './ipfs/keepIPFSStuffOnline';
@@ -36,6 +36,7 @@ import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
+import { DEFAULT_DESCRIPTION } from './search/searchConfig';
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
@@ -51,7 +52,7 @@ const GATEWAY = getGateway();
 const ISMOBILE = checkIsMobile();
 
 let sizeLimit = 1000; // In MB
-let describtion = 'Not yet available';
+let describtion = DEFAULT_DESCRIPTION;
 let filename;
 
 // no upload limit if it's running local
@@ -178,7 +179,7 @@ function tagLayout(fileId) {
     document.getElementById('afterTags').style.display = 'block';
     document.getElementById('askForTags').style.display = 'none';
     unencryptedLayout(fileId);
-    if (describtion === 'Not yet available' && tagsString.length > 0) {
+    if (describtion === DEFAULT_DESCRIPTION && tagsString.length > 0) {
       describtion = tagsString.trim();
     } else {
       // && marks the beginning of the describtion/end of tags

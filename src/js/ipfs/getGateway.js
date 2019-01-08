@@ -1,3 +1,7 @@
+/**
+ * Get the current gateway address
+ * @returns {string} gateway address
+ */
 export default function getGateway() {
   const HOST = window.location.hostname;
   const PROTOCOL = window.location.protocol;

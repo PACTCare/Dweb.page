@@ -1,7 +1,7 @@
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
 import Encryption from '../crypto/Encryption';
-import getGateway from '../helperFunctions/getGateway';
+import getGateway from '../ipfs/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
@@ -71,19 +71,25 @@ function progressBar(percent) {
 }
 
 function propagationError() {
-  // Avilibility metadata can only be reliable created on participating IPFS nodes
+  resetLoading();
+  output('The file you’re requesting is difficult to load or not available at all!');
+  console.log('test on public gateway');
   console.log(LIST_OF_IPFS_GATEWAYS.includes(GATEWAY));
+  // Availability metadata can only be reliable created on participating IPFS nodes
   if (LIST_OF_IPFS_GATEWAYS.includes(GATEWAY)
     && typeof window.searchSelection !== 'undefined'
     && window.searchSelection.fileId !== 'na') {
-    // TODO:  probably better integrate a button
-    // createMetadata(window.searchSelection.fileId,
-    //   `${window.searchSelection.fileName}.${window.searchSelection.fileType}`,
-    //   GATEWAY,
-    //   UNAVAILABLE_DESC);
+    document.getElementById('markUnavailable').style.display = 'inline-block';
+    document.getElementById('markUnavailable').addEventListener('click', () => {
+      createMetadata(window.searchSelection.fileId,
+        `${window.searchSelection.fileName}.${window.searchSelection.fileType}`,
+        GATEWAY,
+        UNAVAILABLE_DESC);
+      document.getElementById('firstField').value = '';
+      document.getElementById('messagesSearch').textContent = '';
+      document.getElementById('markUnavailable').style.display = 'none';
+    });
   }
-  resetLoading();
-  output('The file you’re requesting is difficult to load or not available at all!');
 }
 
 /**
@@ -118,6 +124,7 @@ async function load() {
     output('You have entered an invalid filename!');
   } else {
     output('');
+    document.getElementById('markUnavailable').style.display = 'none';
     const oReq = new XMLHttpRequest();
     oReq.onloadstart = function onloadstart() {
       showLoadProgress();

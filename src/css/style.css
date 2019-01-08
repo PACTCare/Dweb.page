@@ -263,6 +263,10 @@ pre {
 #historyLongText{
   margin-top: 52px;
 }
+#markUnavailable{
+  width: 10rem;
+  margin-top: .6rem;
+}
 
 .longText {
   max-width: 700px;
