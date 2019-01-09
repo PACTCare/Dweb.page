@@ -25,6 +25,8 @@ export default class MetadataDb {
       addMetadata(metadata);
       const localMeta = metadata;
       localMeta.available = 0;
+      // To make sure availability data is provided by different addresses
+      localMeta.availAddress = 'na';
       await this.db.metadata.add(localMeta);
     }
   }
@@ -36,6 +38,16 @@ export default class MetadataDb {
   async noLongerAvailable(metadata) {
     const metadataCount = await this.db.metadata.where('fileId').equals(metadata.fileId).count();
     if (metadataCount > 0) {
+      await this.db.metadata.where('fileId').equals(metadata.fileId).modify({ available: NOLONGER_AVAILABLE_LIMIT });
+    }
+  }
+
+  async updateAvailability(metadata) {
+    const dbObj = await this.db.metadata.where('fileId').equals(metadata.fileId);
+    if (dbObj.available === 0) {
+      await this.db.metadata.where('fileId').equals(metadata.fileId).modify({ available: 1, availAddress: metadata.address });
+    } else if (dbObj.available === 1 && dbObj.availAddress !== metadata.address) {
+      // if second person with different address says this file is no longer available remove it
       await this.db.metadata.where('fileId').equals(metadata.fileId).modify({ available: NOLONGER_AVAILABLE_LIMIT });
     }
   }

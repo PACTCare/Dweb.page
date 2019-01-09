@@ -76,6 +76,7 @@ function propagationError() {
   console.log('test on public gateway');
   console.log(LIST_OF_IPFS_GATEWAYS.includes(GATEWAY));
   // Availability metadata can only be reliable created on participating IPFS nodes
+  // And only for data which is already be part of the search engine
   if (LIST_OF_IPFS_GATEWAYS.includes(GATEWAY)
     && typeof window.searchSelection !== 'undefined'
     && window.searchSelection.fileId !== 'na') {

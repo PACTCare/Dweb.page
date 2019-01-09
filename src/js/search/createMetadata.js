@@ -22,6 +22,7 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const keys = await sig.getKeys();
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
+  const ownIotaAddress = publicTryteKey.slice(0, 81);
   const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
   let dbWorks = true;
 
@@ -51,6 +52,7 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   // store available data directly in database!
   if (description !== UNAVAILABLE_DESC) {
     iota.sendMetadata(metadata);
+    metadata.address = ownIotaAddress;
     if (dbWorks) {
       await new MetadataDb().add(metadata);
     } else {

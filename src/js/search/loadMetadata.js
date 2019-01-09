@@ -7,27 +7,46 @@ import daysToLoadNr from './dayToLoadNr';
 import SubscriptionDb from './SubscriptionDb';
 import MetadataDb from './MetadataDb';
 import {
-  LOAD_DAYS_UPDATE, LOAD_DAYS_BEGINNING, MAX_LOAD_ARRAY,
+  LOAD_DAYS_UPDATE, LOAD_DAYS_BEGINNING, MAX_LOAD_ARRAY, TAG_PREFIX_UNAVAILABLE,
 } from './searchConfig';
 
 const mostRecentDayNumber = createDayNumber();
 const subscriptionDb = new SubscriptionDb();
 const metadataDb = new MetadataDb();
 const iota = new Iota();
+const sig = new Signature();
+
+async function returnVerifiedObj(metaObject) {
+  let localObj = metaObject;
+  localObj.publicTryteKey = localObj.address + localObj.publicTryteKey;
+  const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(localObj.publicTryteKey));
+  if (typeof publicKey !== 'undefined') {
+    const { signature, address } = localObj;
+    localObj = prepObjectForSignature(localObj);
+    const isVerified = await sig.verify(publicKey, signature, JSON.stringify(localObj));
+    if (isVerified && typeof localObj.fileId !== 'undefined') {
+      localObj.address = address;
+      return localObj;
+    }
+  }
+  return undefined;
+}
 
 /**
  * Load new metadata from subscript addresses
- * @param {Number} mostRecentDayNumber
  * @param {Array} subscribeArray
- * @param {Object} iota
+ * @param {Boolean} loadUnavailableData
  */
-function loadSubscription(subscribeArray) {
+function loadSubscription(subscribeArray, loadUnavailableData = false) {
   const awaitTransactions = [];
   let localDayNumber = mostRecentDayNumber;
   for (let i = 0; i < subscribeArray.length; i += 1) {
     const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
     while (localDayNumber >= daysLoaded) {
-      const tag = iota.createTimeTag(localDayNumber);
+      let tag = iota.createTimeTag(localDayNumber);
+      if (loadUnavailableData) {
+        tag = TAG_PREFIX_UNAVAILABLE + tag;
+      }
       awaitTransactions.push(iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag));
       localDayNumber -= 1;
     }
@@ -37,9 +56,7 @@ function loadSubscription(subscribeArray) {
 
 /**
  * Load metadata by day
- * @param {Number} mostRecentDayNumber
  * @param {Number} recentDayLoad
- * @param {Object} iota
  */
 function loadMetadataByDay(recentDayLoad) {
   let recentDaysLoaded = 0;
@@ -55,21 +72,25 @@ function loadMetadataByDay(recentDayLoad) {
   return awaitTransactions;
 }
 
-// function loadAvailibilityData() {
-// TODO: at least two times market as unavailable
-// } else if (metadataCount === 0 && metaObject.description === UNAVAILABLE_DESC) {
-//   metaObject.available = 0;
-//   try {
-//     await searchDb.metadata.add(metaObject);
-//   } catch (error) {
-//     console.log(error);
-//     console.log(metaObject);
-//   }
-// } else if (metaObject.description === UNAVAILABLE_DESC) {
-//   // removeMetaData(metaObject);
-//   await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
-// }
-// }
+/**
+ * Load and add availibility data
+ * @param {Array} subscribeArray
+ */
+async function loadAvailibilityData(subscribeArray) {
+  const logFlags = {};
+  let unavailableTransactions = await Promise.all(loadSubscription(subscribeArray, true));
+  unavailableTransactions = unavailableTransactions.slice(0, MAX_LOAD_ARRAY);
+  unavailableTransactions.map(async (transaction) => {
+    let metaObject = await iota.getMessage(transaction);
+    if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.address])) {
+      logFlags[metaObject.address] = true;
+      metaObject = await returnVerifiedObj(metaObject);
+      if (metaObject !== 'undefined') {
+        await metadataDb.updateAvailability(metaObject);
+      }
+    }
+  });
+}
 
 /**
  * Load most recent metadata and stores it
@@ -77,14 +98,14 @@ function loadMetadataByDay(recentDayLoad) {
  */
 export default async function loadMetadata(databaseWorks) {
   await iota.nodeInitialization();
-  const sig = new Signature();
   const logFlags = {};
   let awaitTransactions = [];
   let recentDayLoad = LOAD_DAYS_UPDATE;
+  let subscribeArray;
 
   if (databaseWorks) {
     await subscriptionDb.updateDaysLoaded(mostRecentDayNumber);
-    const subscribeArray = await subscriptionDb.loadActiveSubscription();
+    subscribeArray = await subscriptionDb.loadActiveSubscription();
     if (subscribeArray.length === 0) {
       recentDayLoad = LOAD_DAYS_BEGINNING;
     } else {
@@ -104,25 +125,21 @@ export default async function loadMetadata(databaseWorks) {
       let metaObject = await iota.getMessage(transaction);
       if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.fileId])) {
         logFlags[metaObject.fileId] = true;
-        metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
-        const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
-
-        if (typeof publicKey !== 'undefined') {
-          const { signature, address } = metaObject;
-          metaObject = prepObjectForSignature(metaObject);
-          const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
-          metaObject.address = address;
-          if (isVerified && typeof metaObject.fileId !== 'undefined') {
-            if (databaseWorks) {
-              await metadataDb.add(metaObject);
-            } else {
-              addMetadata(metaObject);
-            }
+        metaObject = await returnVerifiedObj(metaObject);
+        if (metaObject !== 'undefined') {
+          if (databaseWorks) {
+            await metadataDb.add(metaObject);
+          } else {
+            addMetadata(metaObject);
           }
         }
       }
     }));
   }
 
-  // TODO: Loadavailibility data
+  // Without database only recent data is loaded,
+  // so no available system necessary
+  if (subscribeArray.length > 0) {
+    await loadAvailibilityData(subscribeArray);
+  }
 }

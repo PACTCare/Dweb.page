@@ -1,8 +1,10 @@
 import createDayNumber from '../helperFunctions/createDayNumber';
 import getHealthyNode from './getHealthyNode';
 import {
-  TAG_VERSION_NR, TAG_PREFIX_PRIVATE_DOWNLOAD,
-  TAG_PREFIX_PRIVATE_UPLOAD, TAG_PREFIX_UNAVAILABLE,
+  TAG_VERSION_NR,
+  TAG_PREFIX_PRIVATE_DOWNLOAD,
+  TAG_PREFIX_PRIVATE_UPLOAD,
+  TAG_PREFIX_UNAVAILABLE,
 } from '../search/searchConfig';
 
 
