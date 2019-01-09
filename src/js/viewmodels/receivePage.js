@@ -5,7 +5,7 @@ import getGateway from '../ipfs/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
-import Subscription from '../search/Subscription';
+import SubscriptionDb from '../search/SubscriptionDb';
 import createLog from '../log/createLog';
 import { LIST_OF_IPFS_GATEWAYS } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
@@ -169,7 +169,7 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        await new Subscription().addSubscribtion(window.searchSelection.address);
+        await new SubscriptionDb().addSubscribtion(window.searchSelection.address);
         const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser

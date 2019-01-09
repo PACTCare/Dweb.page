@@ -1,5 +1,10 @@
 import createDayNumber from '../helperFunctions/createDayNumber';
 import getHealthyNode from './getHealthyNode';
+import {
+  TAG_VERSION_NR, TAG_PREFIX_PRIVATE_DOWNLOAD,
+  TAG_PREFIX_PRIVATE_UPLOAD, TAG_PREFIX_UNAVAILABLE,
+} from '../search/searchConfig';
+
 
 /**
  * Class contains all IOTA related functions
@@ -16,9 +21,8 @@ export default class Iota {
     this.iotaNode = await getHealthyNode();
   }
 
-  createTimeTag(number) {
-    // TODO: add version number
-    return `DWEB${this.iotaNode.utils.toTrytes(number.toString())}`;
+  createTimeTag(dayNumber) {
+    return `DWEBV${TAG_VERSION_NR}T${this.iotaNode.utils.toTrytes(dayNumber.toString())}`;
   }
 
   send(tryteAddress, tryteMessage, tag) {
@@ -47,10 +51,14 @@ export default class Iota {
    * Creates entry on tangle: unencrypted files need metadata,
    * encrypted files are found by file hash
    * @param {object} metadata
+   * @param {boolean} unavailableData
    */
-  sendMetadata(metadata) {
+  sendMetadata(metadata, unavailableData = false) {
     const iotaJson = metadata;
-    const tag = this.createTimeTag(createDayNumber());
+    let tag = this.createTimeTag(createDayNumber());
+    if (unavailableData) {
+      tag = TAG_PREFIX_UNAVAILABLE + tag;
+    }
     const tryteAddress = metadata.publicTryteKey.slice(0, 81);
     iotaJson.publicTryteKey = metadata.publicTryteKey.slice(81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(iotaJson));
@@ -65,9 +73,9 @@ export default class Iota {
   sendLog(logEntry, isUpload) {
     const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
     const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
-    let tag = `PD${this.createTimeTag(createDayNumber())}`; // P = Private, D = Download
+    let tag = TAG_PREFIX_PRIVATE_DOWNLOAD + this.createTimeTag(createDayNumber());
     if (isUpload) {
-      tag = `PU${this.createTimeTag(createDayNumber())}`; // P = Private, U = Upload
+      tag = TAG_PREFIX_PRIVATE_UPLOAD + this.createTimeTag(createDayNumber());
     }
     this.send(tryteAddress, tryteMessage, tag);
   }
@@ -185,27 +193,6 @@ export default class Iota {
             }
           }
 
-          resolve(obj);
-        }
-      });
-    });
-  }
-
-  /**
-   *
-   * @param {string} transaction
-   */
-  getAddress(transaction) {
-    return new Promise((resolve, reject) => {
-      this.iotaNode.api.getBundle(transaction, (error, sucess2) => {
-        if (error) {
-          reject(error);
-        } else {
-          const message = sucess2[0].signatureMessageFragment;
-          const [usedMessage] = message.split(
-            '99999999999999999999999999999999999999999999999999',
-          );
-          const obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
           resolve(obj);
         }
       });

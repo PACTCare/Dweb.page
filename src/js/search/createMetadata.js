@@ -1,8 +1,9 @@
 import Iota from '../iota/Iota';
-import addMetaData from './addMetaData';
+import addMetaData from './addMetadata';
 import prepMetaData from './prepMetaData';
 import Signature from '../crypto/Signature';
 import lobDb from '../log/logDb';
+import MetadataDb from './MetadataDb';
 import { UNAVAILABLE_DESC } from './searchConfig';
 import removeMetaData from './removeMetaData';
 
@@ -22,6 +23,7 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const publicHexKey = await sig.exportPublicKey(keys.publicKey);
   const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
   const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
+  let dbWorks = true;
 
   // Unavailable metadata doesn't need to be stored in logDb
   if (description !== UNAVAILABLE_DESC) {
@@ -30,6 +32,7 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
         fileId, filename: fileNameType, time, isUpload: true, isPrivate: false, folder: 'none',
       });
     } catch (error) {
+      dbWorks = false;
       console.log(error);
     }
   }
@@ -45,11 +48,19 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   metadata = prepMetaData(metadata);
   const signature = await sig.sign(keys.privateKey, JSON.stringify(metadata));
   metadata.signature = btoa(String.fromCharCode(...new Uint8Array(signature)));
-  iota.sendMetadata(metadata);
   // store available data directly in database!
   if (description !== UNAVAILABLE_DESC) {
-    addMetaData(metadata);
+    iota.sendMetadata(metadata);
+    if (dbWorks) {
+      await new MetadataDb().add(metadata);
+    } else {
+      addMetaData(metadata);
+    }
   } else {
     removeMetaData(metadata);
+    iota.sendMetadata(metadata, true);
+    if (dbWorks) {
+      await new MetadataDb().noLongerAvailable(metadata);
+    }
   }
 }

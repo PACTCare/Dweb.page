@@ -1,6 +1,8 @@
+import { DEFAULT_DESCRIPTION } from './searchConfig';
+
 export default function extractMetadata(readerResult, name) {
   // unencrypted upload, metadata stored on IOTA!
-  let describtion = 'Not yet available';
+  let describtion = DEFAULT_DESCRIPTION;
   let filename = name;
   const enc = new TextDecoder('utf-8');
   const text = enc.decode(readerResult);

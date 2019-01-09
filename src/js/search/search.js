@@ -1,21 +1,14 @@
 import MiniSearch from 'minisearch';
-import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
-import createDayNumber from '../helperFunctions/createDayNumber';
-import addMetaData from './addMetaData';
 import removeMetaData from './removeMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
-import searchDb from './searchDb';
-import Signature from '../crypto/Signature';
-import prepObjectForSignature from '../crypto/prepObjectForSignature';
-import daysToLoadNr from './dayToLoadNr';
+import MetadataDb from './MetadataDb';
 import prepSearchText from './prepSearchText';
-import Subscription from './Subscription';
-import {
-  UNAVAILABLE_DESC, MAX_LOAD_DAYS, MAX_LOAD_ARRAY, DEFAULT_DESCRIPTION,
-} from './searchConfig';
+import SubscriptionDb from './SubscriptionDb';
+import loadMetadata from './loadMetadata';
+import { DEFAULT_DESCRIPTION } from './searchConfig';
 
-const subscription = new Subscription();
+const subscription = new SubscriptionDb();
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -48,119 +41,17 @@ function inputValToWinDowSearchSelection(inputVal) {
 }
 
 /**
- * Load most recent database entries
- * @param {boolean} databaseWorks
- */
-async function updateDatabase(databaseWorks) {
-  const iota = new Iota();
-  await iota.nodeInitialization();
-  const sig = new Signature();
-  const logFlags = {};
-
-  // returns the highest number!
-  const mostRecentDayNumber = createDayNumber();
-  let dayNumber = mostRecentDayNumber;
-  const awaitTransactions = [];
-  let firstTime = false;
-  let recentDaysLoaded = 0;
-  let maxRecentDayLoad = 1;
-
-  if (databaseWorks) {
-    const subscribeArray = await subscription.loadActiveSubscription();
-    if (subscribeArray.length === 0) {
-      console.log('First Load');
-      firstTime = true;
-      maxRecentDayLoad = MAX_LOAD_DAYS;
-    }
-
-    if (!firstTime) {
-      for (let i = 0; i < subscribeArray.length; i += 1) {
-        const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
-        while (dayNumber >= daysLoaded) {
-          const tag = iota.createTimeTag(dayNumber);
-          awaitTransactions.push(
-            iota.getTransactionByAddressAndTag(subscribeArray[i].address, tag),
-          );
-          recentDaysLoaded += 1;
-          dayNumber -= 1;
-        }
-      }
-    } else {
-      maxRecentDayLoad = MAX_LOAD_DAYS;
-    }
-
-    dayNumber = mostRecentDayNumber;
-    recentDaysLoaded = 0;
-    while (dayNumber >= 0 && recentDaysLoaded < maxRecentDayLoad) {
-      const tag = iota.createTimeTag(dayNumber);
-      console.log(tag);
-      awaitTransactions.push(iota.getTransactionByTag(tag));
-      recentDaysLoaded += 1;
-      dayNumber -= 1;
-    }
-
-    const transactionsArrays = await Promise.all(awaitTransactions);
-    let transactions = [].concat(...transactionsArrays);
-    transactions = transactions.slice(0, MAX_LOAD_ARRAY);
-    console.log(transactions.length);
-    transactions.map(async (transaction) => {
-      let metaObject = await iota.getMessage(transaction);
-
-      // Unavailable data needs to be loaded even if the file id already exists
-      if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.fileId] || metaObject.description === UNAVAILABLE_DESC)) {
-        logFlags[metaObject.fileId] = true;
-        metaObject.publicTryteKey = metaObject.address + metaObject.publicTryteKey;
-        const publicKey = await sig.importPublicKey(iota.tryteKeyToHex(metaObject.publicTryteKey));
-        if (typeof publicKey !== 'undefined') {
-          const { signature, address } = metaObject;
-          metaObject = prepObjectForSignature(metaObject);
-          const isVerified = await sig.verify(publicKey, signature, JSON.stringify(metaObject));
-          metaObject.address = address;
-          if (isVerified && typeof metaObject.fileId !== 'undefined') {
-            if (databaseWorks) {
-              const metadataCount = await searchDb.metadata.where('fileId').equals(metaObject.fileId).count();
-              // only available data is added to the search
-              // TODO: at least two times market as unavailable
-              if (metadataCount === 0 && metaObject.description !== UNAVAILABLE_DESC) {
-                metaObject.available = 1;
-                addMetaData(metaObject);
-                await searchDb.metadata.add(metaObject);
-              } else if (metadataCount === 0 && metaObject.description === UNAVAILABLE_DESC) {
-                metaObject.available = 0;
-                await searchDb.metadata.add(metaObject);
-              } else if (metaObject.description === UNAVAILABLE_DESC) {
-                removeMetaData(metaObject);
-                await searchDb.metadata.where('fileId').equals(metaObject.fileId).modify({ available: 0 });
-              }
-            } else if (metaObject.description !== UNAVAILABLE_DESC) {
-              // TODO: Available system doens't work without a database
-              addMetaData(metaObject);
-            }
-          }
-        }
-      }
-    });
-
-    //
-    if (databaseWorks) {
-      console.log(mostRecentDayNumber);
-      await subscription.updateDaysLoaded(mostRecentDayNumber);
-    }
-  }
-}
-
-/**
  * Initialization search
  */
 async function startSearch() {
   try {
-    window.metadata = await searchDb.metadata.where('available').equals(1).toArray();
+    window.metadata = await new MetadataDb().getMetadata();
     window.miniSearch.addAll(window.metadata);
-    updateDatabase(true);
+    loadMetadata(true);
   } catch (err) {
     console.log(err);
     window.metadata = [];
-    updateDatabase(false);
+    loadMetadata(false);
   }
 }
 
@@ -247,8 +138,8 @@ function autocomplete(inp) {
         const span = document.createElement('SPAN');
         span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
         const description = prepSearchText(searchItems[i].description, 140);
-        console.log(`des: ${description}`);
-        if (description === DEFAULT_DESCRIPTION) {
+        const lengthTest = (` ${description}`);
+        if (description === DEFAULT_DESCRIPTION || lengthTest.length <= 3) {
           span.innerHTML += `<span style='font-size: 12px;'><br>${searchItems[i].fileId} - ${timeString}</span>`;
         } else {
           span.innerHTML += `<span style='font-size: 12px;'><br>${description}<br>${searchItems[i].fileId} - ${timeString}</span>`;

@@ -2,7 +2,7 @@
  * Adds the metadata object to the search engine
  * @param {object} metadata
  */
-export default function addMetaData(metadata) {
+export default function addMetadata(metadata) {
   window.metadata.push(metadata);
   window.miniSearch.add({
     fileId: metadata.fileId,

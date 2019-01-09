@@ -10,6 +10,7 @@ import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import getTangleExplorer from '../iota/getTangleExplorer';
 import createDayNumber from '../helperFunctions/createDayNumber';
 import daysToLoadNr from '../search/dayToLoadNr';
+import { TAG_PREFIX_PRIVATE_DOWNLOAD } from '../search/searchConfig';
 
 const sig = new Signature();
 const iota = new Iota();
@@ -120,7 +121,7 @@ async function loadInfoFromTangle(logsDb) {
       if (logObject.isPrivate) {
         const address = iota.convertHashToAddress(logObject.fileId);
         while (dayNumber >= daysLoaded) {
-          const tag = `PD${iota.createTimeTag(dayNumber)}`; // PD = Private Download
+          const tag = TAG_PREFIX_PRIVATE_DOWNLOAD + iota.createTimeTag(dayNumber);
           awaitTransactions.push(iota.getTransactionByAddressAndTag(address, tag));
           dayNumber -= 1;
         }

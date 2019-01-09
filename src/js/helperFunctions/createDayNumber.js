@@ -1,5 +1,5 @@
 /**
- * Returns the number of days since 2018 12 30
+ * Returns the number of days since 2019 01 09
  */
 export default function createDayNumber() {
   const oneDay = 24 * 60 * 60 * 1000;
@@ -13,7 +13,7 @@ export default function createDayNumber() {
   if (mm < 10) {
     mm = `0${mm}`;
   }
-  const firstDate = new Date('2018-12-30'); //  ISO 8601 syntax (YYYY-MM-DD)
+  const firstDate = new Date('2019-01-09'); //  ISO 8601 syntax (YYYY-MM-DD)
   const secondDate = new Date(`${yyyy}-${mm}-${dd}`);
   return Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
 }
