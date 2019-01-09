@@ -78,18 +78,21 @@ function loadMetadataByDay(recentDayLoad) {
  */
 async function loadAvailibilityData(subscribeArray) {
   const logFlags = {};
-  let unavailableTransactions = await Promise.all(loadSubscription(subscribeArray, true));
+  const transactionsArrays = await Promise.all(loadSubscription(subscribeArray, true));
+  let unavailableTransactions = [].concat(...transactionsArrays);
   unavailableTransactions = unavailableTransactions.slice(0, MAX_LOAD_ARRAY);
-  unavailableTransactions.map(async (transaction) => {
-    let metaObject = await iota.getMessage(transaction);
-    if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.address])) {
-      logFlags[metaObject.address] = true;
-      metaObject = await returnVerifiedObj(metaObject);
-      if (metaObject !== 'undefined') {
-        await metadataDb.updateAvailability(metaObject);
+  if (unavailableTransactions.length > 0) {
+    unavailableTransactions.map(async (transaction) => {
+      let metaObject = await iota.getMessage(transaction);
+      if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.address])) {
+        logFlags[metaObject.address] = true;
+        metaObject = await returnVerifiedObj(metaObject);
+        if (metaObject !== 'undefined') {
+          await metadataDb.updateAvailability(metaObject);
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 /**
