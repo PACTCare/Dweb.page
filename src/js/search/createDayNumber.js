@@ -1,5 +1,6 @@
 /**
  * Returns the number of days since 2019 01 09
+ * @returns {Number} Daynumber
  */
 export default function createDayNumber() {
   const oneDay = 24 * 60 * 60 * 1000;

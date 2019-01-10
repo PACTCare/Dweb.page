@@ -298,6 +298,7 @@ function readFile(e) {
     if (document.getElementById('endToEndCheck').checked) {
       encryptBeforeUpload(reader);
     } else {
+      console.log(reader.result);
       const [nameMeta, desMeta] = extractMetadata(reader.result, filename);
       filename = nameMeta;
       describtion = desMeta;

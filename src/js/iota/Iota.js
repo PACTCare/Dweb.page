@@ -1,4 +1,4 @@
-import createDayNumber from '../helperFunctions/createDayNumber';
+import createDayNumber from '../search/createDayNumber';
 import getHealthyNode from './getHealthyNode';
 import {
   TAG_VERSION_NR,

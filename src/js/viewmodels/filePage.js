@@ -8,7 +8,7 @@ import logDb from '../log/logDb';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';
 import getTangleExplorer from '../iota/getTangleExplorer';
-import createDayNumber from '../helperFunctions/createDayNumber';
+import createDayNumber from '../search/createDayNumber';
 import daysToLoadNr from '../search/dayToLoadNr';
 import { TAG_PREFIX_PRIVATE_DOWNLOAD } from '../search/searchConfig';
 

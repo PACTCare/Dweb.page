@@ -173,6 +173,7 @@ function autocomplete(inp) {
       }
     }
   });
+
   inp.addEventListener('keydown', function keydown(e) {
     let x = document.getElementById(`${this.id}autocomplete-list`);
     if (x) x = x.getElementsByTagName('div');
@@ -184,6 +185,16 @@ function autocomplete(inp) {
       addActive(x);
     }
   });
+
+  document
+    .getElementById('firstField')
+    .addEventListener('keydown', (event) => {
+      if (event.keyCode === 13) {
+        closeAllLists();
+        event.preventDefault();
+        document.getElementById('searchload').click();
+      }
+    });
 }
 
 autocomplete(document.getElementById('firstField'));

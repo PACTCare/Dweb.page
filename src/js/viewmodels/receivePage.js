@@ -12,6 +12,7 @@ import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
 
 const GATEWAY = getGateway();
+const errorMessage = 'The file you’re requesting is difficult to load or not available at all!';
 let fakeProgress = 0;
 let progressId;
 let timeOutPropagation;
@@ -72,9 +73,7 @@ function progressBar(percent) {
 
 function propagationError() {
   resetLoading();
-  output('The file you’re requesting is difficult to load or not available at all!');
-  console.log('test on public gateway');
-  console.log(LIST_OF_IPFS_GATEWAYS.includes(GATEWAY));
+  output(errorMessage);
   // Availability metadata can only be reliable created on participating IPFS nodes
   // And only for data which is already be part of the search engine
   if (LIST_OF_IPFS_GATEWAYS.includes(GATEWAY)
@@ -198,7 +197,7 @@ async function load() {
       // Ready State 4 = operation completed
       if (oReq.readyState === 4) {
         if (oReq.status !== 200) {
-          output('You have entered an invalid filename!');
+          output(errorMessage);
         }
       }
     };

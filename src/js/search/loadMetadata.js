@@ -1,5 +1,5 @@
 import Iota from '../iota/Iota';
-import createDayNumber from '../helperFunctions/createDayNumber';
+import createDayNumber from './createDayNumber';
 import addMetadata from './addMetadata';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';

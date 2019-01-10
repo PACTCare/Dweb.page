@@ -1,11 +1,18 @@
 import { DEFAULT_DESCRIPTION } from './searchConfig';
 
+/**
+ * Extracts the metadata out of an arraybuffer
+ * Currently only works for html and txt
+ * @param {ArrayBuffer} readerResult
+ * @param {string} name
+ * @returns {Array} [filename, describtion]
+ */
 export default function extractMetadata(readerResult, name) {
-  // unencrypted upload, metadata stored on IOTA!
   let describtion = DEFAULT_DESCRIPTION;
   let filename = name;
   const enc = new TextDecoder('utf-8');
   const text = enc.decode(readerResult);
+  // TODO: integrate support for more file types
   if (text.toUpperCase().includes('!DOCTYPE HTML')) {
     describtion = (new DOMParser()).parseFromString(text, 'text/html').documentElement.textContent.trim();
     if (text.includes('<title>') && text.includes('</title>')) {

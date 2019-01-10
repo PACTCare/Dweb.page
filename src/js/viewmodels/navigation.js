@@ -83,14 +83,6 @@ function searchInit() {
   searchMenu('all');
   document.getElementById('searchBox').style.display = 'block';
   document.getElementById('receiveTextBox').style.display = 'none';
-  document
-    .getElementById('firstField')
-    .addEventListener('keydown', (event) => {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        document.getElementById('searchload').click();
-      }
-    });
   document.getElementById('messagesSearch').textContent = '';
   document.getElementById('markUnavailable').style.display = 'none';
   document.getElementById('messagesReceivePage').textContent = '';

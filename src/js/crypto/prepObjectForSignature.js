@@ -1,6 +1,7 @@
 /**
  * Remove object parts which aren't used for signing
- * @param { object } obj
+ * @param {Object} obj
+ * @returns {Object} obj
  */
 export default function prepObjectForSignature(obj) {
   const localObj = obj;

@@ -34,7 +34,7 @@ export default class SigCompression {
   /**
    * Point decompress secp256r1
    * @param {string} Compressed representation in hex string
-   * @return {string} Uncompressed representation in base64url string
+   * @return {Object} Uncompressed representation in base64url string
    */
   static ECPointDecompress(comp) {
     const signY = new Number(comp[1]) - 2;

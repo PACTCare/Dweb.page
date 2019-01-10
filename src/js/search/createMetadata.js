@@ -25,7 +25,6 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   const ownIotaAddress = publicTryteKey.slice(0, 81);
   const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
   let dbWorks = true;
-
   // Unavailable metadata doesn't need to be stored in logDb
   if (description !== UNAVAILABLE_DESC) {
     try {
@@ -34,7 +33,6 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
       });
     } catch (error) {
       dbWorks = false;
-      console.log(error);
     }
   }
   let metadata = {
@@ -61,8 +59,10 @@ export default async function createMetadata(fileId, fileNameType, gateway, desc
   } else {
     removeMetaData(metadata);
     iota.sendMetadata(metadata, true);
-    if (dbWorks) {
+    try {
       await new MetadataDb().noLongerAvailable(metadata);
+    } catch (error) {
+      console.log(error);
     }
   }
 }
