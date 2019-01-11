@@ -140,10 +140,10 @@ function unencryptedLayout(fileId) {
   if (filename.includes('.htm')) {
     onlyLastTab();
     document.getElementById('doneHeadline').textContent = 'Your Dwebpage is Online!';
-    document.getElementById('fileAvailable').innerHTML = `<p>Your distributed webpage is now available on IPFS: <a href='${link}' target='_blank'>${fileId}</a>. </p> <p style='margin-bottom: 0px;'>Send us your hash (plus feedback) via <a href="mailto:info@pact.online?subject=Keep hash online&body=Hi, %0D%0A %0D%0A Please keep the following hash online (called pinning): ${fileId}  %0D%0A Here are my feedback/ideas regarding pact.online: %0D%0A %0D%0A %0D%0A Regards,">mail</a> to keep it online permanently.</p>`;
+    document.getElementById('fileAvailable').innerHTML = `<p>Your distributed webpage is now available on IPFS: <a href='${link}' target='_blank'>${fileId}</a>. </p> <p style='margin-bottom: 0px;'>Send us your hash (plus feedback) via <a href="mailto:info@pact.online?subject=Keep hash online&body=Hi, %0D%0A %0D%0A Please keep the following hash online (called pinning): ${fileId}  %0D%0A Here are my feedback/ideas regarding dweb.page: %0D%0A %0D%0A %0D%0A Regards,">mail</a> to keep it online permanently.</p>`;
   } else {
     document.getElementById('doneHeadline').textContent = 'Step 2: Done';
-    document.getElementById('emailSharer').href = `mailto:?subject=Distributed File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A I just shared a file with you on pact.online. You can access it here: %0D%0A ${encodeURIComponent(
+    document.getElementById('emailSharer').href = `mailto:?subject=Distributed File Sharing with Dweb.page&body=Hi, %0D%0A %0D%0A I just shared a file with you on dweb.page. You can access it here: %0D%0A ${encodeURIComponent(
       link,
     )}%0D%0A %0D%0A Best Regards,`;
     if (ISMOBILE) {
@@ -203,7 +203,7 @@ function encryptedLayout(fileId) {
   const link = `${window.location.href}?id=${fileId}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').textContent = link;
-  document.getElementById('emailSharer').href = `${'mailto:?subject=Distributed and Secure File Sharing with Pact.online&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
+  document.getElementById('emailSharer').href = `${'mailto:?subject=Distributed and Secure File Sharing with Dweb.page&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
     + '1. Open the link below %0D%0A'
     + "2. Enter the password I'll share with you via WhatsApp or Telegram %0D%0A %0D%0A"
     + 'Link: '}${encodeURIComponent(link)}%0D%0A %0D%0A Best Regards,`;

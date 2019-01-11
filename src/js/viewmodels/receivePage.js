@@ -172,7 +172,13 @@ async function load() {
             output('You have entered an invalid password!');
           });
       } else {
-        await new SubscriptionDb().addSubscribtion(window.searchSelection.address);
+        if (typeof window.searchSelection.address !== 'undefined') {
+          try {
+            await new SubscriptionDb().addSubscribtion(window.searchSelection.address);
+          } catch (error) {
+            console.log(error);
+          }
+        }
         const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser

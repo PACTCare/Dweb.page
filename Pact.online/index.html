@@ -18,6 +18,9 @@
 
 <body>
   <script type="text/javascript">
+    const HASH = 'QmRmtzagUGNyfkQYXW3mDrfiG7MniVpnYS98yAehuCicok';
+    const COOKIE = "websiteV02";
+    const PREVIOUSCOOKIE = "websiteV01";
     // IE11 Polyfill
     if (!String.prototype.includes) {
       String.prototype.includes = function (search, start) {
@@ -59,22 +62,21 @@
 
     function openPage
       () {
-      var x = getCookie("websiteV01");
-      var hash = "QmafJoUPkhmKJSKJHFvpkZ5Hb5eUbQN8UBhuwrLVsH6W2K";
+      var x = getCookie(COOKIE);
       if (!x || !x.includes("https")) {
         // erase previous version
-        eraseCookie("website")
+        eraseCookie(PREVIOUSCOOKIE)
         var node = [
           "https://pactcare.online/ipfs/",
           "https://noreallyitis.me/ipfs/",
           "https://ipfs.sopinka.com/ipfs/"
         ];
         var newSite = node[Math.floor(Math.random() * node.length)];
-        setCookie("websiteV01", newSite, 3650);
-        window.location.replace(newSite + hash);
+        setCookie(COOKIE, newSite, 3650);
+        window.location.replace(newSite + HASH);
       }
       else {
-        window.location.replace(x + hash);
+        window.location.replace(x + HASH);
       }
     }
     //Backup if someone blocks Google Analytics
