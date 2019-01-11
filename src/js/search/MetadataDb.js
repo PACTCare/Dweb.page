@@ -42,6 +42,10 @@ export default class MetadataDb {
     }
   }
 
+  async removeMetaData(address) {
+    await this.db.metadata.where('address').equals(address).delete();
+  }
+
   async updateAvailability(metadata) {
     const dbObj = await this.db.metadata.where('fileId').equals(metadata.fileId);
     if (dbObj.available === 0) {

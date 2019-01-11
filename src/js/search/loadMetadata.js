@@ -7,7 +7,8 @@ import daysToLoadNr from './dayToLoadNr';
 import SubscriptionDb from './SubscriptionDb';
 import MetadataDb from './MetadataDb';
 import {
-  LOAD_DAYS_UPDATE, LOAD_DAYS_BEGINNING, MAX_LOAD_ARRAY, TAG_PREFIX_UNAVAILABLE,
+  SUBSCRIBER_LOAD_SHARE, LOAD_DAYS_UPDATE, LOAD_DAYS_BEGINNING,
+  MAX_LOAD_ARRAY, TAG_PREFIX_UNAVAILABLE,
 } from './searchConfig';
 
 const mostRecentDayNumber = createDayNumber();
@@ -39,9 +40,9 @@ async function returnVerifiedObj(metaObject) {
  */
 function loadSubscription(subscribeArray, loadUnavailableData = false) {
   const awaitTransactions = [];
-  let localDayNumber = mostRecentDayNumber;
   for (let i = 0; i < subscribeArray.length; i += 1) {
     const daysLoaded = daysToLoadNr(subscribeArray[i].daysLoaded);
+    let localDayNumber = mostRecentDayNumber;
     while (localDayNumber >= daysLoaded) {
       let tag = iota.createTimeTag(localDayNumber);
       if (loadUnavailableData) {
@@ -64,7 +65,6 @@ function loadMetadataByDay(recentDayLoad) {
   let localDayNumber = mostRecentDayNumber;
   while (localDayNumber >= 0 && recentDaysLoaded < recentDayLoad) {
     const tag = iota.createTimeTag(localDayNumber);
-    console.log(tag);
     awaitTransactions.push(iota.getTransactionByTag(tag));
     recentDaysLoaded += 1;
     localDayNumber -= 1;
@@ -118,11 +118,16 @@ export default async function loadMetadata(databaseWorks) {
     recentDayLoad = LOAD_DAYS_BEGINNING;
   }
 
-  awaitTransactions = awaitTransactions.concat(loadMetadataByDay(recentDayLoad));
-  const transactionsArrays = await Promise.all(awaitTransactions);
-  let transactions = [].concat(...transactionsArrays);
   // TODO: System to load rest of array data with next side reload
-  transactions = transactions.slice(0, MAX_LOAD_ARRAY);
+  awaitTransactions = awaitTransactions.slice(0, MAX_LOAD_ARRAY * SUBSCRIBER_LOAD_SHARE);
+  const recentAwaitTransactions = loadMetadataByDay(recentDayLoad).slice(
+    0,
+    MAX_LOAD_ARRAY * (1 - SUBSCRIBER_LOAD_SHARE),
+  );
+  awaitTransactions = awaitTransactions.concat(recentAwaitTransactions);
+
+  const transactionsArrays = await Promise.all(awaitTransactions);
+  const transactions = [].concat(...transactionsArrays);
   if (transactions.length > 0) {
     await Promise.all(transactions.map(async (transaction) => {
       let metaObject = await iota.getMessage(transaction);

@@ -4,11 +4,8 @@ import removeMetaData from './removeMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
 import MetadataDb from './MetadataDb';
 import prepSearchText from './prepSearchText';
-import SubscriptionDb from './SubscriptionDb';
 import loadMetadata from './loadMetadata';
 import { DEFAULT_DESCRIPTION } from './searchConfig';
-
-const subscription = new SubscriptionDb();
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -165,7 +162,6 @@ function autocomplete(inp) {
           // only removes immidiatly the blocked entry,
           // not everything from this subscriber
           removeMetaData(window.searchSelection);
-          subscription.removeSubscription(window.searchSelection.address);
         });
         b.appendChild(spanTwo);
         b.appendChild(span);

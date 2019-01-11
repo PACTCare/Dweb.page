@@ -4,6 +4,11 @@ export const LOAD_DAYS_UPDATE = 1;
 
 export const LOAD_DAYS_BEGINNING = 20;
 
+// Share of metadata loaded from subscribers vs random new stuff
+export const SUBSCRIBER_LOAD_SHARE = 0.75;
+
+export const MAX_SUBSCRIBER_NR = 50;
+
 // Makes sure 429 Too Many Requests is not triggered
 export const MAX_LOAD_ARRAY = 100;
 

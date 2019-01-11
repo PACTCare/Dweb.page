@@ -49,8 +49,8 @@ export default class Signature {
 
   /**
    * Export public as hex string
-   * @param {object} publicKey
-   * @returns {string} publickey as hex string
+   * @param {Object} publicKey
+   * @returns {String} publickey as hex string
    */
   async exportPublicKey(publicKey) {
     const keydata = await window.crypto.subtle.exportKey(
@@ -62,8 +62,8 @@ export default class Signature {
 
   /**
    * Import public compressed key
-   * @param {string} key as hex string
-   * @returns {object} public key
+   * @param {String} key as hex string
+   * @returns {Object} public key
    */
   async importPublicKey(key) {
     let keydata;
@@ -92,9 +92,10 @@ export default class Signature {
   }
 
   /**
-   *
-   * @param {object} privateKey
-   * @param {string} text
+   * Signs text and returns signature
+   * @param {Object} privateKey
+   * @param {String} Text
+   * @returns {String} Promise of signature
    */
   sign(privateKey, text) {
     const enc = new TextEncoder();
@@ -109,10 +110,11 @@ export default class Signature {
   }
 
   /**
-   *
-   * @param {string} publicKey
-   * @param {string} signatureBase64
-   * @param {string} text
+   * Verifies the text
+   * @param {String} publicKey
+   * @param {String} signatureBase64
+   * @param {String} text
+   * @returns {Boolean} Correctly signed
    */
   verify(publicKey, signatureBase64, text) {
     const enc = new TextEncoder();

@@ -1,5 +1,7 @@
 import Dexie from 'dexie';
 
+import { MAX_SUBSCRIBER_NR } from './searchConfig';
+
 /**
  * Subscription db for the Search Enginen
  */
@@ -7,7 +9,7 @@ export default class SubscriptionDb {
   constructor() {
     const db = new Dexie('subscriptionDb');
     db.version(1).stores({
-      subscription: 'address, blocked, daysLoaded',
+      subscription: '++id, address, blocked, daysLoaded',
     });
     this.db = db;
   }
@@ -20,25 +22,24 @@ export default class SubscriptionDb {
   }
 
   async addSubscribtion(address) {
-    // TODO: Automaticly unsubscribe from too many users
     const count = await this.db.subscription.where('address').equals(address).count();
-    // only add new addresses
     if (count < 1) {
       await this.db.subscription.add({
         address,
         blocked: 0,
         daysLoaded: 0,
       });
+      const totalCount = await this.db.subscription.count();
+
+      if (totalCount > MAX_SUBSCRIBER_NR) {
+        const test = await this.db.subscription.toCollection().first();
+        await this.db.subscription.delete(test.address);
+      }
     }
   }
 
   async removeSubscription(address) {
-    // TODO: entries need to be removed from metadata as well as
-    // don't load additional meta from this subscriber
-    // window.metadata
-    // window.miniSearch
     await this.db.subscription.where('address').equals(address).modify({ blocked: 1 }); // 1 = true
-    await this.db.metadata.where('address').equals(address).delete();
   }
 
   /**

@@ -51,6 +51,7 @@ const JSZip = require('jszip');
 const GATEWAY = getGateway();
 const ISMOBILE = checkIsMobile();
 
+let alreadyAdded = false;
 let sizeLimit = 1000; // In MB
 let describtion = DEFAULT_DESCRIPTION;
 let filename;
@@ -170,7 +171,8 @@ function tagLayout(fileId) {
   createTagsElement();
   document.getElementById('afterTags').style.display = 'none';
   document.getElementById('askForTags').style.display = 'block';
-  document.getElementById('sendTags').addEventListener('click', () => {
+
+  const tagsDone = function tagsDone() {
     const tags = document.getElementsByClassName('tag');
     let tagsString = '';
     for (let i = 0; i < tags.length; i += 1) {
@@ -186,7 +188,13 @@ function tagLayout(fileId) {
       describtion = `${tagsString.trim()}&&${describtion}`;
     }
     createMetadata(fileId, filename, GATEWAY, describtion);
-  });
+  };
+
+  // Add only once
+  if (!alreadyAdded) {
+    alreadyAdded = true;
+    document.getElementById('sendTags').addEventListener('click', tagsDone);
+  }
 }
 
 
@@ -298,7 +306,6 @@ function readFile(e) {
     if (document.getElementById('endToEndCheck').checked) {
       encryptBeforeUpload(reader);
     } else {
-      console.log(reader.result);
       const [nameMeta, desMeta] = extractMetadata(reader.result, filename);
       filename = nameMeta;
       describtion = desMeta;

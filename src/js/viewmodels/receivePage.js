@@ -13,6 +13,7 @@ import { UNAVAILABLE_DESC } from '../search/searchConfig';
 
 const GATEWAY = getGateway();
 const errorMessage = 'The file you’re requesting is difficult to load or not available at all!';
+let blockOpen = false;
 let fakeProgress = 0;
 let progressId;
 let timeOutPropagation;
@@ -74,6 +75,7 @@ function progressBar(percent) {
 function propagationError() {
   resetLoading();
   output(errorMessage);
+  blockOpen = true;
   // Availability metadata can only be reliable created on participating IPFS nodes
   // And only for data which is already be part of the search engine
   if (LIST_OF_IPFS_GATEWAYS.includes(GATEWAY)
@@ -107,6 +109,7 @@ function propagationProgress() {
 }
 
 async function load() {
+  blockOpen = false;
   const passwordInput = document.getElementById('passwordField').value.trim();
   let fileInput = document.getElementById('firstField').value.trim();
   if (fileInput.length !== 46
@@ -173,13 +176,15 @@ async function load() {
         const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
         document.getElementById('firstField').value = '';
         // file types which can be open inside a browser
-        if (checkBrowserDirectOpen(name)) {
-          window.open(GATEWAY + fileInput, '_self');
-        } else {
-          const typeM = MIME.getType(name);
-          const blob = new Blob([arrayBuffer], { type: typeM });
-          blob.name = name;
-          downloadFile(name, blob);
+        if (!blockOpen) {
+          if (checkBrowserDirectOpen(name)) {
+            window.open(GATEWAY + fileInput, '_self');
+          } else {
+            const typeM = MIME.getType(name);
+            const blob = new Blob([arrayBuffer], { type: typeM });
+            blob.name = name;
+            downloadFile(name, blob);
+          }
         }
       }
     };
