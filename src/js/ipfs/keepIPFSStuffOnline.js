@@ -12,7 +12,6 @@ export default function keepIPFSStuffOnline(fileId, gateway) {
   if (index > -1) {
     LIST_OF_IPFS_GATEWAYS.splice(index, 1);
   }
-  console.log(LIST_OF_IPFS_GATEWAYS);
   const shuffeledList = shuffleArray(LIST_OF_IPFS_GATEWAYS);
   const randomList = shuffeledList.slice(0, DISTRIBUTION_NODES_NR);
   for (let i = 0; i < randomList.length; i += 1) {

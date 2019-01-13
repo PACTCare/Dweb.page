@@ -55,6 +55,7 @@ let alreadyAdded = false;
 let sizeLimit = 1000; // In MB
 let describtion = DEFAULT_DESCRIPTION;
 let filename;
+let fileId;
 
 // no upload limit if it's running local
 if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
@@ -124,7 +125,7 @@ function changeBackgroundColor(colorHex) {
  * Creates the unencrypted Layout, difference between html or not
  * @param {string} fileId
  */
-function unencryptedLayout(fileId) {
+function unencryptedLayout() {
   changeBackgroundColor('#db3e4d');
   document.getElementById('passwordStep').classList.remove('step');
   document.getElementById('passwordStep').style.display = 'none';
@@ -163,7 +164,7 @@ function unencryptedLayout(fileId) {
   document.getElementById('ipfsHash').textContent = link;
 }
 
-function tagLayout(fileId) {
+function tagLayout() {
   const myNode = document.getElementById('tagsDiv');
   while (myNode.firstChild) {
     myNode.removeChild(myNode.firstChild);
@@ -180,7 +181,7 @@ function tagLayout(fileId) {
     }
     document.getElementById('afterTags').style.display = 'block';
     document.getElementById('askForTags').style.display = 'none';
-    unencryptedLayout(fileId);
+    unencryptedLayout();
     if (describtion === DEFAULT_DESCRIPTION && tagsString.length > 0) {
       describtion = tagsString.trim();
     } else {
@@ -198,7 +199,7 @@ function tagLayout(fileId) {
 }
 
 
-function encryptedLayout(fileId) {
+function encryptedLayout() {
   changeBackgroundColor('#3157a7');
   const link = `${window.location.href}?id=${fileId}`;
   document.getElementById('ipfsHash').href = link;
@@ -231,7 +232,7 @@ async function uploadToIPFS(buf, isEncrypted) {
   xhr.timeout = 3600000;
   xhr.onreadystatechange = function onreadystatechange() {
     if (this.readyState === this.HEADERS_RECEIVED) {
-      const fileId = xhr.getResponseHeader('ipfs-hash');
+      fileId = xhr.getResponseHeader('ipfs-hash');
       prepareStepsLayout();
       if (fileId == null || typeof fileId === 'undefined') {
         errorMessage("The current IPFS gateway you are using  isn't writable!");
@@ -244,10 +245,10 @@ async function uploadToIPFS(buf, isEncrypted) {
         //   // only make sense if it loads faster!
         // }
         if (isEncrypted) {
-          createLog(fileId, filename, true);
-          encryptedLayout(fileId);
+          createLog(filename, true);
+          encryptedLayout();
         } else {
-          tagLayout(fileId);
+          tagLayout();
         }
       }
     }
@@ -274,7 +275,6 @@ function encryptBeforeUpload(reader) {
       if (!ISMOBILE) {
         whatsappLink = `https://web.whatsapp.com/send?text=${keyString}`;
       }
-      // what
       document.getElementById(
         'whatsappSharer',
       ).href = whatsappLink;
