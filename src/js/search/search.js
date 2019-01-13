@@ -34,6 +34,7 @@ function inputValToWinDowSearchSelection(inputVal) {
     fileName: inputVal.split('=')[1],
     fileType: inputVal.split('=')[2],
     address: inputVal.split('=')[3],
+    uploadGateway: inputVal.split('=')[4],
   };
 }
 
@@ -141,19 +142,18 @@ function autocomplete(inp) {
         } else {
           span.innerHTML += `<span style='font-size: 12px;'><br>${description}<br>${searchItems[i].fileId} - ${timeString}</span>`;
         }
-        span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
+        span.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}=${searchItems[i].gateway}'>`;
         span.addEventListener('click', () => {
           const inputVal = span.getElementsByTagName('input')[0].value;
           inputValToWinDowSearchSelection(inputVal);
           inp.value = window.searchSelection.fileId;
-          closeAllLists();
           document.getElementById('searchload').click();
         });
         const spanTwo = document.createElement('SPAN');
         spanTwo.innerHTML = '<i class="fas fa-ban"></i>';
         spanTwo.style.cssFloat = 'right';
         spanTwo.style.color = '#db3e4d';
-        spanTwo.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}'>`;
+        spanTwo.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}=${searchItems[i].gateway}'>`;
         // eslint-disable-next-line no-loop-func
         spanTwo.addEventListener('click', async () => {
           const inputVal = spanTwo.getElementsByTagName('input')[0].value;
@@ -182,11 +182,14 @@ function autocomplete(inp) {
     }
   });
 
+  document.getElementById('searchload').addEventListener('click', () => {
+    closeAllLists();
+  });
+
   document
     .getElementById('firstField')
     .addEventListener('keydown', (event) => {
       if (event.keyCode === 13) {
-        closeAllLists();
         event.preventDefault();
         document.getElementById('searchload').click();
       }
