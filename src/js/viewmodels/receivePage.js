@@ -200,7 +200,8 @@ async function load() {
     let directLinkProgress = false;
 
     // link direct to upload gateway for faster transactions
-    if (typeof window.searchSelection.uploadGateway !== 'undefined') {
+    if (typeof window.searchSelection !== 'undefined'
+      && typeof window.searchSelection.uploadGateway !== 'undefined') {
       const { uploadGateway } = window.searchSelection;
       if (!uploadGateway.includes('localhost') && !uploadGateway.includes('127.0.0.1')) {
         directLinkProgress = true;
@@ -272,5 +273,6 @@ document.getElementById('load').addEventListener('click', () => {
 
 document.getElementById('searchload').addEventListener('click', () => {
   isSearch = true;
+  loadingRunning = false;
   load();
 });

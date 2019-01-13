@@ -245,7 +245,7 @@ async function uploadToIPFS(buf, isEncrypted) {
         //   // only make sense if it loads faster!
         // }
         if (isEncrypted) {
-          createLog(filename, true);
+          createLog(fileId, filename, true);
           encryptedLayout();
         } else {
           tagLayout();

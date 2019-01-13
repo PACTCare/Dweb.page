@@ -57,12 +57,12 @@ If you wish to participate you can simply [set up your own IPFS node with a writ
 
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-QmRmtzagUGNyfkQYXW3mDrfiG7MniVpnYS98yAehuCicok
+QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmRmtzagUGNyfkQYXW3mDrfiG7MniVpnYS98yAehuCicok/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://noreallyitis.me/ipfs/QmRmtzagUGNyfkQYXW3mDrfiG7MniVpnYS98yAehuCicok/ (by [Donald Brown](https://noreallyitis.me))
-* https://pactcare.online/ipfs/QmRmtzagUGNyfkQYXW3mDrfiG7MniVpnYS98yAehuCicok/ (by [Pact](https://pact.care/))
+* https://ipfs.sopinka.com/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by [Sopinka Inc.](https://sopinka.com/))
+* https://noreallyitis.me/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by [Donald Brown](https://noreallyitis.me))
+* https://pactcare.online/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by [Pact](https://pact.care/))
 
 ### Donate
 
