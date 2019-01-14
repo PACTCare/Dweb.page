@@ -267,7 +267,7 @@
           one of the first distributed websites running in your browser, meaning that you are in complete control of
           your data. We neither have access to your encrypted data nor can we prevent you from sharing and receiving
           this data. By design, it’s impossible to alter your data after the upload. Additionally, the integrated
-          sharing history allows you to claim the ownership of your data and provides a transparent logging system. </p>
+          file explorer allows you to claim the ownership of your data and provides a transparent logging system. </p>
         <p>Currently, the service allows for the sharing of files up to 1GB. If you <a href='https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362'
             target='_blank'>host it locally</a>, there won’t be an upload limit. The recipient can download the
           file for 3 days. </p>
@@ -277,14 +277,16 @@
           To maximize security, consider using a channel you are confident only the intended receiver has access to.
           Usually, using email for the file link and WhatsApp for the password link works fine. </p>
         <h2>The Technology</h2>
-        <p>Files are uploaded on a distributed file system named <a href="https://ipfs.io/" target="_blank">IPFS</a>.
+        <p>The website itself and files are uploaded on a distributed file system named <a href="https://ipfs.io/"
+            target="_blank">IPFS</a>.
           Logs and metadata are stored on an immutable distributed ledger named <a href="https://www.iota.org/" target="_blank">IOTA</a>.
           IPFS allows files to be shared in an immutable and distributed way and IOTA makes sure that nobody can delete
           or alter the logs and metadata. Furthermore,
           we
           implemented the <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank">Web Crypto API</a>
-          (AES256-GCM) to fully encrypt the files inside your browser even before they get uploaded. The same
-          encryption algorithm is, for example, recommended by the German Medical Association. </p>
+          (AES256-GCM) to fully encrypt the files inside your browser. The Web Crypto API (secp256r1) is also used to
+          sign the transactions,
+          and your signatures private key is not extractable stored inside your browser.</p>
         <p>The website itself is hosted on different servers, which you can also access directly in case someone blocks
           our service. If you open Dweb.page you will see a randomly selected version of the website. Uploaded files
           can be download from any <a href="https://ipfs.github.io/public-gateway-checker/" target="_blank">IPFS
@@ -294,7 +296,8 @@
         <h2>Participate</h2>
         <p>If you wish to participate you can simply set up your own IPFS node with a writeable gateway. You need
           to
-          allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care so
+          allow a maximum upload size on your server of 1GB. Lastly, reach out to us at info[at]pact[dot]care or on
+          <a href="https://discord.gg/VMj7PFN" target="_blank">discord</a> so
           we then can integrate your side on our main page. Currently, we share the IOTA donations equally among
           all participants at the end of every month. For transparency, you can track all donations under the
           current <a href="https://thetangle.org/address/SSFQNEKDAMMAJSTMLRPIHSKZMHQTMYITPPLUWLOPYKS9K9YDGJZKTNQHJVD9YGZFOVZKAZHDIDMFWJGUY"
