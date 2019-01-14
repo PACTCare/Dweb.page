@@ -3,12 +3,11 @@
  * @returns {string} gateway address
  */
 export default function getGateway() {
-  const HOST = window.location.hostname;
-  const PROTOCOL = window.location.protocol;
-  let gateway = 'http://localhost:8080/ipfs/';
-  if (HOST !== 'localhost' && HOST !== '127.0.0.1') {
-    gateway = `${PROTOCOL}//${HOST}/ipfs/`;
+  const uniqueIPFSPart = '/ipfs/';
+  let gateway = window.location.href;
+  if (gateway.includes(uniqueIPFSPart)) {
+    const [address] = gateway.split(uniqueIPFSPart);
+    gateway = address + uniqueIPFSPart;
   }
-  gateway = gateway.replace('index.html');
   return gateway;
 }

@@ -4,6 +4,7 @@ import db from '../services/backgroundDb';
 const MAXSIZE = 1600;
 
 function readBackgroundImage(event) {
+  console.log('read background image');
   const reader = new FileReader();
   reader.onloadend = function onloadend(readerEvent) {
     const image = new Image();
@@ -17,6 +18,8 @@ function readBackgroundImage(event) {
         .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${imageUrl}")`;
     };
     image.src = readerEvent.target.result;
+    // Reset image, in case someone wants to upload two times the same image
+    document.getElementById('backgroundUpload').value = '';
   };
   const file = event.target.files[0] || event.dataTransfer.files[0];
   if (file) {
@@ -27,15 +30,20 @@ function readBackgroundImage(event) {
   }
 }
 
+function setDefaultImage() {
+  document.getElementById('resetImage').style.display = 'none';
+  document
+    .getElementsByTagName('body')[0]
+    .style
+    .backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("https://pact.online/background.jpeg")';
+}
+
 async function setBackgroundImage() {
   try {
     const getStoredImage = await db.backgroundImg.get({ id: 1 });
+    console.log(getStoredImage);
     if (typeof getStoredImage === 'undefined') {
-      document.getElementById('resetImage').style.display = 'none';
-      document
-        .getElementsByTagName('body')[0]
-        .style
-        .backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("https://pact.online/background.jpeg")';
+      setDefaultImage();
     } else {
       document.getElementById('resetImage').style.display = 'inherit';
       document
@@ -43,13 +51,13 @@ async function setBackgroundImage() {
         .style
         .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${getStoredImage.imageUrl}")`;
     }
+    document.getElementById('backgroundUpload').addEventListener('change', readBackgroundImage, false);
     document.getElementById('filtersubmit').addEventListener('click', () => {
       document.getElementById('backgroundUpload').click();
-    });
-    document.getElementById('backgroundUpload').addEventListener('change', readBackgroundImage, false);
+    }, false);
     document.getElementById('resetImage').addEventListener('click', async () => {
       await db.backgroundImg.clear();
-      setBackgroundImage();
+      setDefaultImage();
     });
   } catch (error) {
     console.log(error);
