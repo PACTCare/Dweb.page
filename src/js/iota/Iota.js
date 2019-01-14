@@ -132,7 +132,7 @@ export default class Iota {
   }
 
   /**
-  *
+  * Get Transactions by hash
   * @param {string} hash
   */
   getTransactionByHash(hash) {
@@ -144,9 +144,9 @@ export default class Iota {
   }
 
   /**
-*
-* @param {string} publicHexKey
-*/
+  * Get transactions by public hey key
+  * @param {string} publicHexKey
+  */
   getTransactionByPublicKey(publicHexKey) {
     const base64 = Buffer.from(publicHexKey, 'hex').toString('base64');
     const kbAddress = this.iotaNode.utils.toTrytes(base64).substring(0, 83);
@@ -158,10 +158,10 @@ export default class Iota {
   }
 
   /**
- * Get transaction by address
- * @param {string} tryte Address
- * @param {string} tag
- */
+  * Get transaction by address
+  * @param {string} tryte Address
+  * @param {string} tag
+  */
   getTransactionByAddressAndTag(address, tag) {
     const searchVarsAddress = {
       addresses: [address],

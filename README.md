@@ -57,13 +57,13 @@ If you wish to participate you can simply [set up your own IPFS node with a writ
 
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe
+Qmcai4xdhGeYnsLjFJu71vdXLouMzaTDjHtS2NndW9qvp7
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://noreallyitis.me/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by [Donald Brown](https://noreallyitis.me))
-* https://pactcare.online/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by [Pact](https://pact.care/))
-* https://ipfs.linux.pizza/ipfs/QmVpg1PnMyDPLspthDwN4rWZXw8AGRBvfe7e6Y82ZYHNHe/ (by https://linux.pizza/)
+* https://ipfs.sopinka.com/ipfs/Qmcai4xdhGeYnsLjFJu71vdXLouMzaTDjHtS2NndW9qvp7/ (by [Sopinka Inc.](https://sopinka.com/))
+* https://noreallyitis.me/ipfs/Qmcai4xdhGeYnsLjFJu71vdXLouMzaTDjHtS2NndW9qvp7/ (by [Donald Brown](https://noreallyitis.me))
+* https://pactcare.online/ipfs/Qmcai4xdhGeYnsLjFJu71vdXLouMzaTDjHtS2NndW9qvp7/ (by [Pact](https://pact.care/))
+* https://ipfs.linux.pizza/ipfs/Qmcai4xdhGeYnsLjFJu71vdXLouMzaTDjHtS2NndW9qvp7/ (by https://linux.pizza/)
 
 ### Donate
 

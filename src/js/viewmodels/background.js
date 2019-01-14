@@ -4,7 +4,6 @@ import db from '../services/backgroundDb';
 const MAXSIZE = 1600;
 
 function readBackgroundImage(event) {
-  console.log('read background image');
   const reader = new FileReader();
   reader.onloadend = function onloadend(readerEvent) {
     const image = new Image();
@@ -41,7 +40,6 @@ function setDefaultImage() {
 async function setBackgroundImage() {
   try {
     const getStoredImage = await db.backgroundImg.get({ id: 1 });
-    console.log(getStoredImage);
     if (typeof getStoredImage === 'undefined') {
       setDefaultImage();
     } else {
@@ -62,20 +60,8 @@ async function setBackgroundImage() {
   } catch (error) {
     console.log(error);
     document.getElementById('right').style.display = 'none';
-    document.getElementById('resetImage').style.display = 'none';
-    document
-      .getElementsByTagName('body')[0]
-      .style
-      .backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("https://pact.online/background.jpeg")';
+    setDefaultImage();
   }
 }
-
-// update vh on mobile
-const vh = window.innerHeight * 0.01;
-document.documentElement.style.setProperty('--vh', `${vh}px`);
-window.addEventListener('resize', () => {
-  const vhResize = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vhResize}px`);
-});
 
 setBackgroundImage();
