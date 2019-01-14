@@ -38,7 +38,7 @@ npm run build
 
 ## Usage
 
-[Dweb.page](https://dweb.page) simply needs to be hosted on a writable IPFS gateway. You can easily run [Dweb.page](https://dweb.page) local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and also works for example on the Internet Explorer.
+[Dweb.page](https://dweb.page) simply needs to be hosted on a writable IPFS gateway. You can easily run [Dweb.page](https://dweb.page) local by following the below tutorial. We think that not every single application should start their own IPFS gateway due to performance reasons. Rather you have only one IPFS gateway running on your local machine or browser. Additionally the current setup is much faster and in theory also works for example on the Internet Explorer (currently not supported).
 
 * [Tutorial local hosting](https://blog.florence.chat/tutorial-how-to-host-your-own-file-transfer-service-on-your-pc-22698c9d6362)
 * [Tutorial online hosting](https://blog.florence.chat/tutorial-host-your-own-ipfs-node-and-help-the-next-generation-of-web-2860eb59e45e)
