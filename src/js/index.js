@@ -225,42 +225,56 @@ function encryptedLayout() {
   }
 }
 
-async function uploadToIPFS(buf, isEncrypted) {
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', GATEWAY, true);
-  xhr.responseType = 'arraybuffer';
-  xhr.timeout = 3600000;
-  xhr.onreadystatechange = function onreadystatechange() {
-    if (this.readyState === this.HEADERS_RECEIVED) {
-      fileId = xhr.getResponseHeader('ipfs-hash');
-      prepareStepsLayout();
-      if (fileId == null || typeof fileId === 'undefined') {
-        errorMessage("The current IPFS gateway you are using  isn't writable!");
-      } else {
-        // if image/video create thumbnail
-        // const [, , fileTypePart] = filename.match(/(.*)\.(.*)/);
-        // if (FileType.imageTypes().indexOf(fileTypePart.toLowerCase()) > -1) {
-        //   // 1. resize
-        //   // upload on ipfs
-        //   // only make sense if it loads faster!
-        // }
-        if (isEncrypted) {
-          createLog(fileId, filename, true);
-          encryptedLayout();
-        } else {
-          tagLayout();
-        }
-      }
-    }
-  };
-  xhr.upload.onprogress = function onprogress(e) {
-    if (e.lengthComputable) {
-      const per = Math.round((e.loaded * 100) / e.total);
-      progressBar(per);
-    }
-  };
+function layoutSwitch(isEncrypted) {
+  prepareStepsLayout();
+  if (fileId == null || typeof fileId === 'undefined') {
+    errorMessage("The current IPFS gateway you are using  isn't writable!");
+  } else if (isEncrypted) {
+    createLog(fileId, filename, true);
+    encryptedLayout();
+  } else {
+    tagLayout();
+  }
+}
 
-  xhr.send(new Blob([buf]));
+async function uploadToIPFS(buf, isEncrypted) {
+  let ipfsCompanionWorked = false;
+  try {
+    if (window.ipfs) {
+      if (window.ipfs.enable) {
+        const ipfsCompanion = await window.ipfs.enable({ commands: ['id', 'dag', 'version'] });
+        const [{ hash }] = await ipfsCompanion.add(Buffer.from(buf));
+        ipfsCompanionWorked = true;
+        fileId = hash;
+      } else {
+        const [{ hash }] = await window.ipfs.add(Buffer.from(buf));
+        ipfsCompanionWorked = true;
+        fileId = hash;
+      }
+      layoutSwitch(isEncrypted);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  if (!ipfsCompanionWorked) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', GATEWAY, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.timeout = 3600000;
+    xhr.onreadystatechange = function onreadystatechange() {
+      if (this.readyState === this.HEADERS_RECEIVED) {
+        fileId = xhr.getResponseHeader('ipfs-hash');
+        layoutSwitch(isEncrypted);
+      }
+    };
+    xhr.upload.onprogress = function onprogress(e) {
+      if (e.lengthComputable) {
+        const per = Math.round((e.loaded * 100) / e.total);
+        progressBar(per);
+      }
+    };
+    xhr.send(new Blob([buf]));
+  }
 }
 
 function encryptBeforeUpload(reader) {
