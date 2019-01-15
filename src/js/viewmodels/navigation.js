@@ -168,6 +168,14 @@ window.openHistory = function openHistory() {
   currentPage('toFile');
 };
 
+document.getElementById('toTerms').addEventListener('click', () => {
+  window.open(`${window.location.href}?par=terms`, '_blank');
+});
+
+document.getElementById('toPrivacy').addEventListener('click', () => {
+  window.open(`${window.location.href}?par=privacy`, '_blank');
+});
+
 document.getElementById('toIndex').addEventListener('click', () => {
   menuAnimation('index');
   currentPage('toIndex');
