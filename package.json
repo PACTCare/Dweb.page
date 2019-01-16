@@ -4,10 +4,13 @@
   "description": "Your Gateway to the Distributed Web",
   "private": true,
   "scripts": {
-    "test": "jest",
-    "wtest": "jest --watchAll",
+    "tests": "jest",
+    "wtests": "jest --watchAll",
     "watch": "webpack --watch",
     "build": "webpack"
+  },
+  "jest": {
+    "testURL": "http://localhost:8080/ipfs/QmSS34C6PzXVJTjMzqggZT34ibf4QE49b5kXRzLHdyBL7y"
   },
   "author": "David Hawig",
   "license": "ISC",

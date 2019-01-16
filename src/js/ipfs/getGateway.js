@@ -9,5 +9,6 @@ export default function getGateway() {
     const [address] = gateway.split(uniqueIPFSPart);
     gateway = address + uniqueIPFSPart;
   }
+
   return gateway;
 }

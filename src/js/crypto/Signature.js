@@ -1,5 +1,7 @@
 import SigCompression from './SigCompression';
 import sigDb from './sigDb';
+import Error from '../error';
+
 
 /**
  * Curves and their primes
@@ -22,7 +24,7 @@ export default class Signature {
     try {
       cryptoKey = await sigDb.key.get({ id: 1 });
     } catch (error) {
-      console.log(error);
+      console.error(Error.NO_DATABASE_ENTRY);
       cryptoKey = undefined;
     }
     if (typeof cryptoKey === 'undefined') {
@@ -41,7 +43,7 @@ export default class Signature {
       try {
         await sigDb.key.add(cryptoKey);
       } catch (error) {
-        console.log('error');
+        console.log(Error.KEY_CANT_BE_STORED);
       }
     }
     return cryptoKey;
