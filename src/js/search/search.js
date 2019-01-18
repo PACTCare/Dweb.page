@@ -134,7 +134,7 @@ function autocomplete(inp) {
         const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
         const span = document.createElement('SPAN');
-        span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> `;
+        span.innerHTML = `<strong>${prepSearchText(searchItems[i].fileName, 60)}</strong> <span style='font-size: 12px;'>[${searchItems[i].fileType}]</span>`;
         const description = prepSearchText(searchItems[i].description, 140);
         const lengthTest = (` ${description}`);
         if (description === DEFAULT_DESCRIPTION || lengthTest.length <= 3) {

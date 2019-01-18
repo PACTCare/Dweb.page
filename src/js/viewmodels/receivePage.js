@@ -10,6 +10,7 @@ import createLog from '../log/createLog';
 import { LIST_OF_IPFS_GATEWAYS } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
+import Error from '../error';
 
 const GATEWAY = getGateway();
 const errorMessage = 'The file you’re requesting is difficult to load or not available at all!';
@@ -155,7 +156,7 @@ async function onload(arrayBuffer, passwordInput, fileInput, privateGateway) {
         try {
           await new SubscriptionDb().addSubscribtion(window.searchSelection.address);
         } catch (error) {
-          console.log(error);
+          console.error(Error.ADD_DATABASE_ENTRY);
         }
       }
       const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
@@ -203,7 +204,12 @@ async function load() {
     if (typeof window.searchSelection !== 'undefined'
       && typeof window.searchSelection.uploadGateway !== 'undefined') {
       const { uploadGateway } = window.searchSelection;
-      if (!uploadGateway.includes('localhost') && !uploadGateway.includes('127.0.0.1')) {
+      // direct link doesn't make sense with ipfs companion enabled,
+      // because the link will be replaced by the local address anyway
+      if (!window.ipfs
+        && !uploadGateway.includes('localhost')
+        && !uploadGateway.includes('127.0.0.1')
+        && !uploadGateway.includes('::1')) {
         directLinkProgress = true;
         oReqDirectLink.onloadstart = function onloadstart() {
           showLoadProgress();
@@ -234,7 +240,10 @@ async function load() {
         oReqDirectLink.send();
       }
     }
+
     if (!directLinkProgress) {
+      // TODO: const data = await ipfs.cat(hash)
+      // https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md
       oReqLocal.onloadstart = function onloadstart() {
         showLoadProgress();
         progressId = setInterval(propagationProgress, 200);

@@ -21,10 +21,12 @@ import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
 import Encryption from './crypto/Encryption';
 import getGateway from './ipfs/getGateway';
+import checkLocalGateway from './ipfs/checkLocalGateway';
 import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
-import keepIPFSStuffOnline from './ipfs/keepIPFSStuffOnline';
+import localUpload from './ipfs/localUpload';
 import checkBrowserDirectOpen from './helperFunctions/checkBrowserDirectOpen';
+import shuffleArray from './helperFunctions/shuffelArray';
 import extractMetadata from './search/extractMetadata';
 import '../css/style.css';
 import '../css/toggle.css';
@@ -36,7 +38,9 @@ import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
+import Error from './error';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
+import { LIST_OF_IPFS_GATEWAYS } from './ipfs/ipfsConfig';
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
@@ -48,9 +52,9 @@ document.getElementById('logo2').src = logo;
 document.getElementById('favicon').href = favicon;
 const JSZip = require('jszip');
 
-const GATEWAY = getGateway();
 const ISMOBILE = checkIsMobile();
 
+let gateway = getGateway();
 let alreadyAdded = false;
 let sizeLimit = 1000; // In MB
 let describtion = DEFAULT_DESCRIPTION;
@@ -58,7 +62,7 @@ let filename;
 let fileId;
 
 // no upload limit if it's running local
-if (GATEWAY.includes('localhost') || GATEWAY.includes('127.0.0.1')) {
+if (checkLocalGateway()) {
   sizeLimit = 10000000;
 }
 
@@ -135,9 +139,8 @@ function unencryptedLayout() {
     window.location.href
   }?id=${fileId}&password=np&name=${filename}`;
   if (checkBrowserDirectOpen(filename)) {
-    link = GATEWAY + fileId;
+    link = gateway + fileId;
   }
-  keepIPFSStuffOnline(fileId, GATEWAY);
   if (filename.includes('.htm')) {
     onlyLastTab();
     document.getElementById('doneHeadline').textContent = 'Your Dwebpage is Online!';
@@ -188,7 +191,7 @@ function tagLayout() {
       // && marks the beginning of the describtion/end of tags
       describtion = `${tagsString.trim()}&&${describtion}`;
     }
-    createMetadata(fileId, filename, GATEWAY, describtion);
+    createMetadata(fileId, filename, gateway, describtion);
   };
 
   // Add only once
@@ -237,36 +240,41 @@ function layoutSwitch(isEncrypted) {
   }
 }
 
+/**
+ * Shows message if transfer fails
+ * E.g. brave browser doesn't call layoutSwitch
+ */
+function transferFailed() {
+  prepareStepsLayout();
+  errorMessage("The current IPFS gateway you are using  isn't writable!");
+}
+
 async function uploadToIPFS(buf, isEncrypted) {
-  let ipfsCompanionWorked = false;
-  try {
-    if (window.ipfs) {
-      if (window.ipfs.enable) {
-        const ipfsCompanion = await window.ipfs.enable({ commands: ['id', 'dag', 'version'] });
-        const [{ hash }] = await ipfsCompanion.add(Buffer.from(buf));
-        ipfsCompanionWorked = true;
-        fileId = hash;
-      } else {
-        const [{ hash }] = await window.ipfs.add(Buffer.from(buf));
-        ipfsCompanionWorked = true;
-        fileId = hash;
-      }
-      layoutSwitch(isEncrypted);
-    }
-  } catch (error) {
-    console.log(error);
+  // if local always upload on an additional public gateway
+  if (checkLocalGateway()) {
+    // TODO: big files/parallel
+    fileId = await localUpload(buf);
   }
-  if (!ipfsCompanionWorked) {
+  if (checkLocalGateway() && fileId === undefined) {
+    transferFailed();
+  } else {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', GATEWAY, true);
+    if (checkLocalGateway()) {
+      const [publicGateway] = shuffleArray(LIST_OF_IPFS_GATEWAYS);
+      gateway = publicGateway;
+    }
+    xhr.open('POST', gateway, true);
     xhr.responseType = 'arraybuffer';
     xhr.timeout = 3600000;
     xhr.onreadystatechange = function onreadystatechange() {
       if (this.readyState === this.HEADERS_RECEIVED) {
-        fileId = xhr.getResponseHeader('ipfs-hash');
+        if (!checkLocalGateway()) {
+          fileId = xhr.getResponseHeader('ipfs-hash');
+        }
         layoutSwitch(isEncrypted);
       }
     };
+    xhr.addEventListener('error', transferFailed);
     xhr.upload.onprogress = function onprogress(e) {
       if (e.lengthComputable) {
         const per = Math.round((e.loaded * 100) / e.total);
