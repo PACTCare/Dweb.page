@@ -57,12 +57,12 @@ If you wish to participate you can simply [set up your own IPFS node with a writ
 
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-QmYp7xKoZkKGjLkfQTdJoXpB4okpcx9UjGWavREvZkByro
+Qmadk9ZyvqiDH2pM2ekTAyx2DQ65MtmA9Fyo9LpwkKxvEh
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmYp7xKoZkKGjLkfQTdJoXpB4okpcx9UjGWavREvZkByro/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://pactcare.online/ipfs/QmYp7xKoZkKGjLkfQTdJoXpB4okpcx9UjGWavREvZkByro/ (by [Pact](https://pact.care/))
-* https://ipfs.linux.pizza/ipfs/QmYp7xKoZkKGjLkfQTdJoXpB4okpcx9UjGWavREvZkByro/ (by [Mastodon hosted on social.linux.pizza](https://social.linux.pizza/))
+* https://ipfs.sopinka.com/ipfs/Qmadk9ZyvqiDH2pM2ekTAyx2DQ65MtmA9Fyo9LpwkKxvEh/ (by [Sopinka Inc.](https://sopinka.com/))
+* https://pactcare.online/ipfs/Qmadk9ZyvqiDH2pM2ekTAyx2DQ65MtmA9Fyo9LpwkKxvEh/ (by [Pact](https://pact.care/))
+* https://ipfs.linux.pizza/ipfs/Qmadk9ZyvqiDH2pM2ekTAyx2DQ65MtmA9Fyo9LpwkKxvEh/ (by [Mastodon hosted on social.linux.pizza](https://social.linux.pizza/))
 
 ### Donate
 

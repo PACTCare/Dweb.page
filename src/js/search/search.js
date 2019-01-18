@@ -6,6 +6,7 @@ import MetadataDb from './MetadataDb';
 import prepSearchText from './prepSearchText';
 import loadMetadata from './loadMetadata';
 import { DEFAULT_DESCRIPTION } from './searchConfig';
+import Error from '../error';
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -47,7 +48,7 @@ async function startSearch() {
     window.miniSearch.addAll(window.metadata);
     loadMetadata(true);
   } catch (err) {
-    console.log(err);
+    console.error(Error.SEARCH_DB_NA);
     window.metadata = [];
     loadMetadata(false);
   }
