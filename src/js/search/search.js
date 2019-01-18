@@ -88,9 +88,11 @@ function autocomplete(inp) {
     let val = this.value;
     closeAllLists();
     if (!val) {
-      window.searchSelection = { fileId: 'na' };
       return false;
     }
+    // Always reset to nothing found
+    window.searchSelection = { fileId: 'na' };
+    document.getElementById('messagesSearch').textContent = '';
     val = fileTypePreselection(val);
     const searchResults = window.miniSearch.search(val.replace('.', ' '));
     const searchItems = [];

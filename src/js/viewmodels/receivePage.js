@@ -193,6 +193,9 @@ async function load() {
     output('You have entered an invalid password!');
   } else if (!/^[a-zA-Z0-9]*$/.test(fileInput)) {
     output('You have entered an invalid filename!');
+  } else if (fileInput === 'na') {
+    // openend through search and nothing was found
+    output('Sorry, no results found!');
   } else {
     output('');
     document.getElementById('markUnavailable').style.display = 'none';
@@ -266,7 +269,6 @@ async function load() {
         }
       };
     }
-
     oReqLocal.onload = function onloadCallback() {
       onload(oReqLocal.response, passwordInput, fileInput, GATEWAY);
     };
