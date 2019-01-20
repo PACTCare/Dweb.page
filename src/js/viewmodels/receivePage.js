@@ -127,7 +127,7 @@ function onloadstart() {
   progressId = setInterval(propagationProgress, 200);
 }
 
-async function onload(arrayBuffer, passwordInput, fileInput, privateGateway) {
+async function onload(arrayBuffer, passwordInput, fileInput) {
   if (!loadingRunning) {
     loadingRunning = true;
     if (typeof timeOutPropagation !== 'undefined') {
