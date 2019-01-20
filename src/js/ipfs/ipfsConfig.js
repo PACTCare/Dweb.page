@@ -4,4 +4,4 @@ export const LIST_OF_IPFS_GATEWAYS = [
   'https://ipfs.linux.pizza/ipfs/',
 ];
 
-export const DISTRIBUTION_NODES_NR = 1;
+export const IPFS_COMPANION_NO_REDIRECT = '?x-ipfs-companion-no-redirect';

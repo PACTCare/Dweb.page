@@ -7,7 +7,7 @@ import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import SubscriptionDb from '../search/SubscriptionDb';
 import createLog from '../log/createLog';
-import { LIST_OF_IPFS_GATEWAYS } from '../ipfs/ipfsConfig';
+import { LIST_OF_IPFS_GATEWAYS, IPFS_COMPANION_NO_REDIRECT } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
 import Error from '../error';
@@ -111,6 +111,22 @@ function propagationProgress() {
   }
 }
 
+function onprogress(e) {
+  if (fakeProgress < 50) {
+    clearInterval(progressId);
+    fakeProgress = 50;
+  }
+  if (e.lengthComputable) {
+    const per = Math.round((e.loaded * 100) / e.total);
+    progressBar(50 + (per / 2));
+  }
+}
+
+function onloadstart() {
+  showLoadProgress();
+  progressId = setInterval(propagationProgress, 200);
+}
+
 async function onload(arrayBuffer, passwordInput, fileInput, privateGateway) {
   if (!loadingRunning) {
     loadingRunning = true;
@@ -161,14 +177,26 @@ async function onload(arrayBuffer, passwordInput, fileInput, privateGateway) {
       }
       const name = `${window.searchSelection.fileName}.${window.searchSelection.fileType}`;
       document.getElementById('firstField').value = '';
-      // file types which can be open inside a browser
       if (!blockOpen) {
+        const typeM = MIME.getType(name);
+        const blob = new Blob([arrayBuffer], { type: typeM });
+        blob.name = name;
         if (checkBrowserDirectOpen(name)) {
-          window.open(privateGateway + fileInput, '_self');
+          const fileURL = URL.createObjectURL(blob);
+          if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            window.open(fileURL, '_self');
+          } else {
+            // window open blob doesn't work in chrome
+            const windowHash = '#iframe';
+            window.location.hash = windowHash;
+            document.write(`<iframe id="myFrame" src="${fileURL}" style="position:fixed; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>`);
+            setInterval(() => {
+              if (window.location.hash !== windowHash) {
+                window.location.reload();
+              }
+            }, 100);
+          }
         } else {
-          const typeM = MIME.getType(name);
-          const blob = new Blob([arrayBuffer], { type: typeM });
-          blob.name = name;
           downloadFile(name, blob);
         }
       }
@@ -199,8 +227,6 @@ async function load() {
   } else {
     output('');
     document.getElementById('markUnavailable').style.display = 'none';
-    const oReqLocal = new XMLHttpRequest();
-    const oReqDirectLink = new XMLHttpRequest();
     let directLinkProgress = false;
 
     // link direct to upload gateway for faster transactions
@@ -209,25 +235,13 @@ async function load() {
       const { uploadGateway } = window.searchSelection;
       // direct link doesn't make sense with ipfs companion enabled,
       // because the link will be replaced by the local address anyway
-      if (!window.ipfs
-        && !uploadGateway.includes('localhost')
+      if (!uploadGateway.includes('localhost')
         && !uploadGateway.includes('127.0.0.1')
         && !uploadGateway.includes('::1')) {
         directLinkProgress = true;
-        oReqDirectLink.onloadstart = function onloadstart() {
-          showLoadProgress();
-          progressId = setInterval(propagationProgress, 200);
-        };
-        oReqDirectLink.onprogress = function onprogress(e) {
-          if (fakeProgress < 50) {
-            clearInterval(progressId);
-            fakeProgress = 50;
-          }
-          if (e.lengthComputable) {
-            const per = Math.round((e.loaded * 100) / e.total);
-            progressBar(50 + (per / 2));
-          }
-        };
+        const oReqDirectLink = new XMLHttpRequest();
+        oReqDirectLink.onloadstart = function startCallback() { onloadstart(); };
+        oReqDirectLink.onprogress = function onProgressCallback(event) { onprogress(event); };
         oReqDirectLink.onreadystatechange = function onreadystatechange() {
           if (oReqDirectLink.readyState === 4) {
             if (oReqDirectLink.status !== 200) {
@@ -238,32 +252,19 @@ async function load() {
         oReqDirectLink.onload = function onloadCallback() {
           onload(oReqDirectLink.response, passwordInput, fileInput, uploadGateway);
         };
-        oReqDirectLink.open('GET', uploadGateway + fileInput, true);
+        oReqDirectLink.open('GET', uploadGateway + fileInput + IPFS_COMPANION_NO_REDIRECT, true);
         oReqDirectLink.responseType = 'arraybuffer';
         oReqDirectLink.send();
       }
     }
 
+    const oReqLocal = new XMLHttpRequest();
     if (!directLinkProgress) {
-      // TODO: const data = await ipfs.cat(hash)
-      // https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md
-      oReqLocal.onloadstart = function onloadstart() {
-        showLoadProgress();
-        progressId = setInterval(propagationProgress, 200);
-      };
-      oReqLocal.onprogress = function onprogress(e) {
-        if (fakeProgress < 50) {
-          clearInterval(progressId);
-          fakeProgress = 50;
-        }
-        if (e.lengthComputable) {
-          const per = Math.round((e.loaded * 100) / e.total);
-          progressBar(50 + (per / 2));
-        }
-      };
+      oReqLocal.onloadstart = function startCallback() { onloadstart(); };
+      oReqLocal.onprogress = function onProgressCallback(event) { onprogress(event); };
       oReqLocal.onreadystatechange = function onreadystatechange() {
-        if (oReqDirectLink.readyState === 4) {
-          if (oReqDirectLink.status !== 200) {
+        if (oReqLocal.readyState === 4) {
+          if (oReqLocal.status !== 200) {
             output(errorMessage);
           }
         }
