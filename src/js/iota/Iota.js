@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+import Trytes from 'trytes';
 import createDayNumber from '../search/createDayNumber';
 import getHealthyNode from './getHealthyNode';
 import {
@@ -6,6 +8,7 @@ import {
   TAG_PREFIX_PRIVATE_UPLOAD,
   TAG_PREFIX_UNAVAILABLE,
 } from '../search/searchConfig';
+import Error from '../error';
 
 
 /**
@@ -17,6 +20,8 @@ export default class Iota {
     this.tagLength = 27;
     this.depth = 3;
     this.minWeight = 14;
+    this.encoding = 'utf8';
+    this.tagPre = 'DWEBV';
   }
 
   async nodeInitialization() {
@@ -24,7 +29,7 @@ export default class Iota {
   }
 
   createTimeTag(dayNumber) {
-    return `DWEBV${TAG_VERSION_NR}T${this.iotaNode.utils.toTrytes(dayNumber.toString())}`;
+    return `${this.tagPre + TAG_VERSION_NR}T${Trytes.encodeTextAsTryteString(dayNumber.toString())}`;
   }
 
   send(tryteAddress, tryteMessage, tag) {
@@ -63,7 +68,7 @@ export default class Iota {
     }
     const tryteAddress = metadata.publicTryteKey.slice(0, 81);
     iotaJson.publicTryteKey = metadata.publicTryteKey.slice(81);
-    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(iotaJson));
+    const tryteMessage = Trytes.encodeTextAsTryteString(JSON.stringify(iotaJson));
     this.send(tryteAddress, tryteMessage, tag); // add tag
   }
 
@@ -73,8 +78,8 @@ export default class Iota {
    * @param {boolean} isUpload
    */
   sendLog(logEntry, isUpload) {
-    const tryteAddress = this.iotaNode.utils.toTrytes(logEntry.fileId).slice(0, 81);
-    const tryteMessage = this.iotaNode.utils.toTrytes(JSON.stringify(logEntry));
+    const tryteAddress = Trytes.encodeTextAsTryteString(logEntry.fileId).slice(0, 81);
+    const tryteMessage = Trytes.encodeTextAsTryteString(JSON.stringify(logEntry));
     let tag = TAG_PREFIX_PRIVATE_DOWNLOAD + this.createTimeTag(createDayNumber());
     if (isUpload) {
       tag = TAG_PREFIX_PRIVATE_UPLOAD + this.createTimeTag(createDayNumber());
@@ -87,7 +92,7 @@ export default class Iota {
    * @param {string} hexKey
    */
   hexKeyToTryte(hexKey) {
-    const trytePublicKey = this.iotaNode.utils.toTrytes(Buffer.from(hexKey, 'hex').toString('base64'));
+    const trytePublicKey = Trytes.encodeTextAsTryteString(Buffer.from(hexKey, 'hex').toString('base64'));
     // starts always with KB => remove KB
     return trytePublicKey.substr(2);
   }
@@ -97,7 +102,7 @@ export default class Iota {
    * @param {string} tryteKey
    */
   tryteKeyToHex(tryteKey) {
-    return Buffer.from(this.iotaNode.utils.fromTrytes(`KB${tryteKey}`), 'base64').toString('hex');
+    return Buffer.from(Trytes.decodeTextFromTryteString(`KB${tryteKey}`), 'base64').toString('hex');
   }
 
   /**
@@ -105,7 +110,7 @@ export default class Iota {
    * @param {string} hash
    */
   convertHashToAddress(hash) {
-    return this.iotaNode.utils.toTrytes(hash).substring(0, 81);
+    return Trytes.encodeTextAsTryteString(hash).substring(0, 81);
   }
 
   getTransaction(searchVarsAddress) {
@@ -149,7 +154,7 @@ export default class Iota {
   */
   getTransactionByPublicKey(publicHexKey) {
     const base64 = Buffer.from(publicHexKey, 'hex').toString('base64');
-    const kbAddress = this.iotaNode.utils.toTrytes(base64).substring(0, 83);
+    const kbAddress = Trytes.encodeTextAsTryteString(base64).substring(0, 83);
     const address = kbAddress.substr(2);
     const searchVarsAddress = {
       addresses: [address],
@@ -182,16 +187,16 @@ export default class Iota {
         } else {
           const message = sucess2[0].signatureMessageFragment;
           const [usedMessage] = message.split(
-            '999999999999999999999999999999999999999999',
+            '9999999999999999999999999999999999999',
           );
           let obj;
           if (usedMessage.length > 1) {
             try {
-              obj = JSON.parse(this.iotaNode.utils.fromTrytes(usedMessage));
+              obj = JSON.parse(Trytes.decodeTextFromTryteString(usedMessage));
               obj.tag = sucess2[0].tag;
               obj.address = sucess2[0].address;
             } catch (er) {
-              console.log(er);
+              console.error(Error.IOTA_INVALID_JSON);
             }
           }
 

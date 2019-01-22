@@ -1,6 +1,7 @@
 import IOTA from 'iota.lib.js';
 import shuffleArray from '../helperFunctions/shuffelArray';
 import { NODES, NODE_TIMEOUT } from './iotaConfig';
+import Error from '../error';
 
 async function getHealthStatus(iotaNode) {
   return new Promise((resolve, reject) => {
@@ -27,10 +28,11 @@ export default async function getHealthyNode() {
       const nodeHealth = await getHealthStatus(iotaNode);
       if (nodeHealth.latestMilestone === nodeHealth.latestSolidSubtangleMilestone
         && nodeHealth.latestMilestoneIndex === nodeHealth.latestSolidSubtangleMilestoneIndex) {
+        console.log(`healthy node: ${node}`);
         return iotaNode;
       }
     } catch (error) {
-      console.log(error);
+      console.error(Error.IOTA_NODE_UNAVAILABLE + node);
     }
   }
   return undefined;

@@ -10,6 +10,7 @@ import createLog from '../log/createLog';
 import { LIST_OF_IPFS_GATEWAYS, IPFS_COMPANION_NO_REDIRECT } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
+import EncryptionBuf from '../ipfs/EncryptionBuf';
 import Error from '../error';
 
 const GATEWAY = getGateway();
@@ -135,33 +136,23 @@ async function onload(arrayBuffer, passwordInput, fileInput) {
     }
     // encrypted
     if (passwordInput !== '' && passwordInput !== 'np') {
-      const fileNameLength = new TextDecoder('utf-8').decode(arrayBuffer.slice(0, 4)) - 1000;
-      const fileName = new TextDecoder('utf-8').decode(
-        arrayBuffer.slice(4, fileNameLength + 4),
-      );
-      const initialVector = new Uint8Array(
-        arrayBuffer.slice(4 + fileNameLength, 16 + fileNameLength),
-      );
-      const fileArray = new Uint8Array(
-        arrayBuffer.slice(16 + fileNameLength),
-      );
+      const [fileName, initialVector, fileArray] = new EncryptionBuf().disassembleBuf(arrayBuffer);
       const enc = new Encryption();
       const keyPromise = enc.importKey(passwordInput);
-      keyPromise
-        .then((key) => {
-          const decryptPromise = enc.decrypt(initialVector, key, fileArray);
-          decryptPromise
-            .then((decrypted) => {
-              const typeM = MIME.getType(fileName);
-              const blob = new Blob([decrypted], { type: typeM });
-              blob.name = fileName;
-              createLog(fileInput, fileName, false);
-              downloadFile(fileName, blob);
-            })
-            .catch(() => {
-              output('You have entered an invalid password!');
-            });
-        })
+      keyPromise.then((key) => {
+        const decryptPromise = enc.decrypt(initialVector, key, fileArray);
+        decryptPromise
+          .then((decrypted) => {
+            const typeM = MIME.getType(fileName);
+            const blob = new Blob([decrypted], { type: typeM });
+            blob.name = fileName;
+            createLog(fileInput, fileName, false);
+            downloadFile(fileName, blob);
+          })
+          .catch(() => {
+            output('You have entered an invalid password!');
+          });
+      })
         .catch(() => {
           output('You have entered an invalid password!');
         });

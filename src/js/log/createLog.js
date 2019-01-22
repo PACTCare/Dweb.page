@@ -1,6 +1,7 @@
 import Iota from '../iota/Iota';
 import Signature from '../crypto/Signature';
 import db from './logDb';
+import Error from '../error';
 
 /**
  * Prepares and sends log entries to the tangle for encrypted files
@@ -20,7 +21,7 @@ export default async function createLog(fileId, filename, isUpload) {
       fileId, filename, time, isUpload, isPrivate: true, folder: 'none',
     });
   } catch (error) {
-    console.log(error);
+    console.error(Error.ADD_DATABASE_ENTRY);
   }
   const logEntry = {
     fileId,

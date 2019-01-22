@@ -1,4 +1,4 @@
-import appendThreeBuffer from '../../src/js/helperFunctions/appendBuffers';
+import appendThreeBuffer from '../../src/js/ipfs/appendThreeBuffer';
 
 const buffer = Buffer.from('test');
 describe('appendThreeBuffer', () => {

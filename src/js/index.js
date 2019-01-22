@@ -20,9 +20,9 @@ import './viewmodels/navigation';
 import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
 import Encryption from './crypto/Encryption';
+import EncryptionBuf from './ipfs/EncryptionBuf';
 import getGateway from './ipfs/getGateway';
 import checkLocalGateway from './ipfs/checkLocalGateway';
-import appendThreeBuffer from './helperFunctions/appendBuffers';
 import checkIsMobile from './helperFunctions/checkIsMobile';
 import localUpload from './ipfs/localUpload';
 import checkBrowserDirectOpen from './helperFunctions/checkBrowserDirectOpen';
@@ -38,9 +38,8 @@ import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
-import Error from './error';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
-import { LIST_OF_IPFS_GATEWAYS } from './ipfs/ipfsConfig';
+import { LIST_OF_IPFS_GATEWAYS, PUBLIC_GATEWAY_SIZE_LIMIT } from './ipfs/ipfsConfig';
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
@@ -53,18 +52,13 @@ document.getElementById('favicon').href = favicon;
 const JSZip = require('jszip');
 
 const ISMOBILE = checkIsMobile();
+const sizeLimit = checkLocalGateway() ? 10000000 : PUBLIC_GATEWAY_SIZE_LIMIT;
 
 let gateway = getGateway();
 let alreadyAdded = false;
-let sizeLimit = 1000; // In MB
 let describtion = DEFAULT_DESCRIPTION;
 let filename;
 let fileId;
-
-// no upload limit if it's running local
-if (checkLocalGateway()) {
-  sizeLimit = 10000000;
-}
 
 function progressBar(percent) {
   const elem = document.getElementById('loadBar');
@@ -308,15 +302,7 @@ function encryptBeforeUpload(reader) {
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
     const encryptionPromise = enc.encryption(INTIALVECTOR, key, reader);
     encryptionPromise.then((encryptedData) => {
-      const lenNumber = filename.length + 1000;
-      const fileNameArray = Buffer.from(lenNumber + filename);
-      const bufArray = appendThreeBuffer(
-        fileNameArray,
-        INTIALVECTOR,
-        encryptedData,
-      );
-      const buf = bufArray;
-      uploadToIPFS(buf, true);
+      uploadToIPFS(new EncryptionBuf().createBuf(filename, INTIALVECTOR, encryptedData), true);
     });
   });
 }
@@ -339,12 +325,12 @@ function readFile(e) {
   if (files.length > 1) {
     const zip = new JSZip();
     for (let i = 0; i < files.length; i += 1) {
-      zip.file(files[i].name.replace(/[^A-Za-z0-9. _\-]/g, ''), files[i]);
+      zip.file(files[i].name, files[i]);
     }
     zip.generateAsync({ type: 'blob' }).then((data) => {
       if (data.size <= sizeLimit * 1024 * 1024) {
-        filename = `${files[0].name.replace(/[^A-Za-z0-9. _\-]/g, '').split('.')[0]}.zip`; // named after first file
-        reader.readAsArrayBuffer(data); // Read Provided File
+        filename = `${files[0].name.split('.')[0]}.zip`;
+        reader.readAsArrayBuffer(data);
       } else {
         output(`Please upload a smaller file (< ${sizeLimit} MB).`);
       }
@@ -353,8 +339,8 @@ function readFile(e) {
     const file = files[0];
     if (file) {
       if (file.size <= sizeLimit * 1024 * 1024) {
-        filename = file.name.replace(/[^A-Za-z0-9. _\-]/g, ''); // ä causes problems
-        reader.readAsArrayBuffer(file); // Read Provided File
+        filename = file.name;
+        reader.readAsArrayBuffer(file);
       }
     }
   }
