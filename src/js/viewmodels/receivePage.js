@@ -195,6 +195,27 @@ async function onload(arrayBuffer, passwordInput, fileInput) {
   }
 }
 
+function ipfsLoading(directLinkProgress, passwordInput, fileInput) {
+  const oReqLocal = new XMLHttpRequest();
+  if (!directLinkProgress) {
+    oReqLocal.onloadstart = function startCallback() { onloadstart(); };
+    oReqLocal.onprogress = function onProgressCallback(event) { onprogress(event); };
+    oReqLocal.onreadystatechange = function onreadystatechange() {
+      if (oReqLocal.readyState === 4) {
+        if (oReqLocal.status !== 200) {
+          output(errorMessage);
+        }
+      }
+    };
+  }
+  oReqLocal.onload = function onloadCallback() {
+    onload(oReqLocal.response, passwordInput, fileInput, GATEWAY);
+  };
+  oReqLocal.open('GET', GATEWAY + fileInput, true);
+  oReqLocal.responseType = 'arraybuffer';
+  oReqLocal.send();
+}
+
 async function load() {
   blockOpen = false;
   const passwordInput = document.getElementById('passwordField').value.trim();
@@ -218,8 +239,8 @@ async function load() {
   } else {
     output('');
     document.getElementById('markUnavailable').style.display = 'none';
+    let timeBeforeIPFSLoadingStarts = 0;
     let directLinkProgress = false;
-
     // link direct to upload gateway for faster transactions
     if (typeof window.searchSelection !== 'undefined'
       && typeof window.searchSelection.uploadGateway !== 'undefined') {
@@ -230,12 +251,18 @@ async function load() {
         && !uploadGateway.includes('127.0.0.1')
         && !uploadGateway.includes('::1')) {
         directLinkProgress = true;
+        // wait and see if gateway is still available
+        // TODO: progress bar doesn't reset
+        timeBeforeIPFSLoadingStarts = 1000;
         const oReqDirectLink = new XMLHttpRequest();
         oReqDirectLink.onloadstart = function startCallback() { onloadstart(); };
         oReqDirectLink.onprogress = function onProgressCallback(event) { onprogress(event); };
         oReqDirectLink.onreadystatechange = function onreadystatechange() {
           if (oReqDirectLink.readyState === 4) {
-            if (oReqDirectLink.status !== 200) {
+            if (oReqDirectLink.status === 0) {
+              // e.g., direct link gateway no longer exists!
+              directLinkProgress = false;
+            } else if (oReqDirectLink.status !== 200) {
               output(errorMessage);
             }
           }
@@ -249,24 +276,8 @@ async function load() {
       }
     }
 
-    const oReqLocal = new XMLHttpRequest();
-    if (!directLinkProgress) {
-      oReqLocal.onloadstart = function startCallback() { onloadstart(); };
-      oReqLocal.onprogress = function onProgressCallback(event) { onprogress(event); };
-      oReqLocal.onreadystatechange = function onreadystatechange() {
-        if (oReqLocal.readyState === 4) {
-          if (oReqLocal.status !== 200) {
-            output(errorMessage);
-          }
-        }
-      };
-    }
-    oReqLocal.onload = function onloadCallback() {
-      onload(oReqLocal.response, passwordInput, fileInput, GATEWAY);
-    };
-    oReqLocal.open('GET', GATEWAY + fileInput, true);
-    oReqLocal.responseType = 'arraybuffer';
-    oReqLocal.send();
+    await setTimeout(() => { ipfsLoading(directLinkProgress, passwordInput, fileInput); },
+      timeBeforeIPFSLoadingStarts);
   }
 }
 

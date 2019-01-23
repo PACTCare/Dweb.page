@@ -28,7 +28,6 @@ export default async function getHealthyNode() {
       const nodeHealth = await getHealthStatus(iotaNode);
       if (nodeHealth.latestMilestone === nodeHealth.latestSolidSubtangleMilestone
         && nodeHealth.latestMilestoneIndex === nodeHealth.latestSolidSubtangleMilestoneIndex) {
-        console.log(`healthy node: ${node}`);
         return iotaNode;
       }
     } catch (error) {

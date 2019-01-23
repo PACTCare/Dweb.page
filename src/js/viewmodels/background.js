@@ -10,7 +10,7 @@ function readBackgroundImage(event) {
     image.onload = async function imageResized() {
       const imageUrl = resizeImage(image, MAXSIZE);
       await db.backgroundImg.add({ imageUrl });
-      document.getElementById('resetImage').style.display = 'inherit';
+      document.getElementById('resetImageDiv').style.display = 'inherit';
       document
         .getElementsByTagName('body')[0]
         .style
@@ -30,7 +30,7 @@ function readBackgroundImage(event) {
 }
 
 function setDefaultImage() {
-  document.getElementById('resetImage').style.display = 'none';
+  document.getElementById('resetImageDiv').style.display = 'none';
   document
     .getElementsByTagName('body')[0]
     .style
@@ -43,17 +43,17 @@ async function setBackgroundImage() {
     if (typeof getStoredImage === 'undefined') {
       setDefaultImage();
     } else {
-      document.getElementById('resetImage').style.display = 'inherit';
+      document.getElementById('resetImageDiv').style.display = 'inherit';
       document
         .getElementsByTagName('body')[0]
         .style
         .backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("${getStoredImage.imageUrl}")`;
     }
     document.getElementById('backgroundUpload').addEventListener('change', readBackgroundImage, false);
-    document.getElementById('filtersubmit').addEventListener('click', () => {
+    document.getElementById('filtersubmitDiv').addEventListener('click', () => {
       document.getElementById('backgroundUpload').click();
     }, false);
-    document.getElementById('resetImage').addEventListener('click', async () => {
+    document.getElementById('resetImageDiv').addEventListener('click', async () => {
       await db.backgroundImg.clear();
       setDefaultImage();
     });
@@ -64,4 +64,6 @@ async function setBackgroundImage() {
   }
 }
 
-setBackgroundImage();
+document.addEventListener('DOMContentLoaded', () => {
+  setBackgroundImage();
+});

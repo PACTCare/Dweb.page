@@ -92,7 +92,7 @@ transition: all 0.4s ease 0s;
     height: 5px;
     width:20px;
     padding-right:15px;
-  float: right;
+    float: right;
 }
 
 	.mobile-menu ul {
