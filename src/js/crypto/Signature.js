@@ -2,7 +2,6 @@ import SigCompression from './SigCompression';
 import sigDb from './sigDb';
 import Error from '../error';
 
-
 /**
  * Curves and their primes
  * NIST P-256 (secp256r1) 2^256 - 2^224 + 2^192 + 2^96 - 1

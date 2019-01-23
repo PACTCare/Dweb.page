@@ -3,7 +3,6 @@ import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
-import '../polyfill/remove';
 import logDb from '../log/logDb';
 import Signature from '../crypto/Signature';
 import prepObjectForSignature from '../crypto/prepObjectForSignature';

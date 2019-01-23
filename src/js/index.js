@@ -10,7 +10,6 @@ import {
 import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
 import './viewmodels/copy';
-import './polyfill/remove';
 import './viewmodels/background';
 import './viewmodels/alert';
 import './viewmodels/steps';
@@ -131,7 +130,7 @@ function unencryptedLayout() {
   document.getElementById('passwordTab').style.display = 'none';
   let link = `${
     window.location.href
-  }?id=${fileId}&password=np&name=${filename}`;
+    }?id=${fileId}&password=np&name=${filename}`;
   if (checkBrowserDirectOpen(filename)) {
     link = gateway + fileId;
   }
@@ -296,7 +295,7 @@ function encryptBeforeUpload(reader) {
       ).href = whatsappLink;
       document.getElementById('telegramSharer').href = `https://telegram.me/share/url?url=${
         window.location.href
-      }`
+        }`
         + `&text=Hi, here is your password to access the file: ${keyString}`;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));
