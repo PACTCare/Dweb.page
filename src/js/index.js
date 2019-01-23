@@ -128,9 +128,7 @@ function unencryptedLayout() {
   document.getElementById('passwordStep').style.display = 'none';
   document.getElementById('passwordTab').classList.remove('tabSteps');
   document.getElementById('passwordTab').style.display = 'none';
-  let link = `${
-    window.location.href
-    }?id=${fileId}&password=np&name=${filename}`;
+  let link = `${window.location.href}?id=${fileId}&password=np&name=${encodeURIComponent(filename)}`;
   if (checkBrowserDirectOpen(filename)) {
     link = gateway + fileId;
   }
