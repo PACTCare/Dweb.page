@@ -23,6 +23,12 @@ function menuAnimation(inputId) {
   }
 }
 
+function showCookieAlert() {
+  if (document.getElementById('dialog-ovelay') !== null) {
+    document.getElementById('dialog-ovelay').style.display = 'block';
+  }
+}
+
 function isIE() {
   const ua = window.navigator.userAgent;
   const msie = ua.indexOf('MSIE '); // IE 10 or older
@@ -90,6 +96,7 @@ function searchInit() {
   document.getElementById('firstField').value = '';
   window.history.replaceState(null, null, window.location.pathname);
 }
+
 
 function linkInit() {
   document
@@ -177,6 +184,7 @@ document.getElementById('toPrivacy').addEventListener('click', () => {
 });
 
 document.getElementById('toIndex').addEventListener('click', () => {
+  showCookieAlert();
   menuAnimation('index');
   currentPage('toIndex');
 });
@@ -187,10 +195,12 @@ document.getElementById('newUpload').addEventListener('click', () => {
 });
 
 document.getElementById('toReceive').addEventListener('click', () => {
+  showCookieAlert();
   menuAnimation('receivePage');
   currentPage('toReceive');
 });
 document.getElementById('toFile').addEventListener('click', () => {
+  showCookieAlert();
   window.openHistory();
 });
 
