@@ -62,7 +62,6 @@ QmP543pymsKVHUdMgYQzSRbG7HoDSrVajhVRfrbTVhnGAQ
 **List of participating nodes**
 * https://ipfs.sopinka.com/ipfs/QmP543pymsKVHUdMgYQzSRbG7HoDSrVajhVRfrbTVhnGAQ/ (by [Sopinka Inc.](https://sopinka.com/))
 * https://pactcare.online/ipfs/QmP543pymsKVHUdMgYQzSRbG7HoDSrVajhVRfrbTVhnGAQ/ (by [Pact](https://pact.care/))
-* https://ipfs.linux.pizza/ipfs/QmP543pymsKVHUdMgYQzSRbG7HoDSrVajhVRfrbTVhnGAQ/ (by [Mastodon hosted on social.linux.pizza](https://social.linux.pizza/))
 
 ### Donate
 
