@@ -184,6 +184,7 @@ document.getElementById('toPrivacy').addEventListener('click', () => {
 });
 
 document.getElementById('toIndex').addEventListener('click', () => {
+  window.history.replaceState(null, null, window.location.pathname);
   showCookieAlert();
   menuAnimation('index');
   currentPage('toIndex');
@@ -195,11 +196,13 @@ document.getElementById('newUpload').addEventListener('click', () => {
 });
 
 document.getElementById('toReceive').addEventListener('click', () => {
+  window.history.replaceState(null, null, window.location.pathname);
   showCookieAlert();
   menuAnimation('receivePage');
   currentPage('toReceive');
 });
 document.getElementById('toFile').addEventListener('click', () => {
+  window.history.replaceState(null, null, window.location.pathname);
   showCookieAlert();
   window.openHistory();
 });

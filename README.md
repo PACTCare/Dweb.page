@@ -57,11 +57,11 @@ If you wish to participate you can simply [set up your own IPFS node with a writ
 
 The most recent online version of [Dweb.page](https://dweb.page) has the following hash:
 ```
-QmVE4Rjw4KQatq3LoHmvfnGH9iRDp7cKE4C8mDXerTNZoa
+QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmVE4Rjw4KQatq3LoHmvfnGH9iRDp7cKE4C8mDXerTNZoa/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://pactcare.online/ipfs/QmVE4Rjw4KQatq3LoHmvfnGH9iRDp7cKE4C8mDXerTNZoa/ (by [Pact](https://pact.care/))
+* https://ipfs.sopinka.com/ipfs/QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy/ (by [Sopinka Inc.](https://sopinka.com/))
+* https://pactcare.online/ipfs/QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy/ (by [Pact](https://pact.care/))
 
 ### Donate
 
