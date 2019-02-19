@@ -40,6 +40,7 @@ import createLog from './log/createLog';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
 import { LIST_OF_IPFS_GATEWAYS, PUBLIC_GATEWAY_SIZE_LIMIT } from './ipfs/ipfsConfig';
 
+
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
   faPlayCircle, faExclamationCircle, faBars, faBan,
@@ -292,8 +293,7 @@ function encryptBeforeUpload(reader) {
         'whatsappSharer',
       ).href = whatsappLink;
       document.getElementById('telegramSharer').href = `https://telegram.me/share/url?url=${
-        window.location.href
-        }`
+        window.location.href}`
         + `&text=Hi, here is your password to access the file: ${keyString}`;
     });
     const INTIALVECTOR = window.crypto.getRandomValues(new Uint8Array(12));

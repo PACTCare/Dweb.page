@@ -1,6 +1,6 @@
 {
   "name": "dweb.page",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Your Gateway to the Distributed Web",
   "private": true,
   "scripts": {
@@ -13,39 +13,41 @@
     "testURL": "http://localhost:8080/ipfs/QmSS34C6PzXVJTjMzqggZT34ibf4QE49b5kXRzLHdyBL7y"
   },
   "author": "David Hawig",
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "@fortawesome/fontawesome-svg-core": "^1.2.12",
-    "@fortawesome/free-brands-svg-icons": "^5.6.3",
-    "@fortawesome/free-regular-svg-icons": "^5.6.3",
-    "@fortawesome/free-solid-svg-icons": "^5.6.3",
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-brands-svg-icons": "^5.7.2",
+    "@fortawesome/free-regular-svg-icons": "^5.7.2",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "big-integer": "^1.6.41",
     "dexie": "^2.0.4",
     "fast-text-encoding": "^1.0.0",
     "iota.lib.js": "^0.5.1",
     "jszip": "^3.1.5",
     "mime": "^2.4.0",
-    "minisearch": "^1.0.0",
+    "minisearch": "^1.1.2",
+    "socket.io": "^2.2.0",
     "trytes": "^1.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
+    "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
+    "@babel/runtime": "^7.3.1",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.1.0",
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.0",
-    "eslint": "^5.12.1",
+    "eslint": "^5.14.1",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-import": "^2.16.0",
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^3.2.0",
-    "jest": "^23.6.0",
+    "jest": "^24.1.0",
     "mini-css-extract-plugin": "^0.5.0",
     "regenerator-runtime": "^0.13.1",
     "url-loader": "^1.1.2",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1"
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
   }
 }
