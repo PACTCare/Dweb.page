@@ -70,7 +70,6 @@ function indexInit() {
   document.getElementById('file-upload-form').style.display = 'block';
   document.getElementById('headline').style.display = 'block';
   document.getElementById('afterUpload').style.display = 'none';
-  document.getElementById('adDoFrame').style.display = 'none';
   document.getElementById('start').style.display = 'block';
   document.getElementById('response').style.display = 'none';
   document.getElementById('file-image').style.display = 'none';
@@ -82,7 +81,7 @@ function indexInit() {
   document.getElementById('passwordStep').classList.add('step');
   document.getElementById('lastTab').style.display = 'none';
   document.getElementById('newUpload').style.display = 'none';
-  document.getElementById('askForTags').style.display = 'none';
+  document.getElementById('starlogEntryDiv').style.display = 'none';
 }
 
 function searchInit() {

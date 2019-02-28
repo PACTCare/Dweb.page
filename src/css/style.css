@@ -182,6 +182,41 @@ p {
   margin-right: 1vw;
 }
 
+.metadataHeadline {
+  float: left;
+  font-weight: 600;
+  font-family: Quicksand,sans-serif;
+  font-size: 17px;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+#starlogEntryDiv{
+  padding: 0em 0.5em;
+}
+
+#metaHeadline{
+  margin-bottom: 0.8em;
+  margin-top: 0em;
+}
+
+#selectCopyright {
+  float: right;
+  width: 70%;
+  margin-top: 0.4em;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+#price-input{
+  float: right;
+  width: 70%;
+  padding-left: 4px;
+  margin-top: 0.4em;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
 a:link {
   color: #6d91c7;
   text-decoration: none;
@@ -199,19 +234,6 @@ a:hover {
 a:active {
   color: #db3e4d;
   text-decoration: underline;
-}
-
-#adDoFrame {
-  margin-top: 2vh;
-  max-width: 480px;
-  width: 90%;
-}
-.donation {
-  font-size: 12px;
-}
-
-#donationLink{
-  color: #fff;
 }
 
 input:focus,

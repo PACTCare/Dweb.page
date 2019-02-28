@@ -35,7 +35,8 @@ import '../css/menu.css';
 import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
-import createMetadata from './search/createMetadata';
+import Starlog from './starlog/starlog';
+// import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
 import { LIST_OF_IPFS_GATEWAYS, PUBLIC_GATEWAY_SIZE_LIMIT } from './ipfs/ipfsConfig';
@@ -81,7 +82,6 @@ function output(msg) {
 function prepareStepsLayout() {
   document.getElementById('file-upload-form').style.display = 'none';
   document.getElementById('headline').style.display = 'none';
-  document.getElementById('adDoFrame').style.display = 'inline-block';
   document.getElementById('afterUpload').style.display = 'block';
 }
 
@@ -159,23 +159,26 @@ function unencryptedLayout() {
   document.getElementById('ipfsHash').textContent = link;
 }
 
-function tagLayout() {
+/**
+ * User input of required starlog information
+ */
+function starlogEntryLayout() {
   const myNode = document.getElementById('tagsDiv');
   while (myNode.firstChild) {
     myNode.removeChild(myNode.firstChild);
   }
   createTagsElement();
   document.getElementById('afterTags').style.display = 'none';
-  document.getElementById('askForTags').style.display = 'block';
+  document.getElementById('starlogEntryDiv').style.display = 'block';
 
-  const tagsDone = function tagsDone() {
+  const tagsDone = async function tagsDone() {
     const tags = document.getElementsByClassName('tag');
     let tagsString = '';
     for (let i = 0; i < tags.length; i += 1) {
       tagsString += ` ${tags[i].textContent}`;
     }
     document.getElementById('afterTags').style.display = 'block';
-    document.getElementById('askForTags').style.display = 'none';
+    document.getElementById('starlogEntryDiv').style.display = 'none';
     unencryptedLayout();
     if (describtion === DEFAULT_DESCRIPTION && tagsString.length > 0) {
       describtion = tagsString.trim();
@@ -183,8 +186,17 @@ function tagLayout() {
       // && marks the beginning of the describtion/end of tags
       describtion = `${tagsString.trim()}&&${describtion}`;
     }
-    createMetadata(fileId, filename, gateway, describtion);
+
+    // createMetadata(fileId, filename, gateway, describtion);
+    const metaJson = { filename, gateway, describtion };
+    const metadata = JSON.stringify(metaJson);
+    // TODO: put metadata on starlog
+    const price = document.getElementById('price-input').value;
+    const starlog = new Starlog();
+    await starlog.connect();
+    await starlog.storeMeta(fileId, metadata, price);
   };
+
 
   // Add only once
   if (!alreadyAdded) {
@@ -228,7 +240,7 @@ function layoutSwitch(isEncrypted) {
     createLog(fileId, filename, true);
     encryptedLayout();
   } else {
-    tagLayout();
+    starlogEntryLayout();
   }
 }
 
@@ -360,4 +372,4 @@ document.getElementById('video-ovelay').addEventListener('click', () => {
   iframe.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
 });
 
-upload();
+window.onload = upload();

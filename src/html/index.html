@@ -95,13 +95,29 @@
     </div>
 
     <div id="afterUpload" class="textBox">
-      <div id="askForTags">
-        <h2 id='tagHeadline'>Add Tags</h2>
-        <form autocomplete="off">
-          <div id="tagsDiv" class="tags-input" data-name="tags-input"></div>
-          <div id="messagesReceivePage"></div>
-          <input type="button" class="boxButton" value="Done" id="sendTags">
-        </form>
+      <div id="starlogEntryDiv">
+        <h2 id='metaHeadline'>Starlog Metadata</h2>
+        <!-- owner=copyright (), price  -->
+        <div id='copyright' class="clearfix">
+          <h2 class='metadataHeadline'>Ownership</h2>
+          <select id='selectCopyright'>
+            <option>Free to use</option>
+            <option>For sale</option>
+            <option>Not for sale</option>
+          </select>
+        </div>
+        <div id='price' class="clearfix">
+          <h2 class='metadataHeadline'>Price</h2>
+          <input type="number" id="price-input" class="main-input floatRight" placeholder="Enter your price">
+        </div>
+        <div id='tag' class="clearfix">
+          <h2 class='metadataHeadline'>Tags</h2>
+          <form autocomplete="off">
+            <div id="tagsDiv" class="tags-input" data-name="tags-input"></div>
+            <div id="messagesReceivePage"></div>
+            <input type="button" class="boxButton" value="Done" id="sendTags">
+          </form>
+        </div>
       </div>
       <div id="afterTags">
         <div id="stepsDiv">
@@ -163,10 +179,6 @@
     <p class="lead" id="headline">
       Your Gateway to the Distributed Web<br>
       <span id="videoLink"><i class="fas fa-play-circle"></i> Watch the Video</span></p>
-    <div id="adDoFrame">
-      <pre class="donation"><a class="donation" id="donationLink" href="https://thetangle.org/address/LRKZARMRXNBSUAOGYOMCRBAZAK9ZSVWTIXOVFTGTX9FRZVUNIM9NLBEZPPZIDD9MQHVCOFNELKGVCIYVWQGRWYZU9X" target="_blank">IOTA Donation address</a>
-    </pre>
-    </div>
   </div>
 
   <!-- Receive Page  -->
