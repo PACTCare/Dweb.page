@@ -4,7 +4,7 @@ import removeMetaData from './removeMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
 import MetadataDb from './MetadataDb';
 import prepSearchText from './prepSearchText';
-import loadMetadata from './loadMetadata';
+// import loadMetadata from './loadMetadata';
 import { DEFAULT_DESCRIPTION } from './searchConfig';
 import Error from '../error';
 
@@ -30,6 +30,7 @@ function fileTypePreselection(val) {
 }
 
 function inputValToWinDowSearchSelection(inputVal) {
+  console.log(`Here comes the inputVal: ${{ inputVal }}`);
   window.searchSelection = {
     fileId: inputVal.split('=')[0],
     fileName: inputVal.split('=')[1],
@@ -46,11 +47,11 @@ async function startSearch() {
   try {
     window.metadata = await new MetadataDb().getMetadata();
     window.miniSearch.addAll(window.metadata);
-    loadMetadata(true);
+    // loadMetadata(true);
   } catch (err) {
     console.error(Error.SEARCH_DB_NA);
     window.metadata = [];
-    loadMetadata(false);
+    // loadMetadata(false);
   }
 }
 
@@ -132,7 +133,6 @@ function autocomplete(inp) {
           window.searchSelection = searchItems[i];
         }
         maxAddedWordCount += 1;
-
         const timeArray = searchItems[i].time.split(' ');
         const timeString = `${timeArray[0]} ${timeArray[1]} ${timeArray[2]} ${timeArray[3]}`;
         b = document.createElement('DIV');
@@ -152,10 +152,21 @@ function autocomplete(inp) {
           inp.value = window.searchSelection.fileId;
           document.getElementById('searchload').click();
         });
+        const spanPrice = document.createElement('SPAN');
+        spanPrice.innerHTML = `Buy: ${searchItems[i].price} <i class="far fa-star"></i>`;
+        spanPrice.style.cssFloat = 'right';
+        spanPrice.style.color = '#ffffff';
+        spanPrice.style.margin = '0em 0.5em';
+        spanPrice.style.padding = '0.1em 0.3em';
+        spanPrice.style.borderRadius = '0.3em';
+        spanPrice.style.backgroundColor = '#db3e4d';
         const spanTwo = document.createElement('SPAN');
-        spanTwo.innerHTML = '<i class="fas fa-ban"></i>';
+        spanTwo.innerHTML = 'Block';
         spanTwo.style.cssFloat = 'right';
-        spanTwo.style.color = '#db3e4d';
+        spanTwo.style.color = '#ffffff';
+        spanTwo.style.padding = '0.1em 0.3em';
+        spanTwo.style.borderRadius = '0.3em';
+        spanTwo.style.backgroundColor = '#db3e4d';
         spanTwo.innerHTML += `<input type='hidden' value='${searchItems[i].fileId}=${searchItems[i].fileName}=${searchItems[i].fileType}=${searchItems[i].address}=${searchItems[i].gateway}'>`;
         // eslint-disable-next-line no-loop-func
         spanTwo.addEventListener('click', async () => {
@@ -167,6 +178,8 @@ function autocomplete(inp) {
           removeMetaData(window.searchSelection);
         });
         b.appendChild(spanTwo);
+        b.appendChild(spanPrice);
+
         b.appendChild(span);
         a.appendChild(b);
       }

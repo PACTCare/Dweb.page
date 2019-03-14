@@ -1,4 +1,3 @@
-import Iota from '../iota/Iota';
 import createDayNumber from './createDayNumber';
 import addMetadata from './addMetadata';
 import Signature from '../crypto/Signature';
@@ -14,7 +13,6 @@ import {
 const mostRecentDayNumber = createDayNumber();
 const subscriptionDb = new SubscriptionDb();
 const metadataDb = new MetadataDb();
-const iota = new Iota();
 const sig = new Signature();
 
 async function returnVerifiedObj(metaObject) {
@@ -100,7 +98,6 @@ async function loadAvailibilityData(subscribeArray) {
  * @param {boolean} databaseWorks
  */
 export default async function loadMetadata(databaseWorks) {
-  await iota.nodeInitialization();
   const logFlags = {};
   let awaitTransactions = [];
   let recentDayLoad = LOAD_DAYS_UPDATE;
@@ -130,7 +127,7 @@ export default async function loadMetadata(databaseWorks) {
   const transactions = [].concat(...transactionsArrays);
   if (transactions.length > 0) {
     await Promise.all(transactions.map(async (transaction) => {
-      let metaObject = await iota.getMessage(transaction);
+      // let metaObject = await iota.getMessage(transaction);
       if (typeof metaObject !== 'undefined' && (!logFlags[metaObject.fileId])) {
         logFlags[metaObject.fileId] = true;
         metaObject = await returnVerifiedObj(metaObject);

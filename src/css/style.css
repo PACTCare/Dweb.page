@@ -29,11 +29,6 @@ body,
 .clearfix, .textBox, p, table {
   font-family: Roboto,sans-serif;
 }
-#pubKey, #publicTryteKey{
-  font-size: 12px;
-  word-break: break-all;
-  margin-top: 0.5rem;
-}
 
 .clearfix{
   max-width: 480px;
@@ -208,7 +203,16 @@ p {
   border-bottom: 1px solid #ccc;
 }
 
-#price-input{
+#price-input {
+  border: 0;
+  float: left;
+}
+
+#metaInputUnit{
+  float: right;
+}
+
+.metaInput{
   float: right;
   width: 70%;
   padding-left: 4px;

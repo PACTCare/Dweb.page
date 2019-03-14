@@ -101,14 +101,17 @@
         <div id='copyright' class="clearfix">
           <h2 class='metadataHeadline'>Ownership</h2>
           <select id='selectCopyright'>
-            <option>Free to use</option>
             <option>For sale</option>
+            <option>Free to use</option>
             <option>Not for sale</option>
           </select>
         </div>
         <div id='price' class="clearfix">
           <h2 class='metadataHeadline'>Price</h2>
-          <input type="number" id="price-input" class="main-input floatRight" placeholder="Enter your price">
+          <div class="metaInput"><input type="number" step="0.01" id="price-input" class="main-input floatRight"
+              placeholder="Enter your price">
+            <i id="metaInputUnit" class="far fa-star"></i>
+          </div>
         </div>
         <div id='tag' class="clearfix">
           <h2 class='metadataHeadline'>Tags</h2>
@@ -243,7 +246,7 @@
               <th></th>
               <th id='sortName'>Name <span id='sortNameIcon'> </span></th>
               <th style="display: none;">File ID </th>
-              <th id='modeName'>Mode <span id='sortModeIcon'> </span></th>
+              <th id='modeName'>Price <span id='sortModeIcon'> </span></th>
               <th id='uploadName'>Upload <span id='sortUploadIcon'> </span></th>
               <th id='downloadName'>Download <span id='sortDownloadIcon'> </span></th>
             </tr>
@@ -259,7 +262,6 @@
         <div class="loading-dot"></div>
         <div class="loading-dot"></div>
       </div>
-      <p id='pubKey'>Your public key: <a target='_blank' id='publicTryteKey'></a></p>
       <div id="historyButtons">
         <button id="clearHistory" class="boxButton">Clear Files</button>
         <button id="csvDownload" class="boxButton" onclick="exportTableToCSV('FileTransfer.csv')">Export CSV</button>

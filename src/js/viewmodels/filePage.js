@@ -1,21 +1,12 @@
 import '../services/tableToCsv';
-import Iota from '../iota/Iota';
 import FileType from '../services/FileType';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import logDb from '../log/logDb';
-import Signature from '../crypto/Signature';
-import prepObjectForSignature from '../crypto/prepObjectForSignature';
-import getTangleExplorer from '../iota/getTangleExplorer';
 import createDayNumber from '../search/createDayNumber';
 import daysToLoadNr from '../search/dayToLoadNr';
-import { TAG_PREFIX_PRIVATE_DOWNLOAD } from '../search/searchConfig';
 
-const sig = new Signature();
-const iota = new Iota();
 const iotaFlags = {};
-let publicLink;
-let tangleExplorerAddress;
 const STORAGEKEY = 'loadedDayNumber';
 
 function hideColumns(col1) {
@@ -31,22 +22,9 @@ function hideColumns(col1) {
 }
 
 function upDownloadBox(contentArray) {
-  let cellContent = '--';
+  const cellContent = '--';
   for (let i = 0; i < contentArray.length; i += 1) {
     const timeText = contentArray[i].time.replace(',', '').replace(' GMT', '').slice(0, -3).substr(4);
-    if (i === 0) {
-      if (contentArray[i].isPrivate) {
-        cellContent = `<a target="_blank" href=${tangleExplorerAddress
-          + iota.convertHashToAddress(contentArray[i].fileId)}>${timeText}</a>`;
-      } else {
-        cellContent = `<a target="_blank" href=${publicLink}>${timeText}</a>`;
-      }
-    } else if (contentArray[i].isPrivate) {
-      cellContent = `${cellContent}\n <a target="_blank" href=${tangleExplorerAddress
-        + iota.convertHashToAddress(contentArray[i].fileId)}>${timeText}</a>`;
-    } else {
-      cellContent = `${cellContent}\n <a target="_blank" href=${publicLink}>${timeText}</a>`;
-    }
   }
   return cellContent;
 }
@@ -68,7 +46,7 @@ function printLog(logsDb) {
       const cell3 = row.insertCell(2);
       cell3.setAttribute('data-title', 'File ID: ');
       const cell4 = row.insertCell(3);
-      cell4.setAttribute('data-title', 'Mode: ');
+      cell4.setAttribute('data-title', 'Price: ');
       const cell5 = row.insertCell(4);
       cell5.setAttribute('data-title', 'Upload: ');
       const cell6 = row.insertCell(5);
@@ -85,8 +63,9 @@ function printLog(logsDb) {
       cell2.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
       cell3.textContent = logsDb[j].fileId;
       cell4.textContent = 'Private';
+      // price
       if (!logsDb[j].isPrivate) {
-        cell4.textContent = 'Public';
+        cell4.innerHTML = `${logsDb[j].price} <i class="far fa-star"></i>`;
       }
 
       const downloadArray = logsDb.filter(
@@ -105,60 +84,51 @@ function printLog(logsDb) {
   }
 }
 
-async function loadInfoFromTangle(logsDb) {
+async function updateFromStarlog(logsDb) {
   const logFlags = {};
-  const awaitTransactions = [];
-  const mostRecentDayNumber = createDayNumber();
-  let dayNumber = mostRecentDayNumber;
-  let daysLoaded = window.localStorage.getItem(STORAGEKEY);
-  daysLoaded = daysToLoadNr(daysLoaded);
-  // TODO: downloads of others don't show up and two downloads at the exact same time
+  const awaitTransactions = new Map();
   for (let i = 0; i < logsDb.length; i += 1) {
     const logObject = logsDb[i];
     if (!logFlags[logObject.fileId]) {
       logFlags[logObject.fileId] = true;
-      if (logObject.isPrivate) {
-        const address = iota.convertHashToAddress(logObject.fileId);
-        while (dayNumber >= daysLoaded) {
-          const tag = TAG_PREFIX_PRIVATE_DOWNLOAD + iota.createTimeTag(dayNumber);
-          awaitTransactions.push(iota.getTransactionByAddressAndTag(address, tag));
-          dayNumber -= 1;
-        }
-      }
+      awaitTransactions.set(logObject.fileId, window.starlog.loadMetadatByHash(logObject.fileId));
+      // const array = map.get('ipfs_hash'); // returns an array with 46 elements and the words elements is what I am looking for!
+      // const price = map.get('price').words[0];
     }
   }
 
   const transactionsArrays = await Promise.all(awaitTransactions);
-  const transactions = [].concat(...transactionsArrays);
-  await Promise.all(
-    transactions.map(async (transaction) => {
-      let logObj = await iota.getMessage(transaction);
-      // only add if it's not already part of the logsDB
-      if (typeof logObj !== 'undefined') {
-        const count = await logDb.log.where('time').equals(logObj.time).count();
-        if (count === 0) {
-          const publicKey = await sig.importPublicKey(logObj.publicHexKey);
-          const { signature } = logObj;
-          logObj = prepObjectForSignature(logObj);
-          const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
-          if (isVerified) {
-            const newEntry = {
-              fileId: logObj.fileId,
-              filename: 'na',
-              time: logObj.time,
-              isUpload: false,
-              isPrivate: true,
-              folder: 'none',
-            };
-            logsDb.push(newEntry);
-            await logDb.log.add(newEntry);
-          }
-        }
-      }
-    }),
-  );
+  // TODO: if price different update
 
-  window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
+  // await Promise.all(
+  //   transactions.map(async (transaction) => {
+  //     let logObj = await iota.getMessage(transaction);
+  //     // only add if it's not already part of the logsDB
+  //     if (typeof logObj !== 'undefined') {
+  //       const count = await logDb.log.where('time').equals(logObj.time).count();
+  //       if (count === 0) {
+  //         const publicKey = await sig.importPublicKey(logObj.publicHexKey);
+  //         const { signature } = logObj;
+  //         logObj = prepObjectForSignature(logObj);
+  //         const isVerified = await sig.verify(publicKey, signature, JSON.stringify(logObj));
+  //         if (isVerified) {
+  //           const newEntry = {
+  //             fileId: logObj.fileId,
+  //             filename: 'na',
+  //             time: logObj.time,
+  //             isUpload: false,
+  //             isPrivate: true,
+  //             folder: 'none',
+  //           };
+  //           logsDb.push(newEntry);
+  //           await logDb.log.add(newEntry);
+  //         }
+  //       }
+  //     }
+  //   }),
+  // );
+
+  // window.localStorage.setItem(STORAGEKEY, mostRecentDayNumber.toString());
   document.getElementById('loader').style.visibility = 'hidden';
   if (logsDb.length > 0) {
     printLog(logsDb);
@@ -171,14 +141,6 @@ document.getElementById('clearHistory').addEventListener('click', async () => {
 });
 
 document.getElementById('toFile').addEventListener('click', async () => {
-  tangleExplorerAddress = await getTangleExplorer();
-  await iota.nodeInitialization();
-  const keys = await sig.getKeys(); // data clone error!
-  const publicHexKey = await sig.exportPublicKey(keys.publicKey);
-  const publicTryteKey = iota.hexKeyToTryte(publicHexKey);
-  publicLink = `${tangleExplorerAddress}${publicTryteKey.slice(0, 81)}`;
-  document.getElementById('publicTryteKey').textContent = publicTryteKey;
-  document.getElementById('publicTryteKey').setAttribute('href', publicLink);
   try {
     const logsDb = await logDb.log.toArray();
     if (logsDb == null) {
@@ -186,7 +148,7 @@ document.getElementById('toFile').addEventListener('click', async () => {
       document.getElementById('clearHistory').style.visibility = 'hidden';
     } else {
       document.getElementById('loader').style.visibility = 'visible';
-      loadInfoFromTangle(logsDb);
+      updateFromStarlog(logsDb);
     }
   } catch (error) {
     document.getElementById('tableDiv').style.margin = '1.5rem';

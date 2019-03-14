@@ -5,7 +5,7 @@ import {
   faExclamationCircle, faBars, faBan,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  faEnvelope, faFile, faFolderOpen, faCopy, faImage,
+  faEnvelope, faFile, faFolderOpen, faCopy, faImage, faStar,
 } from '@fortawesome/free-regular-svg-icons';
 import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
@@ -17,6 +17,7 @@ import './viewmodels/filePage';
 import './viewmodels/receivePage';
 import './viewmodels/navigation';
 import './viewmodels/aboutPage';
+import Starlog from './starlog/starlog';
 import createTagsElement from './viewmodels/tags';
 import Encryption from './crypto/Encryption';
 import EncryptionBuf from './ipfs/EncryptionBuf';
@@ -35,8 +36,7 @@ import '../css/menu.css';
 import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
-import Starlog from './starlog/starlog';
-// import createMetadata from './search/createMetadata';
+import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
 import { LIST_OF_IPFS_GATEWAYS, PUBLIC_GATEWAY_SIZE_LIMIT } from './ipfs/ipfsConfig';
@@ -44,7 +44,7 @@ import { LIST_OF_IPFS_GATEWAYS, PUBLIC_GATEWAY_SIZE_LIMIT } from './ipfs/ipfsCon
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
-  faPlayCircle, faExclamationCircle, faBars, faBan,
+  faPlayCircle, faExclamationCircle, faBars, faBan, faStar,
   faWhatsapp, faTelegramPlane, faImage);
 dom.watch();
 document.getElementById('logo1').src = logo;
@@ -171,6 +171,22 @@ function starlogEntryLayout() {
   document.getElementById('afterTags').style.display = 'none';
   document.getElementById('starlogEntryDiv').style.display = 'block';
 
+  let licenseCode = 0;
+  document.getElementById('selectCopyright').onchange = function selection() {
+    if (this.value === 'Free to use') {
+      document.getElementById('price').style.display = 'none';
+      document.getElementById('price-input').value = 0;
+      licenseCode = 1;
+    } else if (this.value === 'Not for sale') {
+      document.getElementById('price').style.display = 'none';
+      document.getElementById('price-input').value = 0;
+      licenseCode = 0;
+    } else {
+      document.getElementById('price').style.display = 'block';
+      licenseCode = 0;
+    }
+  };
+
   const tagsDone = async function tagsDone() {
     const tags = document.getElementsByClassName('tag');
     let tagsString = '';
@@ -187,14 +203,9 @@ function starlogEntryLayout() {
       describtion = `${tagsString.trim()}&&${describtion}`;
     }
 
-    // createMetadata(fileId, filename, gateway, describtion);
-    const metaJson = { filename, gateway, describtion };
-    const metadata = JSON.stringify(metaJson);
-    // TODO: put metadata on starlog
+    // TODO: activate create metadata
     const price = document.getElementById('price-input').value;
-    const starlog = new Starlog();
-    await starlog.connect();
-    await starlog.storeMeta(fileId, metadata, price);
+    createMetadata(fileId, filename, gateway, describtion, licenseCode, price);
   };
 
 
@@ -355,7 +366,12 @@ function readFile(e) {
   }
 }
 
-function upload() {
+async function start() {
+  // init starlog
+  window.starlog = new Starlog();
+  await window.starlog.connect();
+  // TODO: implement starlog connection error
+
   document.getElementById('file-upload').addEventListener('change', readFile, false);
   document.getElementById('file-drag').addEventListener('drop', readFile, false);
 }
@@ -372,4 +388,4 @@ document.getElementById('video-ovelay').addEventListener('click', () => {
   iframe.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
 });
 
-window.onload = upload();
+window.onload = start();
