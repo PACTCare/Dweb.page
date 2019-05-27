@@ -19,8 +19,8 @@
 <body>
   <script type="text/javascript">
     const HASH = 'QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy';
-    const COOKIE = "websiteV04";
-    const PREVIOUSCOOKIE = "websiteV03";
+    const COOKIE = "websiteV05";
+    const PREVIOUSCOOKIE = "websiteV04";
     // IE11 Polyfill
     if (!String.prototype.includes) {
       String.prototype.includes = function (search, start) {
@@ -67,8 +67,7 @@
         // erase previous version
         eraseCookie(PREVIOUSCOOKIE)
         var node = [
-          "https://pactcare.online/ipfs/",
-          "https://ipfs.sopinka.com/ipfs/",
+          "https://pact.onl/ipfs/",
         ];
         var newSite = node[Math.floor(Math.random() * node.length)];
         setCookie(COOKIE, newSite, 3650);

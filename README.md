@@ -60,8 +60,7 @@ The most recent online version of [Dweb.page](https://dweb.page) has the followi
 QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy
 ```
 **List of participating nodes**
-* https://ipfs.sopinka.com/ipfs/QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy/ (by [Sopinka Inc.](https://sopinka.com/))
-* https://pactcare.online/ipfs/QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy/ (by [Pact](https://pact.care/))
+* https://pact.onl/ipfs/QmaG6gCPHBKEvQtCTG7ELa1J1fh9K7iitcCwrWponxFydy (by [Pact](https://pact.care/))
 
 ### Donate
 
