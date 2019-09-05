@@ -1,7 +1,7 @@
 import Cookie from '../services/Cookie';
-import getGateway from '../ipfs/getGateway';
+import startIPFS from '../ipfs/startIPFS';
+import { GATEWAY } from '../ipfs/ipfsConfig';
 
-const GATEWAY = getGateway();
 const checkBoxCookie = new Cookie('Checkbox');
 
 function supportsFileread() {
@@ -63,7 +63,10 @@ checkbox.addEventListener('change', function checkBox() {
   }
 });
 
-function ekUpload() {
+async function ekUpload() {
+  // TODO: resolve createMedata, createLog, filePage, loadMetadata
+  startIPFS();
+
   function fileDragHover(e) {
     const fileDrag = document.getElementById('file-drag');
     e.stopPropagation();

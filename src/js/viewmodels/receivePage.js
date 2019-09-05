@@ -1,19 +1,17 @@
 import MIME from 'mime/lite';
 import 'fast-text-encoding';
 import Encryption from '../crypto/Encryption';
-import getGateway from '../ipfs/getGateway';
 import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import SubscriptionDb from '../search/SubscriptionDb';
 import createLog from '../log/createLog';
-import { LIST_OF_IPFS_GATEWAYS, IPFS_COMPANION_NO_REDIRECT } from '../ipfs/ipfsConfig';
+import { LIST_OF_IPFS_GATEWAYS, IPFS_COMPANION_NO_REDIRECT, GATEWAY } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
 import EncryptionBuf from '../ipfs/EncryptionBuf';
 import Error from '../error';
 
-const GATEWAY = getGateway();
 const errorMessage = 'The file you’re requesting is difficult to load or not available at all!';
 let loadingRunning = false;
 let blockOpen = false;

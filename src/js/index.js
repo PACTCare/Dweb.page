@@ -20,12 +20,8 @@ import './viewmodels/aboutPage';
 import createTagsElement from './viewmodels/tags';
 import Encryption from './crypto/Encryption';
 import EncryptionBuf from './ipfs/EncryptionBuf';
-import getGateway from './ipfs/getGateway';
-import checkLocalGateway from './ipfs/checkLocalGateway';
 import checkIsMobile from './helperFunctions/checkIsMobile';
-import localUpload from './ipfs/localUpload';
 import checkBrowserDirectOpen from './helperFunctions/checkBrowserDirectOpen';
-import shuffleArray from './helperFunctions/shuffelArray';
 import extractMetadata from './search/extractMetadata';
 import '../css/style.css';
 import '../css/toggle.css';
@@ -38,8 +34,9 @@ import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
 import createLog from './log/createLog';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
-import { LIST_OF_IPFS_GATEWAYS, PUBLIC_GATEWAY_SIZE_LIMIT } from './ipfs/ipfsConfig';
+import { GATEWAY } from './ipfs/ipfsConfig';
 
+// TODO: Add upload to other gateways again
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
@@ -52,36 +49,15 @@ document.getElementById('favicon').href = favicon;
 const JSZip = require('jszip');
 
 const ISMOBILE = checkIsMobile();
-const sizeLimit = checkLocalGateway() ? 10000000 : PUBLIC_GATEWAY_SIZE_LIMIT;
 
-let gateway = getGateway();
 let alreadyAdded = false;
 let describtion = DEFAULT_DESCRIPTION;
 let filename;
 let fileId;
 
-function progressBar(percent) {
-  const elem = document.getElementById('loadBar');
-  elem.style.width = `${percent}%`;
-  if (percent >= 100) {
-    document.getElementById('loadProgress').style.display = 'none';
-  } else {
-    document.getElementById('loadProgress').style.display = 'block';
-  }
-}
-
-/**
- * Output messages
- * @param {string} msg
- */
-function output(msg) {
-  document.getElementById('messages').textContent = msg;
-}
-
 function prepareStepsLayout() {
   document.getElementById('file-upload-form').style.display = 'none';
   document.getElementById('headline').style.display = 'none';
-  document.getElementById('adDoFrame').style.display = 'inline-block';
   document.getElementById('afterUpload').style.display = 'block';
 }
 
@@ -131,7 +107,7 @@ function unencryptedLayout() {
   document.getElementById('passwordTab').style.display = 'none';
   let link = `${window.location.href}?id=${fileId}&password=np&name=${encodeURIComponent(filename)}`;
   if (checkBrowserDirectOpen(filename)) {
-    link = gateway + fileId;
+    link = GATEWAY + fileId;
   }
   if (filename.includes('.htm')) {
     onlyLastTab();
@@ -183,7 +159,7 @@ function tagLayout() {
       // && marks the beginning of the describtion/end of tags
       describtion = `${tagsString.trim()}&&${describtion}`;
     }
-    createMetadata(fileId, filename, gateway, describtion);
+    createMetadata(fileId, filename, describtion);
   };
 
   // Add only once
@@ -232,49 +208,11 @@ function layoutSwitch(isEncrypted) {
   }
 }
 
-/**
- * Shows message if transfer fails
- * E.g. brave browser doesn't call layoutSwitch
- */
-function transferFailed() {
-  prepareStepsLayout();
-  errorMessage("The current IPFS gateway you are using  isn't writable!");
-}
-
 async function uploadToIPFS(buf, isEncrypted) {
   // if local always upload on an additional public gateway
-  if (checkLocalGateway()) {
-    // TODO: big files/parallel
-    fileId = await localUpload(buf);
-  }
-  if (checkLocalGateway() && fileId === undefined) {
-    transferFailed();
-  } else {
-    const xhr = new XMLHttpRequest();
-    if (checkLocalGateway()) {
-      const [publicGateway] = shuffleArray(LIST_OF_IPFS_GATEWAYS);
-      gateway = publicGateway;
-    }
-    xhr.open('POST', gateway, true);
-    xhr.responseType = 'arraybuffer';
-    xhr.timeout = 3600000;
-    xhr.onreadystatechange = function onreadystatechange() {
-      if (this.readyState === this.HEADERS_RECEIVED) {
-        if (!checkLocalGateway()) {
-          fileId = xhr.getResponseHeader('ipfs-hash');
-        }
-        layoutSwitch(isEncrypted);
-      }
-    };
-    xhr.addEventListener('error', transferFailed);
-    xhr.upload.onprogress = function onprogress(e) {
-      if (e.lengthComputable) {
-        const per = Math.round((e.loaded * 100) / e.total);
-        progressBar(per);
-      }
-    };
-    xhr.send(new Blob([buf]));
-  }
+  const [{ hash }] = await window.ipfsNode.add(Buffer.from(buf));
+  fileId = hash;
+  layoutSwitch(isEncrypted);
 }
 
 function encryptBeforeUpload(reader) {
@@ -325,20 +263,14 @@ function readFile(e) {
       zip.file(files[i].name, files[i]);
     }
     zip.generateAsync({ type: 'blob' }).then((data) => {
-      if (data.size <= sizeLimit * 1024 * 1024) {
-        filename = `${files[0].name.split('.')[0]}.zip`;
-        reader.readAsArrayBuffer(data);
-      } else {
-        output(`Please upload a smaller file (< ${sizeLimit} MB).`);
-      }
+      filename = `${files[0].name.split('.')[0]}.zip`;
+      reader.readAsArrayBuffer(data);
     });
   } else {
     const file = files[0];
     if (file) {
-      if (file.size <= sizeLimit * 1024 * 1024) {
-        filename = file.name;
-        reader.readAsArrayBuffer(file);
-      }
+      filename = file.name;
+      reader.readAsArrayBuffer(file);
     }
   }
 }
