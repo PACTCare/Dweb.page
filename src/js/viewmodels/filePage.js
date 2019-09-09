@@ -2,12 +2,9 @@ import '../services/tableToCsv';
 import FileType from '../services/FileType';
 import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
+import { GATEWAY } from '../ipfs/ipfsConfig';
 
 // TODO: orbitDB
-
-const iotaFlags = {};
-let publicLink;
-let tangleExplorerAddress;
 
 function hideColumns(col1) {
   const tbl = document.getElementById('table');
@@ -26,67 +23,56 @@ function upDownloadBox(contentArray) {
   for (let i = 0; i < contentArray.length; i += 1) {
     const timeText = contentArray[i].time.replace(',', '').replace(' GMT', '').slice(0, -3).substr(4);
     if (i === 0) {
-      if (contentArray[i].isPrivate) {
-        cellContent = `<a target="_blank" href=${tangleExplorerAddress}>${timeText}</a>`;
-      } else {
-        cellContent = `<a target="_blank" href=${publicLink}>${timeText}</a>`;
-      }
-    } else if (contentArray[i].isPrivate) {
-      cellContent = `${cellContent}\n <a target="_blank" href=${tangleExplorerAddress}>${timeText}</a>`;
+      cellContent = timeText;
     } else {
-      cellContent = `${cellContent}\n <a target="_blank" href=${publicLink}>${timeText}</a>`;
+      cellContent = timeText;
     }
   }
   return cellContent;
 }
 
-function printLog(logsDb) {
-  logsDb.sort(compareTime);
+/**
+ * Print out all downloads/uploads as a table
+ * @param {Array} metaArray
+ */
+function printLog(metaArray) {
+  metaArray.sort(compareTime);
   document.getElementById('csvDownload').style.visibility = 'visible';
   document.getElementById('clearHistory').style.visibility = 'visible';
-  for (let j = 0; j < logsDb.length; j += 1) {
-    // Downloads don't have a name
-    if (!iotaFlags[logsDb[j].fileId] && logsDb[j].isUpload) {
-      iotaFlags[logsDb[j].fileId] = true;
-      const table = document.getElementById('table');
-      const row = table.insertRow(-1);
-      const cell1 = row.insertCell(0);
-      cell1.setAttribute('data-title', '');
-      const cell2 = row.insertCell(1);
-      cell2.setAttribute('data-title', 'Name: ');
-      const cell3 = row.insertCell(2);
-      cell3.setAttribute('data-title', 'File ID: ');
-      const cell4 = row.insertCell(3);
-      cell4.setAttribute('data-title', 'Mode: ');
-      const cell5 = row.insertCell(4);
-      cell5.setAttribute('data-title', 'Upload: ');
-      const cell6 = row.insertCell(5);
-      cell6.setAttribute('data-title', 'Download: ');
+  for (let j = 0; j < metaArray.length; j += 1) {
+    const table = document.getElementById('table');
+    const row = table.insertRow(-1);
+    const cell1 = row.insertCell(0);
+    cell1.setAttribute('data-title', '');
+    const cell2 = row.insertCell(1);
+    cell2.setAttribute('data-title', 'Name: ');
+    const cell3 = row.insertCell(2);
+    cell3.setAttribute('data-title', 'File ID: ');
+    const cell4 = row.insertCell(3);
+    cell4.setAttribute('data-title', 'Mode: ');
+    const cell5 = row.insertCell(4);
+    cell5.setAttribute('data-title', 'Upload: ');
+    const cell6 = row.insertCell(5);
+    cell6.setAttribute('data-title', 'Download: ');
 
-      const linkText = logsDb[j].filename;
-      let link = `${window.location.href}?id=${logsDb[j].fileId}`;
-      if (!logsDb[j].isPrivate) {
-        link = `${window.location.href}?id=${logsDb[j].fileId}&password=np&name=${logsDb[j].filename}`;
-      }
-      const [, , fileTypePart] = linkText.match(/(.*)\.(.*)/);
-      cell1.innerHTML = FileType.returnFileIcon(fileTypePart);
-      cell1.style.fontSize = '18px';
-      cell2.innerHTML = `<a href="${link}" target="_blank">${linkText}</a>`;
-      cell3.textContent = logsDb[j].fileId;
-      cell4.textContent = 'Private';
-      if (!logsDb[j].isPrivate) {
-        cell4.textContent = 'Public';
-      }
+    const { fileName } = metaArray[j];
+    const link = `${GATEWAY}${metaArray[j].fileId}`;
 
-      const downloadArray = logsDb.filter(
-        (x) => x.fileId === logsDb[j].fileId && !x.isUpload,
-      );
-      const uploadArray = logsDb.filter(
-        (x) => x.fileId === logsDb[j].fileId && x.isUpload,
-      );
-      cell5.innerHTML = upDownloadBox(uploadArray);
-      cell6.innerHTML = upDownloadBox(downloadArray);
-    }
+    cell1.innerHTML = FileType.returnFileIcon(metaArray[j].fileType);
+    cell1.style.fontSize = '18px';
+    cell2.innerHTML = `<a href="${link}" target="_blank">${fileName}</a>`;
+    cell3.textContent = metaArray[j].fileId;
+    cell4.textContent = 'Private';
+
+    // TODO: Fix x.isUpload
+    const downloadArray = metaArray.filter(
+      (x) => x.fileId === metaArray[j].fileId && x.isUpload,
+    );
+    const uploadArray = metaArray.filter(
+      (x) => x.fileId === metaArray[j].fileId,
+    );
+    cell5.innerHTML = upDownloadBox(uploadArray);
+    cell6.innerHTML = upDownloadBox(downloadArray);
   }
   hideColumns(2);
   if (document.getElementById('firstRow') !== null) {
@@ -98,13 +84,17 @@ document.getElementById('clearHistory').addEventListener('click', async () => {
   window.location.reload();
 });
 
+// Load file page
 document.getElementById('toFile').addEventListener('click', async () => {
-  document.getElementById('publicTryteKey').setAttribute('href', publicLink);
-
-  document.getElementById('tableDiv').style.margin = '1.5rem';
-  document.getElementById('tableDiv').style.font = 'font-family: Roboto,sans-serif';
-  document.getElementById('tableDiv').style.color = '#6f6f6f';
-  document.getElementById('tableDiv').textContent = 'It seems your browser doesn’t allow Dweb.page to store data locally (e.g., because of the Firefox private mode)! Therefore, your public key will constantly change and you won’t have access to your file history. ';
+  try {
+    printLog(window.metadata);
+  } catch (error) {
+    document.getElementById('publicTryteKey').setAttribute('href', publicLink);
+    document.getElementById('tableDiv').style.margin = '1.5rem';
+    document.getElementById('tableDiv').style.font = 'font-family: Roboto,sans-serif';
+    document.getElementById('tableDiv').style.color = '#6f6f6f';
+    document.getElementById('tableDiv').textContent = 'It seems your browser doesn’t allow Dweb.page to store data locally! Therefore, your public key will constantly change and you won’t have access to your file history. ';
+  }
 });
 
 function sortTable(n) {

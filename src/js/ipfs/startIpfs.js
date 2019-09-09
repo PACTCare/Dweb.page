@@ -41,12 +41,10 @@ async function loadMetadata(metadataRegistry, orbitdb) {
   const items = metadataRegistry.iterator().collect().map((e) => e.payload.value);
   let metadata = [];
   await Promise.all(items.map(async (e) => {
-    console.log('shit');
     const db = await orbitdb.open(e.address.toString(), { indexBy: 'fileId' });
     await db.load();
     const back = await db.get('');
     metadata = metadata.concat(back);
-    console.log(metadata);
   }));
 
   return metadata;
