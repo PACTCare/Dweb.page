@@ -4,7 +4,7 @@ import compareTime from '../helperFunctions/compareTime';
 import '../../css/table.css';
 import { GATEWAY } from '../ipfs/ipfsConfig';
 
-// TODO: orbitDB
+let printed = false;
 
 function hideColumns(col1) {
   const tbl = document.getElementById('table');
@@ -87,9 +87,11 @@ document.getElementById('clearHistory').addEventListener('click', async () => {
 // Load file page
 document.getElementById('toFile').addEventListener('click', async () => {
   try {
-    printLog(window.metadata);
+    if (!printed) {
+      printLog(window.metadata);
+      printed = true;
+    }
   } catch (error) {
-    document.getElementById('publicTryteKey').setAttribute('href', publicLink);
     document.getElementById('tableDiv').style.margin = '1.5rem';
     document.getElementById('tableDiv').style.font = 'font-family: Roboto,sans-serif';
     document.getElementById('tableDiv').style.color = '#6f6f6f';

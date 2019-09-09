@@ -9,7 +9,6 @@
 export default async function createLog(fileId, filename, isUpload) {
   const time = new Date().toUTCString();
 
-
   const logEntry = {
     fileId,
     time,
