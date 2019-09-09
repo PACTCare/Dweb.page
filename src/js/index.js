@@ -36,8 +36,6 @@ import createLog from './log/createLog';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
 import { GATEWAY } from './ipfs/ipfsConfig';
 
-// TODO: Add upload to other gateways again
-
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
   faPlayCircle, faExclamationCircle, faBars, faBan,

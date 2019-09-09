@@ -1,12 +1,10 @@
 import MiniSearch from 'minisearch';
 import FileType from '../services/FileType';
-import removeMetaData from './removeMetaData';
 import sortByScoreAndTime from './sortByScoreAndTime';
-import MetadataDb from './MetadataDb';
 import prepSearchText from './prepSearchText';
-import loadMetadata from './loadMetadata';
 import { DEFAULT_DESCRIPTION } from './searchConfig';
 import Error from '../error';
+import startIpfs from '../ipfs/startIpfs';
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -44,13 +42,12 @@ function inputValToWinDowSearchSelection(inputVal) {
  */
 async function startSearch() {
   try {
-    window.metadata = await new MetadataDb().getMetadata();
+    // TODO: resolve createMedata, createLog, filePage, subscribtion to public metadata system
+    await startIpfs();
     window.miniSearch.addAll(window.metadata);
-    loadMetadata(true);
   } catch (err) {
     console.error(Error.SEARCH_DB_NA);
     window.metadata = [];
-    loadMetadata(false);
   }
 }
 
@@ -98,7 +95,7 @@ function autocomplete(inp) {
     const searchResults = window.miniSearch.search(val.replace('.', ' '));
     const searchItems = [];
     for (let j = 0; j < searchResults.length; j += 1) {
-      const item = window.metadata.find(o => o.fileId === searchResults[j].id);
+      const item = window.metadata.find((o) => o.fileId === searchResults[j].id);
       if (typeof item !== 'undefined') {
         item.score = searchResults[j].score;
 
@@ -164,7 +161,7 @@ function autocomplete(inp) {
           closeAllLists();
           // only removes immidiatly the blocked entry,
           // not everything from this subscriber
-          removeMetaData(window.searchSelection);
+          // FIXME: removeMetaData(window.searchSelection);
         });
         b.appendChild(spanTwo);
         b.appendChild(span);
