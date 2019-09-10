@@ -150,7 +150,7 @@ document.getElementById('sortName').addEventListener('click', async () => {
   sortTable(1);
 });
 document.getElementById('uploadName').addEventListener('click', async () => {
-  sortTable(3);
+  sortTable(2);
 });
 
 document.getElementById('historyLongText').addEventListener('scroll', function scroll() {
