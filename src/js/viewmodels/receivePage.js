@@ -6,11 +6,13 @@ import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import SubscriptionDb from '../search/SubscriptionDb';
 import createLog from '../log/createLog';
-import { LIST_OF_IPFS_GATEWAYS, IPFS_COMPANION_NO_REDIRECT, GATEWAY } from '../ipfs/ipfsConfig';
+import { IPFS_COMPANION_NO_REDIRECT, GATEWAY } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
 import EncryptionBuf from '../ipfs/EncryptionBuf';
 import Error from '../error';
+
+// TODO: Different upload gateways!
 
 const errorMessage = 'The file you’re requesting is difficult to load or not available at all!';
 let loadingRunning = false;
@@ -19,6 +21,7 @@ let fakeProgress = 0;
 let progressId;
 let timeOutPropagation;
 let isSearch = false;
+let directLinkProgress = true;
 
 function showLoadProgress() {
   if (isSearch) {
@@ -79,8 +82,7 @@ function propagationError() {
   blockOpen = true;
   // Availability metadata can only be reliable created on participating IPFS nodes
   // And only for data which is already be part of the search engine
-  if (LIST_OF_IPFS_GATEWAYS.includes(GATEWAY)
-    && typeof window.searchSelection !== 'undefined'
+  if (typeof window.searchSelection !== 'undefined'
     && window.searchSelection.fileId !== 'na') {
     document.getElementById('markUnavailable').style.display = 'inline-block';
     document.getElementById('markUnavailable').addEventListener('click', () => {
@@ -193,27 +195,53 @@ async function onload(arrayBuffer, passwordInput, fileInput) {
   }
 }
 
-function ipfsLoading(directLinkProgress, passwordInput, fileInput) {
-  const oReqLocal = new XMLHttpRequest();
-  if (!directLinkProgress) {
-    oReqLocal.onloadstart = function startCallback() { onloadstart(); };
-    oReqLocal.onprogress = function onProgressCallback(event) { onprogress(event); };
-    oReqLocal.onreadystatechange = function onreadystatechange() {
-      if (oReqLocal.readyState === 4) {
-        if (oReqLocal.status !== 200) {
-          output(errorMessage);
-        }
+/**
+ * Loads the data via a link to a gateways
+ * @param {*} passwordInput
+ * @param {*} fileInput
+ */
+function directLinkLoading(passwordInput, fileInput) {
+  const oReqDirectLink = new XMLHttpRequest();
+  oReqDirectLink.onloadstart = function startCallback() { onloadstart(); };
+  oReqDirectLink.onprogress = function onProgressCallback(event) { onprogress(event); };
+  oReqDirectLink.onreadystatechange = function onreadystatechange() {
+    if (oReqDirectLink.readyState === 4) {
+      if (oReqDirectLink.status === 0) {
+        // e.g., direct link gateway no longer exists!
+        directLinkProgress = false;
+      } else if (oReqDirectLink.status !== 200) {
+        output(errorMessage);
       }
-    };
-  }
-  oReqLocal.onload = function onloadCallback() {
-    onload(oReqLocal.response, passwordInput, fileInput, GATEWAY);
+    }
   };
-  oReqLocal.open('GET', GATEWAY + fileInput, true);
-  oReqLocal.responseType = 'arraybuffer';
-  oReqLocal.send();
+  oReqDirectLink.onload = function onloadCallback() {
+    onload(oReqDirectLink.response, passwordInput, fileInput, GATEWAY);
+  };
+  oReqDirectLink.open('GET', GATEWAY + fileInput + IPFS_COMPANION_NO_REDIRECT, true);
+  oReqDirectLink.responseType = 'arraybuffer';
+  oReqDirectLink.send();
 }
 
+/**
+ * Loads the data via IPFS
+ * @param {*} passwordInput
+ * @param {*} fileInput
+ */
+function ipfsLoading(passwordInput, fileInput) {
+  console.log('Direct IPFS loading');
+  if (!directLinkProgress) {
+    window.ipfsNode.cat(fileInput, (err, data) => {
+      if (err) return console.error(err);
+
+      // convert Buffer back to string
+      onload(data, passwordInput, fileInput, GATEWAY);
+    });
+  }
+}
+
+/**
+ * Starts direct link loading and/or IPFS loading
+ */
 async function load() {
   blockOpen = false;
   const passwordInput = document.getElementById('passwordField').value.trim();
@@ -237,45 +265,12 @@ async function load() {
   } else {
     output('');
     document.getElementById('markUnavailable').style.display = 'none';
-    let timeBeforeIPFSLoadingStarts = 0;
-    let directLinkProgress = false;
-    // link direct to upload gateway for faster transactions
-    if (typeof window.searchSelection !== 'undefined'
-      && typeof window.searchSelection.uploadGateway !== 'undefined') {
-      const { uploadGateway } = window.searchSelection;
-      // direct link doesn't make sense with ipfs companion enabled,
-      // because the link will be replaced by the local address anyway
-      if (!uploadGateway.includes('localhost')
-        && !uploadGateway.includes('127.0.0.1')
-        && !uploadGateway.includes('::1')) {
-        directLinkProgress = true;
-        // wait and see if gateway is still available
-        // TODO: progress bar doesn't reset
-        timeBeforeIPFSLoadingStarts = 1000;
-        const oReqDirectLink = new XMLHttpRequest();
-        oReqDirectLink.onloadstart = function startCallback() { onloadstart(); };
-        oReqDirectLink.onprogress = function onProgressCallback(event) { onprogress(event); };
-        oReqDirectLink.onreadystatechange = function onreadystatechange() {
-          if (oReqDirectLink.readyState === 4) {
-            if (oReqDirectLink.status === 0) {
-              // e.g., direct link gateway no longer exists!
-              directLinkProgress = false;
-            } else if (oReqDirectLink.status !== 200) {
-              output(errorMessage);
-            }
-          }
-        };
-        oReqDirectLink.onload = function onloadCallback() {
-          onload(oReqDirectLink.response, passwordInput, fileInput, uploadGateway);
-        };
-        oReqDirectLink.open('GET', uploadGateway + fileInput + IPFS_COMPANION_NO_REDIRECT, true);
-        oReqDirectLink.responseType = 'arraybuffer';
-        oReqDirectLink.send();
-      }
-    }
 
-    await setTimeout(() => { ipfsLoading(directLinkProgress, passwordInput, fileInput); },
-      timeBeforeIPFSLoadingStarts);
+    // TODO: progress bar doesn't reset
+    directLinkLoading(passwordInput, fileInput);
+
+    await setTimeout(() => { ipfsLoading(passwordInput, fileInput); },
+      1000);
   }
 }
 

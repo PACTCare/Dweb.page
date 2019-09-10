@@ -199,6 +199,7 @@ function layoutSwitch(isEncrypted) {
   if (fileId == null || typeof fileId === 'undefined') {
     errorMessage("The current IPFS gateway you are using  isn't writable!");
   } else if (isEncrypted) {
+    console.log('Encrypted!');
     createLog(fileId, filename, true);
     encryptedLayout();
   } else {

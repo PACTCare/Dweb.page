@@ -62,7 +62,7 @@ function printLog(metaArray) {
     cell1.style.fontSize = '18px';
     cell2.innerHTML = `<a href="${link}" target="_blank">${fileName}</a>`;
     cell3.textContent = metaArray[j].fileId;
-    cell4.textContent = 'Private';
+    cell4.textContent = 'Public';
 
     // TODO: Fix x.isUpload
     const downloadArray = metaArray.filter(
