@@ -13,7 +13,7 @@
     "testURL": "http://localhost:8080/ipfs/QmSS34C6PzXVJTjMzqggZT34ibf4QE49b5kXRzLHdyBL7y"
   },
   "author": "David Hawig",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.21",

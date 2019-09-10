@@ -49,11 +49,7 @@ function printLog(metaArray) {
     const cell3 = row.insertCell(2);
     cell3.setAttribute('data-title', 'File ID: ');
     const cell4 = row.insertCell(3);
-    cell4.setAttribute('data-title', 'Mode: ');
-    const cell5 = row.insertCell(4);
-    cell5.setAttribute('data-title', 'Upload: ');
-    const cell6 = row.insertCell(5);
-    cell6.setAttribute('data-title', 'Download: ');
+    cell4.setAttribute('data-title', 'Date: ');
 
     const { fileName } = metaArray[j];
     const link = `${GATEWAY}${metaArray[j].fileId}`;
@@ -62,17 +58,11 @@ function printLog(metaArray) {
     cell1.style.fontSize = '18px';
     cell2.innerHTML = `<a href="${link}" target="_blank">${fileName}</a>`;
     cell3.textContent = metaArray[j].fileId;
-    cell4.textContent = 'Public';
 
-    // TODO: Fix x.isUpload
-    const downloadArray = metaArray.filter(
-      (x) => x.fileId === metaArray[j].fileId && x.isUpload,
-    );
     const uploadArray = metaArray.filter(
       (x) => x.fileId === metaArray[j].fileId,
     );
-    cell5.innerHTML = upDownloadBox(uploadArray);
-    cell6.innerHTML = upDownloadBox(downloadArray);
+    cell4.innerHTML = upDownloadBox(uploadArray);
   }
   hideColumns(2);
   if (document.getElementById('firstRow') !== null) {
@@ -159,14 +149,8 @@ function sortTable(n) {
 document.getElementById('sortName').addEventListener('click', async () => {
   sortTable(1);
 });
-document.getElementById('modeName').addEventListener('click', async () => {
-  sortTable(3);
-});
 document.getElementById('uploadName').addEventListener('click', async () => {
-  sortTable(4);
-});
-document.getElementById('downloadName').addEventListener('click', async () => {
-  sortTable(5);
+  sortTable(3);
 });
 
 document.getElementById('historyLongText').addEventListener('scroll', function scroll() {

@@ -32,9 +32,8 @@ import '../css/tags.css';
 import favicon from '../img/favicon.png';
 import logo from '../img/dweb.png';
 import createMetadata from './search/createMetadata';
-import createLog from './log/createLog';
 import { DEFAULT_DESCRIPTION } from './search/searchConfig';
-import { GATEWAY } from './ipfs/ipfsConfig';
+import { GATEWAY, IPFS_DWEB_HASH } from './ipfs/ipfsConfig';
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
@@ -103,7 +102,7 @@ function unencryptedLayout() {
   document.getElementById('passwordStep').style.display = 'none';
   document.getElementById('passwordTab').classList.remove('tabSteps');
   document.getElementById('passwordTab').style.display = 'none';
-  let link = `${window.location.href}?id=${fileId}&password=np&name=${encodeURIComponent(filename)}`;
+  let link = `${GATEWAY + IPFS_DWEB_HASH}?id=${fileId}&password=np&name=${encodeURIComponent(filename)}`;
   if (checkBrowserDirectOpen(filename)) {
     link = GATEWAY + fileId;
   }
@@ -170,7 +169,7 @@ function tagLayout() {
 
 function encryptedLayout() {
   changeBackgroundColor('#3157a7');
-  const link = `${window.location.href}?id=${fileId}`;
+  const link = `${GATEWAY + IPFS_DWEB_HASH}?id=${fileId}`;
   document.getElementById('ipfsHash').href = link;
   document.getElementById('ipfsHash').textContent = link;
   document.getElementById('emailSharer').href = `${'mailto:?subject=Distributed and Secure File Sharing with Dweb.page&body=Hi, %0D%0A %0D%0A To access the file I securely shared with you, you need to: %0D%0A %0D%0A'
@@ -199,8 +198,6 @@ function layoutSwitch(isEncrypted) {
   if (fileId == null || typeof fileId === 'undefined') {
     errorMessage("The current IPFS gateway you are using  isn't writable!");
   } else if (isEncrypted) {
-    console.log('Encrypted!');
-    createLog(fileId, filename, true);
     encryptedLayout();
   } else {
     tagLayout();
@@ -208,7 +205,7 @@ function layoutSwitch(isEncrypted) {
 }
 
 async function uploadToIPFS(buf, isEncrypted) {
-  // if local always upload on an additional public gateway
+  // TODO: upload to public gateway/conncet to another public gateway for speed!
   const [{ hash }] = await window.ipfsNode.add(Buffer.from(buf));
   fileId = hash;
   layoutSwitch(isEncrypted);

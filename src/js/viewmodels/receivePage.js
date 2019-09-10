@@ -5,7 +5,6 @@ import checkBrowserDirectOpen from '../helperFunctions/checkBrowserDirectOpen';
 import { saveAs } from '../services/fileSaver';
 import '../search/search';
 import SubscriptionDb from '../search/SubscriptionDb';
-import createLog from '../log/createLog';
 import { IPFS_COMPANION_NO_REDIRECT, GATEWAY } from '../ipfs/ipfsConfig';
 import createMetadata from '../search/createMetadata';
 import { UNAVAILABLE_DESC } from '../search/searchConfig';
@@ -128,7 +127,7 @@ function onloadstart() {
   progressId = setInterval(propagationProgress, 200);
 }
 
-async function onload(arrayBuffer, passwordInput, fileInput) {
+async function onload(arrayBuffer, passwordInput) {
   if (!loadingRunning) {
     loadingRunning = true;
     if (typeof timeOutPropagation !== 'undefined') {
@@ -146,7 +145,6 @@ async function onload(arrayBuffer, passwordInput, fileInput) {
             const typeM = MIME.getType(fileName);
             const blob = new Blob([decrypted], { type: typeM });
             blob.name = fileName;
-            createLog(fileInput, fileName, false);
             downloadFile(fileName, blob);
           })
           .catch(() => {
@@ -215,7 +213,7 @@ function directLinkLoading(passwordInput, fileInput) {
     }
   };
   oReqDirectLink.onload = function onloadCallback() {
-    onload(oReqDirectLink.response, passwordInput, fileInput, GATEWAY);
+    onload(oReqDirectLink.response, passwordInput);
   };
   oReqDirectLink.open('GET', GATEWAY + fileInput + IPFS_COMPANION_NO_REDIRECT, true);
   oReqDirectLink.responseType = 'arraybuffer';
@@ -234,7 +232,7 @@ function ipfsLoading(passwordInput, fileInput) {
       if (err) return console.error(err);
 
       // convert Buffer back to string
-      onload(data, passwordInput, fileInput, GATEWAY);
+      onload(data, passwordInput);
     });
   }
 }
