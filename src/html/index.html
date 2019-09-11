@@ -95,13 +95,32 @@
     </div>
 
     <div id="afterUpload" class="textBox">
-      <div id="askForTags">
-        <h2 id='tagHeadline'>Add Tags</h2>
-        <form autocomplete="off">
-          <div id="tagsDiv" class="tags-input" data-name="tags-input"></div>
-          <div id="messagesReceivePage"></div>
-          <input type="button" class="boxButton" value="Done" id="sendTags">
-        </form>
+      <div id="starlogEntryDiv">
+        <h2 id='metaHeadline'>Metadata</h2>
+        <!-- owner=copyright (), price  -->
+        <div id='copyright' class="clearfix">
+          <h2 class='metadataHeadline'>Ownership</h2>
+          <select id='selectCopyright'>
+            <option>For sale</option>
+            <option>Free to use</option>
+            <option>Not for sale</option>
+          </select>
+        </div>
+        <div id='price' class="clearfix">
+          <h2 class='metadataHeadline'>Price</h2>
+          <div class="metaInput"><input type="number" step="0.01" id="price-input" class="main-input floatRight"
+              placeholder="Enter your price">
+            <i id="metaInputUnit" class="far fa-star"></i>
+          </div>
+        </div>
+        <div id='tag' class="clearfix">
+          <h2 class='metadataHeadline'>Tags</h2>
+          <form autocomplete="off">
+            <div id="tagsDiv" class="tags-input" data-name="tags-input"></div>
+            <div id="messagesReceivePage"></div>
+            <input type="button" class="boxButton" value="Done" id="sendTags">
+          </form>
+        </div>
       </div>
       <div id="afterTags">
         <div id="stepsDiv">
@@ -227,6 +246,7 @@
               <th></th>
               <th id='sortName'>Name <span id='sortNameIcon'> </span></th>
               <th style="display: none;">File ID </th>
+              <th id='modeName'>Price <span id='sortModeIcon'> </span></th>
               <th id='uploadName'>Date <span id='sortUploadIcon'> </span></th>
             </tr>
           </thead>

@@ -49,7 +49,9 @@ function printLog(metaArray) {
     const cell3 = row.insertCell(2);
     cell3.setAttribute('data-title', 'File ID: ');
     const cell4 = row.insertCell(3);
-    cell4.setAttribute('data-title', 'Date: ');
+    cell4.setAttribute('data-title', 'Price: ');
+    const cell5 = row.insertCell(4);
+    cell5.setAttribute('data-title', 'Date: ');
 
     const { fileName } = metaArray[j];
     const link = `${GATEWAY}${metaArray[j].fileId}`;
@@ -62,7 +64,7 @@ function printLog(metaArray) {
     const uploadArray = metaArray.filter(
       (x) => x.fileId === metaArray[j].fileId,
     );
-    cell4.innerHTML = upDownloadBox(uploadArray);
+    cell5.innerHTML = upDownloadBox(uploadArray);
   }
   hideColumns(2);
   if (document.getElementById('firstRow') !== null) {
@@ -150,7 +152,7 @@ document.getElementById('sortName').addEventListener('click', async () => {
   sortTable(1);
 });
 document.getElementById('uploadName').addEventListener('click', async () => {
-  sortTable(2);
+  sortTable(4);
 });
 
 document.getElementById('historyLongText').addEventListener('scroll', function scroll() {

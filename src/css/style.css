@@ -20,6 +20,50 @@ body,
   overflow: hidden;
 }
 
+.metadataHeadline {
+  float: left;
+  font-weight: 600;
+  font-family: Quicksand,sans-serif;
+  font-size: 17px;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+#starlogEntryDiv{
+  padding: 0em 0.5em;
+}
+
+#metaHeadline{
+  margin-bottom: 0.8em;
+  margin-top: 0em;
+}
+
+#selectCopyright {
+  float: right;
+  width: 70%;
+  margin-top: 0.4em;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+#price-input {
+  border: 0;
+  float: left;
+}
+
+#metaInputUnit{
+  float: right;
+}
+
+.metaInput{
+  float: right;
+  width: 70%;
+  padding-left: 4px;
+  margin-top: 0.4em;
+  border: 0;
+  border-bottom: 1px solid #ccc;
+}
+
 #passwordDiv, .lead, .donation{
   font-family: Quicksand,sans-serif;
 }

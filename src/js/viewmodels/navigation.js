@@ -81,7 +81,7 @@ function indexInit() {
   document.getElementById('passwordStep').classList.add('step');
   document.getElementById('lastTab').style.display = 'none';
   document.getElementById('newUpload').style.display = 'none';
-  document.getElementById('askForTags').style.display = 'none';
+  document.getElementById('starlogEntryDiv').style.display = 'none';
 }
 
 function searchInit() {

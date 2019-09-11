@@ -7,7 +7,7 @@ import SubscriptionDb from './SubscriptionDb';
  * @param {string} fileNameType
  * @param {string} description for Not available metadata == '&Unavailable on Dweb.page&'
  */
-export default async function createMetadata(fileId, fileNameType, description) {
+export default async function createMetadata(fileId, fileNameType, description, price = 0) {
   const time = new Date().toUTCString();
   const [, fileNamePart, fileTypePart] = fileNameType.match(/(.*)\.(.*)/);
 
@@ -17,6 +17,7 @@ export default async function createMetadata(fileId, fileNameType, description) 
     fileType: fileTypePart,
     description,
     time,
+    price,
   };
 
   if (description !== UNAVAILABLE_DESC) {

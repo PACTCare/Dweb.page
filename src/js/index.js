@@ -5,7 +5,7 @@ import {
   faExclamationCircle, faBars, faBan,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  faEnvelope, faFile, faFolderOpen, faCopy, faImage,
+  faEnvelope, faFile, faFolderOpen, faCopy, faImage, faStar,
 } from '@fortawesome/free-regular-svg-icons';
 import { faWhatsapp, faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
 import './viewmodels/fileupload';
@@ -37,7 +37,7 @@ import { GATEWAY, IPFS_DWEB_HASH } from './ipfs/ipfsConfig';
 
 library.add(faArrowDown, faArrowUp, faVideo, faMusic, faFile, faFolderOpen, faEnvelope,
   faMobileAlt, faCopy, faFileUpload, faShieldAlt,
-  faPlayCircle, faExclamationCircle, faBars, faBan,
+  faPlayCircle, faExclamationCircle, faBars, faBan, faStar,
   faWhatsapp, faTelegramPlane, faImage);
 dom.watch();
 document.getElementById('logo1').src = logo;
@@ -132,23 +132,39 @@ function unencryptedLayout() {
   document.getElementById('ipfsHash').textContent = link;
 }
 
-function tagLayout() {
+function starlogLayout() {
   const myNode = document.getElementById('tagsDiv');
   while (myNode.firstChild) {
     myNode.removeChild(myNode.firstChild);
   }
   createTagsElement();
   document.getElementById('afterTags').style.display = 'none';
-  document.getElementById('askForTags').style.display = 'block';
+  document.getElementById('starlogEntryDiv').style.display = 'block';
 
-  const tagsDone = function tagsDone() {
+  let licenseCode = 0;
+  document.getElementById('selectCopyright').onchange = function selection() {
+    if (this.value === 'Free to use') {
+      document.getElementById('price').style.display = 'none';
+      document.getElementById('price-input').value = 0;
+      licenseCode = 1;
+    } else if (this.value === 'Not for sale') {
+      document.getElementById('price').style.display = 'none';
+      document.getElementById('price-input').value = 0;
+      licenseCode = 0;
+    } else {
+      document.getElementById('price').style.display = 'block';
+      licenseCode = 0;
+    }
+  };
+
+  const tagsDone = async function tagsDone() {
     const tags = document.getElementsByClassName('tag');
     let tagsString = '';
     for (let i = 0; i < tags.length; i += 1) {
       tagsString += ` ${tags[i].textContent}`;
     }
     document.getElementById('afterTags').style.display = 'block';
-    document.getElementById('askForTags').style.display = 'none';
+    document.getElementById('starlogEntryDiv').style.display = 'none';
     unencryptedLayout();
     if (describtion === DEFAULT_DESCRIPTION && tagsString.length > 0) {
       describtion = tagsString.trim();
@@ -156,8 +172,11 @@ function tagLayout() {
       // && marks the beginning of the describtion/end of tags
       describtion = `${tagsString.trim()}&&${describtion}`;
     }
-    createMetadata(fileId, filename, describtion);
+
+    const price = document.getElementById('price-input').value;
+    createMetadata(fileId, filename, GATEWAY, price);
   };
+
 
   // Add only once
   if (!alreadyAdded) {
@@ -200,7 +219,7 @@ function layoutSwitch(isEncrypted) {
   } else if (isEncrypted) {
     encryptedLayout();
   } else {
-    tagLayout();
+    starlogLayout();
   }
 }
 
