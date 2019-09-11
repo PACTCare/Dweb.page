@@ -34,7 +34,7 @@ function setDefaultImage() {
   document
     .getElementsByTagName('body')[0]
     .style
-    .backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.35),rgba(0, 0, 0, 0.35)), url("https://pact.online/background.jpeg")';
+    .backgroundImage = 'linear-gradient(150deg, #2a2a72 0%, #3157a7 74%)';
 }
 
 async function setBackgroundImage() {
