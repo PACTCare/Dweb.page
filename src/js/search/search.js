@@ -5,6 +5,7 @@ import prepSearchText from './prepSearchText';
 import { DEFAULT_DESCRIPTION } from './searchConfig';
 import Error from '../error';
 import startIpfs from '../ipfs/startIpfs';
+import Starlog from '../starlog/starlog';
 
 window.miniSearch = new MiniSearch({
   idField: 'fileId',
@@ -42,7 +43,9 @@ function inputValToWinDowSearchSelection(inputVal) {
  */
 async function startSearch() {
   try {
-    // TODO: resolve createMedata, createLog, filePage, subscribtion to public metadata system
+    // TODO: Starlog improve, Tutorial user interface
+    window.starlog = new Starlog();
+    await window.starlog.connect();
     await startIpfs();
     window.miniSearch.addAll(window.metadata);
   } catch (err) {
