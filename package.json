@@ -21,7 +21,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.7.2",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "big-integer": "^1.6.41",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "fast-text-encoding": "^1.0.0",
     "iota.lib.js": "^0.5.1",
     "jszip": "^3.1.5",
